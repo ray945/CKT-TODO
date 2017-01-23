@@ -6,13 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmAsyncTask;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Realm.Transaction;
 
 public class DatebaseHelper {
 
-    private static final String TAG = "caokai";
+    private static final String TAG = "DatebaseHelper";
 
     private static DatebaseHelper mInstance;
 
@@ -35,6 +37,15 @@ public class DatebaseHelper {
 
     public Realm getRealm() {
         return mRealm;
+    }
+
+    public void executeTransaction(final Transaction transaction) {
+        checkNotNullObject(mRealm);
+        mRealm.executeTransaction(transaction);
+    }
+    public RealmAsyncTask executeTransaction(final Transaction transaction, final Transaction.Callback callback) {
+        checkNotNullObject(mRealm);
+        return mRealm.executeTransaction(transaction, callback);
     }
 
     public <T extends RealmObject> RealmResults<T> findAll(Class<T> clazz) {
