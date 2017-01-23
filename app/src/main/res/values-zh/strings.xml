@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">西可土豆</string>
+    <string name="task">任务</string>
+    <string name="project">计划</string>
+    <string name="note">便签</string>
+</resources>
