@@ -12,6 +12,7 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:textColor">@color/textColor</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -20,5 +21,9 @@
 
     <style name="AppTheme.DrawerArrowToggle" parent="Base.Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@android:color/primary_text_light</item>
+    </style>
+    
+    <style name="InputEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@android:color/holo_blue_light</item>
     </style>
 </resources>
