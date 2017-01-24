@@ -1,29 +1,34 @@
 package com.ckt.ckttodo.ui;
 
+import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.ckt.ckttodo.R;
+import com.ckt.ckttodo.databinding.ActivityMainBinding;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ActivityMainBinding mActivityMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initUI() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mActivityMainBinding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
+
+        Toolbar toolbar = mActivityMainBinding.appBarMain.toolbar;
         SimpleDateFormat formatter = new SimpleDateFormat("MM月dd日");
         Date curDate = new Date(System.currentTimeMillis());
         toolbar.setTitle(formatter.format(curDate));
@@ -42,17 +49,16 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.syncState();
         drawer.setDrawerListener(toggle);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = mActivityMainBinding.navView;
         navigationView.setNavigationItemSelectedListener(this);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        ViewPager viewPager = mActivityMainBinding.appBarMain.contentMain.viewPager;
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -83,13 +89,13 @@ public class MainActivity extends AppCompatActivity
             }
         };
         viewPager.setAdapter(fragmentPagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabLayout = mActivityMainBinding.appBarMain.contentMain.tabLayout;
         tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -139,7 +145,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
