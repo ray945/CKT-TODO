@@ -3,5 +3,11 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#bdbdbd</color>
     <color name="colorAccent">#eeeeee</color>
+<<<<<<< HEAD
+    <color name="color_29b6f6">#29B6F6</color>
+    <color name="color_d3d3d3">#D3D3D3</color>
+    <color name="color_33000000">#33000000</color>
+=======
     <color name="textColor">#000000</color>
+>>>>>>> 4929d998c65a9149be86e452f33d2856d31a78fa
 </resources>
