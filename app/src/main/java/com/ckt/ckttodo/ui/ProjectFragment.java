@@ -1,35 +1,31 @@
 package com.ckt.ckttodo.ui;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
-import com.ckt.ckttodo.util.ChartManager;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieEntry;
+import com.ckt.ckttodo.databinding.FragmentProjectBinding;
+import com.ckt.ckttodo.databinding.ItemProjectBinding;
+import com.ckt.ckttodo.databinding.ItemProjectTasksBinding;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class ProjectFragment extends Fragment {
@@ -77,13 +73,13 @@ public class ProjectFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_project, container, false);
-        RecyclerView rv_project = (RecyclerView) view.findViewById(R.id.rv_project);
-        FloatingActionButton fab_project = (FloatingActionButton) view.findViewById(R.id.fab_project);
-        fab_project.setOnClickListener(new View.OnClickListener() {
+
+        FragmentProjectBinding binding = FragmentProjectBinding.inflate(inflater);
+        RecyclerView rvProjects = binding.rvProject;
+        binding.fabProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View editTextView = getActivity().getLayoutInflater().inflate(R.layout.dialog_edittext,null);
+                View editTextView = getActivity().getLayoutInflater().inflate(R.layout.dialog_edittext, null);
                 final EditText editText = (EditText) editTextView.findViewById(R.id.new_task_name);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                         .setTitle("新建计划")
@@ -91,52 +87,52 @@ public class ProjectFragment extends Fragment {
                         .setPositiveButton("保存", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                String taskName =editText.getText().toString().trim();
-                                if (!taskName.equals("")){
-                                    Toast.makeText(getContext(),"带着任务参数跳转到新建任务界面",Toast.LENGTH_SHORT).show();
-                                }else {
-                                    return;
+                                String taskName = editText.getText().toString().trim();
+                                if (!taskName.equals("")) {
+                                    showToast("新建任务");
+                                } else {
+                                    showToast("任务不能为空");
                                 }
                             }
                         })
-                        .setNegativeButton("取消",null);
+                        .setNegativeButton("取消", null);
                 builder.create().show();
             }
         });
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
-                LinearLayoutManager.VERTICAL, false);
-        rv_project.setLayoutManager(layoutManager);
+
         RealmResults<Plan> planList = DatebaseHelper.getInstance(getContext()).findAll(Plan.class);
         ProjectListAdapter adapter = new ProjectListAdapter(planList);
-        rv_project.setAdapter(adapter);
-        return view;
+        initRecyclerView(rvProjects, adapter);
+        return binding.getRoot();
     }
 
     public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {
 
         private RealmResults<Plan> planList;
 
-        public ProjectListAdapter(RealmResults<Plan> planList) {
+        ProjectListAdapter(RealmResults<Plan> planList) {
             this.planList = planList;
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View root = LayoutInflater.from(getContext()).inflate(R.layout.item_project, parent);
-            return new ViewHolder(root);
+            ItemProjectBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.item_project, parent, false);
+            return new ViewHolder(binding);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             Plan plan = planList.get(position);
-            holder.projectName.setText(plan.getPlanName());
-            holder.projectProgress.setText(String.valueOf(plan.getAccomplishProgress()));
-            holder.addListBtn.setOnClickListener(new View.OnClickListener() {
+            holder.bind(plan);
+            holder.binding.btnAddList.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(),"跳转到新建任务",Toast.LENGTH_SHORT).show();
+                    showToast("带着任务参数跳转到新建任务界面");
                 }
             });
+            RecyclerView rvTasks = holder.binding.rvTasks;
+            taskListAdapter adapter = new taskListAdapter(plan.getEventTasks());
+            initRecyclerView(rvTasks, adapter);
         }
 
         @Override
@@ -144,20 +140,72 @@ public class ProjectFragment extends Fragment {
             return (planList == null) ? 0 : planList.size();
         }
 
-        protected class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView projectName;
-            private TextView projectProgress;
-            private RecyclerView taskList;
-            private ImageButton addListBtn;
+            private final ItemProjectBinding binding;
 
-            public ViewHolder(View itemView) {
-                super(itemView);
-                projectName = (TextView) itemView.findViewById(R.id.tv_project_name);
-                projectProgress = (TextView) itemView.findViewById(R.id.tv_project_progress);
-                taskList = (RecyclerView) itemView.findViewById(R.id.rv_tasks);
-                addListBtn = (ImageButton) itemView.findViewById(R.id.btn_addList);
+            ViewHolder(ItemProjectBinding binding) {
+                super(binding.getRoot());
+                this.binding = binding;
+            }
+
+            void bind(Plan plan) {
+                binding.setPlan(plan);
+                binding.executePendingBindings();
             }
         }
+    }
+
+    public class taskListAdapter extends RecyclerView.Adapter<taskListAdapter.ViewHolder> {
+
+        private RealmList<EventTask> tasks;
+
+        taskListAdapter(RealmList<EventTask> tasks) {
+            this.tasks = tasks;
+        }
+
+        @Override
+        public taskListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            ItemProjectTasksBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.item_project_tasks, parent, false);
+            return new ViewHolder(binding);
+        }
+
+        @Override
+        public void onBindViewHolder(taskListAdapter.ViewHolder holder, int position) {
+            EventTask task = tasks.get(position);
+            holder.bind(task);
+        }
+
+        @Override
+        public int getItemCount() {
+            return tasks == null ? 0 : tasks.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+
+            private final ItemProjectTasksBinding binding;
+
+            ViewHolder(ItemProjectTasksBinding binding) {
+                super(binding.getRoot());
+                this.binding = binding;
+            }
+
+            void bind(EventTask task) {
+                binding.setTask(task);
+                binding.executePendingBindings();
+            }
+        }
+    }
+
+    void showToast(String text) {
+        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    void initRecyclerView(RecyclerView recyclerView, RecyclerView.Adapter adapter) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 }

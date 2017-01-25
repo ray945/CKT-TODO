@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="task"
+            type="com.ckt.ckttodo.database.EventTask" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tv_task"
+            android:layout_width="240dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@{task.taskTitle}" />
+
+        <TextView
+            android:id="@+id/tv_task_time"
+            android:layout_width="100dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@{String.valueOf(task.taskStartTime)}" />
+
+    </LinearLayout>
+</layout>

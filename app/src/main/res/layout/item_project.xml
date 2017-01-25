@@ -1,65 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    android:background="@android:color/darker_gray"
-    android:orientation="vertical"
-    android:padding="10dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp">
+<layout>
 
-        <TextView
-            android:id="@+id/tv_project_name"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="5dp"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            tools:text="Hicam项目" />
+    <data>
 
-        <TextView
-            android:id="@+id/tv_project_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:gravity="center"
-            android:paddingRight="15dp"
-            android:layout_alignBaseline="@+id/tv_project_name"
-            tools:text="25%" />
+        <variable
+            name="plan"
+            type="com.ckt.ckttodo.database.Plan" />
+    </data>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:paddingRight="15dp"
-            tools:text="进度"
-            android:layout_alignBaseline="@+id/tv_project_name"
-            android:layout_alignBottom="@+id/tv_project_name"
-            android:layout_toStartOf="@+id/tv_project_progress" />
-
-
-    </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_tasks"
-        android:background="@color/colorPrimary"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none" />
-
-    <ImageButton
-        android:id="@+id/btn_addList"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
+        android:layout_margin="10dp"
         android:background="@android:color/darker_gray"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_add_black_48dp" />
+        android:orientation="vertical"
+        android:padding="10dp">
 
-</LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <TextView
+                android:id="@+id/tv_plan_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@{plan.planName}"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_plan_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignBaseline="@+id/tv_plan_name"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:paddingRight="15dp"
+                android:text="@{String.valueOf(plan.accomplishProgress)}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignBaseline="@+id/tv_plan_name"
+                android:layout_alignBottom="@+id/tv_plan_name"
+                android:layout_toStartOf="@+id/tv_plan_progress"
+                android:gravity="center"
+                android:paddingRight="15dp"
+                tools:text="进度" />
+
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_tasks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:scrollbars="none" />
+
+        <ImageButton
+            android:id="@+id/btn_addList"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@android:color/darker_gray"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_add_black_48dp" />
+
+    </LinearLayout>
+</layout>

@@ -23,12 +23,8 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
-/**
- * Created by admin on 2017/1/24.
- */
-
 public class ChartManager {
-
+    
 
     public static void initDoubleLineChart(LineChart mLineChart, final ArrayList<String> xValues,
                                            String lineName1, ArrayList<Entry> yValue1,
