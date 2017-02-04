@@ -2,7 +2,6 @@ package com.ckt.ckttodo.util;
 
 import android.graphics.Color;
 
-import com.ckt.ckttodo.R;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
