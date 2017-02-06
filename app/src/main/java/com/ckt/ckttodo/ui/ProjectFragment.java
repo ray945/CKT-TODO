@@ -2,6 +2,7 @@ package com.ckt.ckttodo.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,7 @@ import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.FragmentProjectBinding;
 import com.ckt.ckttodo.databinding.ItemProjectBinding;
 import com.ckt.ckttodo.databinding.ItemProjectTasksBinding;
+import com.ckt.ckttodo.util.ProjectTaskListDecoration;
 
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -90,8 +92,11 @@ public class ProjectFragment extends Fragment {
                                 String taskName = editText.getText().toString().trim();
                                 if (!taskName.equals("")) {
                                     showToast("新建任务");
+                                    Plan plan = new Plan();
+                                    plan.setPlanName(taskName);
+                                    DatebaseHelper.getInstance(getContext()).insert(plan);
                                 } else {
-                                    showToast("任务不能为空");
+                                    showToast("任务不能为空，请重新输入。");
                                 }
                             }
                         })
@@ -122,17 +127,22 @@ public class ProjectFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            Plan plan = planList.get(position);
+            final Plan plan = planList.get(position);
             holder.bind(plan);
-            holder.binding.btnAddList.setOnClickListener(new View.OnClickListener() {
+            holder.binding.btnAddTask.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showToast("带着任务参数跳转到新建任务界面");
+                    showToast("带着计划跳转到新建任务界面");
+                    String planName = plan.getPlanName();
+                    Intent intent = new Intent(getActivity(),NewTaskActivity.class);
+                    intent.putExtra("PLAN_NAME",planName);
+                    startActivity(intent);
                 }
             });
             RecyclerView rvTasks = holder.binding.rvTasks;
             taskListAdapter adapter = new taskListAdapter(plan.getEventTasks());
             initRecyclerView(rvTasks, adapter);
+            rvTasks.addItemDecoration(new ProjectTaskListDecoration(getContext()));
         }
 
         @Override

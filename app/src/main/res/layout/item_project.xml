@@ -64,7 +64,7 @@
             android:scrollbars="none" />
 
         <ImageButton
-            android:id="@+id/btn_addList"
+            android:id="@+id/btn_addTask"
             android:layout_width="100dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
