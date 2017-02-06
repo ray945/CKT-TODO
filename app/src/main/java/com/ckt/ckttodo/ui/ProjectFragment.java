@@ -167,7 +167,7 @@ public class ProjectFragment extends Fragment {
         @Override
         public taskListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-            ItemProjectTasksBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.item_project_tasks, parent, false);
+            com.ckt.ckttodo.databinding.ItemProjectTasksBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.item_project_tasks, parent, false);
             return new ViewHolder(binding);
         }
 
@@ -184,9 +184,9 @@ public class ProjectFragment extends Fragment {
 
         class ViewHolder extends RecyclerView.ViewHolder {
 
-            private final ItemProjectTasksBinding binding;
+            private final com.ckt.ckttodo.databinding.ItemProjectTasksBinding binding;
 
-            ViewHolder(ItemProjectTasksBinding binding) {
+            ViewHolder(com.ckt.ckttodo.databinding.ItemProjectTasksBinding binding) {
                 super(binding.getRoot());
                 this.binding = binding;
             }
