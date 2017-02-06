@@ -21,6 +21,14 @@
         <activity android:name=".ui.NewTaskActivity">
 
         </activity>
+        <activity
+            android:name=".ui.LockScreenActivity"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:taskAffinity="com.ckt.ckttodo.lockscreen"
+            android:theme="@style/LockScreenTheme">
+
+        </activity>
     </application>
 
 </manifest>

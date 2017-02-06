@@ -26,4 +26,8 @@
     <style name="InputEditText" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@android:color/holo_blue_light</item>
     </style>
+    <style name="LockScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>
