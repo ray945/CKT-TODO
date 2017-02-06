@@ -25,7 +25,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private String[] mArrayTaskKinds;
     private String[] mArrayTaskLevel;
     private ActivityNewTaskBinding mActivityNewTaskBinding;
-
+    public static final String GET_PLAN_ID_FROM_PROJECT = "planId";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
