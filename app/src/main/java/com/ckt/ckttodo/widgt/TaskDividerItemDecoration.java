@@ -23,9 +23,14 @@ public class TaskDividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private Drawable mDarwable;
 
+    public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
+
+    public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
+
+
     private int mOrientation;
 
-    private TaskDividerItemDecoration(Context context, int orientation) {
+    public TaskDividerItemDecoration(Context context, int orientation) {
 
         final TypedArray array = context.obtainStyledAttributes(ATTRS);
         mDarwable = array.getDrawable(0);
@@ -36,7 +41,7 @@ public class TaskDividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private void setOrientation(int orientation) {
 
-        if (orientation != LinearLayoutManager.HORIZONTAL || orientation != LinearLayoutManager.VERTICAL) {
+        if (orientation != LinearLayoutManager.HORIZONTAL && orientation != LinearLayoutManager.VERTICAL) {
             throw new IllegalArgumentException("invalid orientation");
         }
 

@@ -11,7 +11,7 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/relative_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/ripple_bg"
         android:clickable="true"
         android:descendantFocusability="blocksDescendants"
@@ -29,7 +29,9 @@
                 android:id="@+id/text_task_list_plan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{task.planId}" />
+                android:text="@{task.planId}"
+               />
+
 
             <TextView
                 android:id="@+id/text_task_list_plan_time"
@@ -37,7 +39,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_task_list_plan"
                 android:layout_marginTop="5dp"
-                android:text="@{task.taskPredictTime}" />
+                android:text="@{String.valueOf(task.taskPredictTime)}"
+               />
+
 
             <TextView
                 android:id="@+id/text_task_list_take_time"
@@ -47,7 +51,8 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@id/text_task_list_plan_time"
-                android:text="@{task.taskRealSpendTime}" />
+                android:text="@{String.valueOf(task.taskRealSpendTime)}"
+                />
 
         </RelativeLayout>
 
