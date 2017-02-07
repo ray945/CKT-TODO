@@ -2,6 +2,7 @@ package com.ckt.ckttodo.ui;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -12,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.ckt.ckttodo.R;
+import com.ckt.ckttodo.databinding.ActivityMainBinding;
+import com.ckt.ckttodo.databinding.ActivityNewTaskBinding;
 
 public class NewTaskActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -21,13 +24,15 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private ArrayAdapter<String> mSpinnerTaskLevelAdapter;
     private String[] mArrayTaskKinds;
     private String[] mArrayTaskLevel;
-
+    private ActivityNewTaskBinding mActivityNewTaskBinding;
+    public static final String GET_PLAN_ID_FROM_PROJECT = "planId";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.new_task));
-        setContentView(R.layout.activity_new_task);
+//        setContentView(R.layout.activity_new_task);
+        mActivityNewTaskBinding = DataBindingUtil.setContentView(NewTaskActivity.this,R.layout.activity_new_task);
         init();
 //        initTimePicker();
     }
@@ -35,15 +40,18 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private void init() {
 
         // 任务分类的下拉栏
-        mSpinnerTaskKinds = (Spinner) findViewById(R.id.spinner_task_choose);
+        mSpinnerTaskKinds = mActivityNewTaskBinding.spinnerTaskChoose;
+//        mSpinnerTaskKinds = (Spinner) findViewById(R.id.spinner_task_choose);
         mArrayTaskKinds = getResources().getStringArray(R.array.kind_list);
         mSpinnerTaskKindsAdapter = new ArrayAdapter<>(this, R.layout.common_text_item, mArrayTaskKinds);
         mSpinnerTaskKindsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerTaskKinds.setAdapter(mSpinnerTaskKindsAdapter);
         //任务等级的下拉栏
-        mSpinnerTaskLevel = (Spinner) findViewById(R.id.spinner_task_level);
+
+        mSpinnerTaskLevel = mActivityNewTaskBinding.spinnerTaskLevel;
+//        mSpinnerTaskLevel = (Spinner) findViewById(R.id.spinner_task_level);
         mArrayTaskLevel = getResources().getStringArray(R.array.task_level);
-        mSpinnerTaskLevelAdapter = new ArrayAdapter<String>(this, R.layout.common_text_item, mArrayTaskLevel);
+        mSpinnerTaskLevelAdapter = new ArrayAdapter<>(this, R.layout.common_text_item, mArrayTaskLevel);
         mSpinnerTaskLevelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerTaskLevel.setAdapter(mSpinnerTaskLevelAdapter);
     }

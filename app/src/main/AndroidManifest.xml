@@ -19,11 +19,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.NewTaskActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+        </activity>
+        <activity
+            android:name=".ui.LockScreenActivity"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:taskAffinity="com.ckt.ckttodo.lockscreen"
+            android:theme="@style/LockScreenTheme">
 
         </activity>
     </application>

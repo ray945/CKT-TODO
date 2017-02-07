@@ -67,9 +67,9 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         holder.binding.btnAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String planName = plan.getPlanName();
+                int planId = plan.getPlanId();
                 Intent intent = new Intent(context, NewTaskActivity.class);
-                intent.putExtra("PLAN_NAME", planName);
+                intent.putExtra(NewTaskActivity.GET_PLAN_ID_FROM_PROJECT, planId);
                 context.startActivity(intent);
             }
         });
