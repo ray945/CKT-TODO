@@ -1,10 +1,12 @@
 package com.ckt.ckttodo.database;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
-public class Note extends RealmObject {
+public class Note extends RealmObject implements Serializable {
     //便签id
     @PrimaryKey
     private String noteId;
