@@ -36,6 +36,13 @@
         <item>不重要-不紧急</item>
     </array>
 
+    <string name="new_plan">新建计划</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="plan_not_null">任务不能为空，请重新输入。</string>
+    <string name="plan_exist">该任务已存在</string>
+    <string name="accomplishProgress">进度</string>
+    <string name="more_task">加载任务</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

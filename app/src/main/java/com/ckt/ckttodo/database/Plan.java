@@ -23,7 +23,7 @@ public class Plan extends RealmObject {
 
     //计划id
     @PrimaryKey
-    private String planId;
+    private int planId;
     //计划名称
     @Required
     private String planName;
@@ -36,7 +36,7 @@ public class Plan extends RealmObject {
     //计划状态
     private int status = PLAN_NOT_START;
     //计划进度
-    private int accomplishProgress;
+    private String accomplishProgress;
     //计划预计时间
     private float predictSpendTime;
     //计划实际花费时间
@@ -44,11 +44,11 @@ public class Plan extends RealmObject {
     //计划包含的任务
     private RealmList<EventTask> eventTasks;
 
-    public String getPlanId() {
+    public int getPlanId() {
         return planId;
     }
 
-    public void setPlanId(String planId) {
+    public void setPlanId(int planId) {
         this.planId = planId;
     }
 
@@ -92,11 +92,11 @@ public class Plan extends RealmObject {
         this.status = status;
     }
 
-    public int getAccomplishProgress() {
+    public String getAccomplishProgress() {
         return accomplishProgress;
     }
 
-    public void setAccomplishProgress(int accomplishProgress) {
+    public void setAccomplishProgress(String accomplishProgress) {
         this.accomplishProgress = accomplishProgress;
     }
 

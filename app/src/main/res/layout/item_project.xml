@@ -41,7 +41,7 @@
                 android:layout_alignParentEnd="true"
                 android:gravity="center"
                 android:paddingRight="15dp"
-                android:text="@{String.valueOf(plan.accomplishProgress)}" />
+                android:text="@{plan.accomplishProgress}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -50,8 +50,8 @@
                 android:layout_alignBottom="@+id/tv_plan_name"
                 android:layout_toStartOf="@+id/tv_plan_progress"
                 android:gravity="center"
-                android:paddingRight="15dp"
-                tools:text="进度" />
+                android:paddingRight="8dp"
+                android:text="@string/accomplishProgress" />
 
 
         </RelativeLayout>
@@ -60,6 +60,8 @@
             android:id="@+id/rv_tasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:background="@color/colorPrimary"
             android:scrollbars="none" />
 
@@ -69,6 +71,7 @@
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:background="@android:color/darker_gray"
+            android:contentDescription="@string/new_task"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_add_black_48dp" />
 

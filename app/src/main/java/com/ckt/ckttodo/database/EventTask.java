@@ -69,7 +69,7 @@ public class EventTask extends RealmObject {
     //任务实际花费时间
     private float taskRealSpendTime;
     //任务所属计划
-    private String planId;
+    private int planId;
 
     public String getTaskId() {
         return taskId;
@@ -167,11 +167,11 @@ public class EventTask extends RealmObject {
         this.taskRealSpendTime = taskRealSpendTime;
     }
 
-    public String getPlanId() {
+    public int getPlanId() {
         return planId;
     }
 
-    public void setPlanId(String planId) {
+    public void setPlanId(int planId) {
         this.planId = planId;
     }
 }
