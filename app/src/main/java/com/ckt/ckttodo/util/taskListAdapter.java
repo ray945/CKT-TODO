@@ -13,17 +13,17 @@ import com.ckt.ckttodo.databinding.ItemProjectTasksBinding;
 import io.realm.RealmList;
 
 
-class taskListAdapter extends RecyclerView.Adapter<taskListAdapter.ViewHolder> {
+class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
 
     private RealmList<EventTask> tasks;
     private Context context;
 
-    taskListAdapter(Context context, RealmList<EventTask> tasks) {
+    TaskListAdapter(Context context, RealmList<EventTask> tasks) {
         this.tasks = tasks;
         this.context = context;
     }
 
-    taskListAdapter(Context context){
+    TaskListAdapter(Context context){
         this.context = context;
     }
 
@@ -38,14 +38,14 @@ class taskListAdapter extends RecyclerView.Adapter<taskListAdapter.ViewHolder> {
     }
 
     @Override
-    public taskListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TaskListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         ItemProjectTasksBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_project_tasks, parent, false);
         return new ViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(taskListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(TaskListAdapter.ViewHolder holder, int position) {
         EventTask task = tasks.get(position);
         holder.bind(task);
     }

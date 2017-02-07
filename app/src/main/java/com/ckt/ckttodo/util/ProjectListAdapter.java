@@ -78,16 +78,16 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         final RecyclerView rvTasks = holder.binding.rvTasks;
         rvTasks.addItemDecoration(new ProjectTaskListDecoration(context));
         if (tasks.size() <= 3) {
-            taskListAdapter adapter = new taskListAdapter(context, tasks);
+            TaskListAdapter adapter = new TaskListAdapter(context, tasks);
             ProjectFragment.initRecyclerView(rvTasks, adapter, context);
         } else {
-            final taskListAdapter adapter = new taskListAdapter(context);
+            final TaskListAdapter adapter = new TaskListAdapter(context);
             final RealmList<EventTask> taskThree = new RealmList<>();
             for (int i = 0; i < 3; i++) {
                 taskThree.add(tasks.get(i));
             }
             adapter.setTasks(taskThree);
-            final Bookends<taskListAdapter> adapterBookends = new Bookends<>(adapter);
+            final Bookends<TaskListAdapter> adapterBookends = new Bookends<>(adapter);
             final ImageButton footerButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.item_project_tasks_footer, rvTasks, false);
             footerButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,9 +104,9 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         }
     }
 
-    private void showMoreTask(taskListAdapter adapter, RealmList<EventTask> tasks,
+    private void showMoreTask(TaskListAdapter adapter, RealmList<EventTask> tasks,
                               ImageButton footerButton, int iconRes, RecyclerView rvTasks,
-                              Bookends<taskListAdapter> adapterBookends) {
+                              Bookends<TaskListAdapter> adapterBookends) {
         moreTask = !moreTask;
         adapter.clear();
         adapter.setTasks(tasks);
