@@ -37,58 +37,11 @@ public class ProjectFragment extends Fragment {
 
         FragmentProjectBinding binding = FragmentProjectBinding.inflate(inflater);
         RecyclerView rvProjects = binding.rvProject;
-        binding.fabProject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                View editTextView = getActivity().getLayoutInflater().inflate(R.layout.dialog_edittext, null);
-                final EditText editText = (EditText) editTextView.findViewById(R.id.new_task_name);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
-                        .setTitle(R.string.new_plan)
-                        .setView(editTextView)
-                        .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Realm realm = DatebaseHelper.getInstance(getContext()).getRealm();
-                                final String taskName = editText.getText().toString().trim();
-                                for (Plan plan : DatebaseHelper.getInstance(getContext()).findAll(Plan.class)) {
-                                    if (taskName.equals(plan.getPlanName())) {
-                                        showToast(getResources().getString(R.string.plan_exist));
-                                        return;
-                                    }
-                                }
-                                if (!taskName.equals("")) {
-                                    Plan plan = new Plan();
-                                    int id;
-                                    if (realm.where(Plan.class).count() == 0) {
-                                        id = 0;
-                                    } else {
-                                        RealmResults<Plan> plans = realm.where(Plan.class).findAllSorted(PLAN_ID, false);
-                                        id = plans.first().getPlanId();
-                                        id += 1;
-                                    }
-                                    plan.setPlanId(id);
-                                    plan.setPlanName(taskName);
-                                    Date date = new Date();
-                                    plan.setCreateTime(date.getTime());
-                                    DatebaseHelper.getInstance(getContext()).insert(plan);
-                                } else {
-                                    showToast(getResources().getString(R.string.plan_not_null));
-                                }
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null);
-                builder.create().show();
-            }
-        });
 
          RealmResults<Plan> planList = DatebaseHelper.getInstance(getContext()).findAll(Plan.class);
         ProjectListAdapter adapter = new ProjectListAdapter(getContext(), planList);
         initRecyclerView(rvProjects, adapter, getContext());
         return binding.getRoot();
-    }
-
-    void showToast(String text) {
-        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
     public static void initRecyclerView(RecyclerView recyclerView, RecyclerView.Adapter adapter, Context context) {

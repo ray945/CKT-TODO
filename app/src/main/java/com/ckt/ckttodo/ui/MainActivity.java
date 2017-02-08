@@ -1,5 +1,7 @@
 package com.ckt.ckttodo.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,23 +14,38 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
+import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "main";
+    public static final String PLAN_ID = "planId";
 
     private ActivityMainBinding mActivityMainBinding;
+    private List<Fragment> mFragmentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFragmentList = new ArrayList<>();
         initUI();
     }
 
@@ -51,7 +68,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = mActivityMainBinding.navView;
         navigationView.setNavigationItemSelectedListener(this);
 
-        ViewPager viewPager = mActivityMainBinding.appBarMain.contentMain.viewPager;
+        final ViewPager viewPager = mActivityMainBinding.appBarMain.contentMain.viewPager;
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -67,6 +84,7 @@ public class MainActivity extends AppCompatActivity
                         fragment = new NoteFragment();
                         break;
                 }
+                mFragmentList.add(fragment);
                 return fragment;
             }
 
@@ -84,6 +102,63 @@ public class MainActivity extends AppCompatActivity
         viewPager.setAdapter(fragmentPagerAdapter);
         TabLayout tabLayout = mActivityMainBinding.appBarMain.contentMain.tabLayout;
         tabLayout.setupWithViewPager(viewPager);
+
+        mActivityMainBinding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (viewPager.getCurrentItem()) {
+                    case 0:
+                        Log.e(TAG, "task click");
+                        //TODO Task floating button click
+                        break;
+                    case 1:
+                        Log.e(TAG, "project click");
+                        View editTextView = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
+                        final EditText editText = (EditText) editTextView.findViewById(R.id.new_task_name);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                                .setTitle(R.string.new_plan)
+                                .setView(editTextView)
+                                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Realm realm = DatebaseHelper.getInstance(MainActivity.this).getRealm();
+                                        final String taskName = editText.getText().toString().trim();
+                                        for (Plan plan : DatebaseHelper.getInstance(MainActivity.this).findAll(Plan.class)) {
+                                            if (taskName.equals(plan.getPlanName())) {
+                                                showToast(getResources().getString(R.string.plan_exist));
+                                                return;
+                                            }
+                                        }
+                                        if (!taskName.equals("")) {
+                                            Plan plan = new Plan();
+                                            int id;
+                                            if (realm.where(Plan.class).count() == 0) {
+                                                id = 0;
+                                            } else {
+                                                RealmResults<Plan> plans = realm.where(Plan.class).findAllSorted(PLAN_ID, false);
+                                                id = plans.first().getPlanId();
+                                                id += 1;
+                                            }
+                                            plan.setPlanId(id);
+                                            plan.setPlanName(taskName);
+                                            Date date = new Date();
+                                            plan.setCreateTime(date.getTime());
+                                            DatebaseHelper.getInstance(MainActivity.this).insert(plan);
+                                        } else {
+                                            showToast(getResources().getString(R.string.plan_not_null));
+                                        }
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, null);
+                        builder.create().show();
+                        break;
+                    case 2:
+                        Log.e(TAG, "note click");
+                        //TODO Note floating button click
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -139,5 +214,9 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 }
