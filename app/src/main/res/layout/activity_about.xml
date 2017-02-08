@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.ckt.ckttodo.ui.AboutActivity">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+    <ImageView
+        android:id="@+id/iv_aboutBack"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/note_back"
+        android:onClick="onClick"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+    <TextView
+        android:text="@string/about"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:layout_width="50dp"
+        android:layout_height="30dp"/>
+</RelativeLayout>
+    <TextView
+        android:padding="8dp"
+        android:id="@+id/tv_about"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

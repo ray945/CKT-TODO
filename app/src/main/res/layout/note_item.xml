@@ -1,37 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<layout>
+    <data>
 
-    <TextView
-        android:maxEms="8"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:id="@+id/tv_noteTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="日记1"
-        android:textColor="#000"
-        android:textSize="16sp"/>
+        <variable
+            name="note"
+            type="com.ckt.ckttodo.database.Note" />
+    </data>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_margin="8dp"
-        android:background="#ccc"></LinearLayout>
+        <TextView
+            android:id="@+id/tv_noteTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:ellipsize="end"
+            android:maxEms="8"
+            android:singleLine="true"
+            android:text="@{note.noteTitle}"
+            android:textColor="#000"
+            android:textSize="16sp"/>
 
-    <TextView
-        android:id="@+id/tv_noteContent"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_margin="8dp"
-        android:ellipsize="end"
-        android:lines="3"
-        android:singleLine="false"
-        android:text="啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊                                              
-        啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊                                                          
-        啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊 
-        啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊 HHHHHHHHHHHHHHHHH"/>
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_margin="8dp"
+            android:background="#ccc"></LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_noteContent"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:ellipsize="end"
+            android:lines="3"
+            android:singleLine="false"
+            android:text="@{note.noteContent}"/>
+    </LinearLayout>
+</layout>

@@ -1,6 +1,7 @@
 package com.ckt.ckttodo.ui;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.Note;
+import com.ckt.ckttodo.databinding.ActivityNewNoteBinding;
 
 public class NewNoteActivity extends AppCompatActivity {
 
@@ -20,11 +22,12 @@ public class NewNoteActivity extends AppCompatActivity {
     private EditText et_noteContent;
     private String mNoteTag;
     private Note noteGet;
+    private ActivityNewNoteBinding mActivityNewNoteBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_note);
+        mActivityNewNoteBinding = DataBindingUtil.setContentView(this, R.layout.activity_new_note);
         init();
     }
 
@@ -53,10 +56,10 @@ public class NewNoteActivity extends AppCompatActivity {
     }
 
     private void findView() {
-        iv_noteBack = (ImageView) findViewById(R.id.iv_noteBack);
-        iv_noteSure = (ImageView) findViewById(R.id.iv_noteSure);
-        et_noteTitle = (EditText) findViewById(R.id.et_noteTitle);
-        et_noteContent = (EditText) findViewById(R.id.et_noteContent);
+        iv_noteBack = mActivityNewNoteBinding.ivNoteBack;
+        iv_noteSure = mActivityNewNoteBinding.ivNoteSure;
+        et_noteTitle = mActivityNewNoteBinding.etNoteTitle;
+        et_noteContent = mActivityNewNoteBinding.etNoteContent;
     }
 
     private class MyOnclickListener implements View.OnClickListener {

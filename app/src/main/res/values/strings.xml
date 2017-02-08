@@ -10,7 +10,7 @@
     <string name="task">task</string>
     <string name="project">project</string>
     <string name="note">note</string>
-    <string name="new_task" >新建任务</string>
+    <string name="new_task">新建任务</string>
     <string name="what_to_do">要做什么...</string>
     <string name="kinds">分类：</string>
     <string name="task_level">任务等级：</string>
@@ -45,4 +45,11 @@
     <string name="more_task">加载任务</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="about">关于</string>
+    <string name="tasks">任务</string>
+    <string name="dataCount">数据统计</string>
+    <string name="team">团队</string>
+    <string name="setting">设置</string>
+    <string name="title">标题</string>
+    <string name="content">内容</string>
 </resources>

@@ -5,23 +5,23 @@
         <item
             android:id="@+id/nav_task"
             android:icon="@mipmap/nav_task"
-            android:title="任务"/>
+            android:title="@string/tasks"/>
         <item
             android:id="@+id/nav_count"
             android:icon="@mipmap/nav_count"
-            android:title="数据统计"/>
+            android:title="@string/dataCount"/>
         <item
             android:id="@+id/nav_team"
             android:icon="@mipmap/nav_team"
-            android:title="团队"/>
+            android:title="@string/team"/>
         <item
             android:id="@+id/nav_settings"
             android:icon="@mipmap/nav_settings"
-            android:title="设置"/>
+            android:title="@string/setting"/>
         <item
             android:id="@+id/nav_about"
             android:icon="@mipmap/nav_about"
-            android:title="关于"/>
+            android:title="@string/about"/>
     </group>
 
 

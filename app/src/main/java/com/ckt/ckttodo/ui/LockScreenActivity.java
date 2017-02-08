@@ -15,7 +15,7 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-//        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        //        getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
     @Override
