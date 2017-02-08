@@ -23,16 +23,16 @@ class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
         this.context = context;
     }
 
-    TaskListAdapter(Context context){
+    TaskListAdapter(Context context) {
         this.context = context;
     }
 
-    void setTasks(RealmList<EventTask> tasks){
+    void setTasks(RealmList<EventTask> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
     }
 
-    void clear(){
+    void clear() {
         tasks.clear();
         notifyDataSetChanged();
     }

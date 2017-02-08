@@ -38,7 +38,7 @@ public class ProjectFragment extends Fragment {
         FragmentProjectBinding binding = FragmentProjectBinding.inflate(inflater);
         RecyclerView rvProjects = binding.rvProject;
 
-         RealmResults<Plan> planList = DatebaseHelper.getInstance(getContext()).findAll(Plan.class);
+        RealmResults<Plan> planList = DatebaseHelper.getInstance(getContext()).findAll(Plan.class);
         ProjectListAdapter adapter = new ProjectListAdapter(getContext(), planList);
         initRecyclerView(rvProjects, adapter, getContext());
         return binding.getRoot();

@@ -3,6 +3,7 @@ package com.ckt.ckttodo.util;
 import android.graphics.Color;
 
 import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -23,8 +24,16 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 
 public class ChartManager {
-    
 
+    /**
+     * 计划进度和实际进度展示
+     * @param mLineChart
+     * @param xValues x坐标为 周/月/季度/年 y坐标为时间
+     * @param lineName1 计划进度
+     * @param yValue1
+     * @param lineName2 实际进度
+     * @param yValue2
+     */
     public static void initDoubleLineChart(LineChart mLineChart, final ArrayList<String> xValues,
                                            String lineName1, ArrayList<Entry> yValue1,
                                            String lineName2, ArrayList<Entry> yValue2) {
@@ -87,6 +96,12 @@ public class ChartManager {
         dataSet.setDrawValues(true);
     }
 
+    /**
+     * 每周/月/季度/年 的时间使用情况
+     * @param pieChart
+     * @param yValues PieEntry中存入的是(时间，类别{生活|工作|学习..})。
+     * @param centerLabel 周/月/季度/年
+     */
     public static void initPieChart(PieChart pieChart, ArrayList<PieEntry> yValues, String centerLabel) {
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
@@ -101,7 +116,6 @@ public class ChartManager {
         pieChart.setHoleRadius(55f);
         pieChart.setTransparentCircleRadius(58f);
         pieChart.setRotationAngle(0);
-
 
         PieDataSet dataSet = new PieDataSet(yValues, null);
         dataSet.setSliceSpace(3f);
@@ -130,8 +144,9 @@ public class ChartManager {
         legend.setEnabled(false);
     }
 
-    public static void initBarChart() {
-
+    public static void initBarChart(BarChart barChart) {
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
     }
 
 }
