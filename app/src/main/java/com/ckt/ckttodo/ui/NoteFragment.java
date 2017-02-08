@@ -133,12 +133,13 @@ public class NoteFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(NoteViewHolder holder, int position) {
-            holder.setData(noteList.get(position));
+//            holder.setData(noteList.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return noteList.size();
+//            return noteList.size();
+            return 0;
         }
 
         private OnItemClickListener onItemClickListener;

@@ -59,7 +59,7 @@ public class TaskFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(TaskRecyclerViewHolder holder, int position) {
-            holder.setData(mTasks.get(position));
+//            holder.setData(mTasks.get(position));
         }
 
         @Override
