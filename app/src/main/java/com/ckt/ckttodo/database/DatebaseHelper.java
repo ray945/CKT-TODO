@@ -31,7 +31,7 @@ public class DatebaseHelper {
            Log.e(TAG,"DatebaseHelper configuration ");
            RealmConfiguration configuration = new RealmConfiguration.Builder(context)
                    .name(RealmConfiguration.DEFAULT_REALM_NAME)
-                   .schemaVersion(0)
+                   .schemaVersion(3)
                    .deleteRealmIfMigrationNeeded()
                    .build();
            Realm.migrateRealm(configuration, new RealmMigration() {
