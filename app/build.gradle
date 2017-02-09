@@ -33,6 +33,7 @@ dependencies {
     compile 'io.realm:realm-android:0.84.1'
     testCompile 'junit:junit:4.12'
     compile files('libs/Msc.jar')
+    compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile (group: 'com.tumblr', name: 'bookends', version: '1.0.0', ext: 'aar')
 }

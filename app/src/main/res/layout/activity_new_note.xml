@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
+    <data>
+
+        <variable
+            name="note"
+            type="com.ckt.ckttodo.database.Note"/>
+    </data>
+
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -9,30 +16,6 @@
         android:orientation="vertical"
         tools:context=".ui.NewNoteActivity">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:padding="5dp">
-
-            <ImageView
-                android:id="@+id/iv_noteBack"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/note_back"/>
-
-            <ImageView
-                android:id="@+id/iv_noteSure"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="5dp"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/note_sure"/>
-        </RelativeLayout>
-
         <EditText
             android:id="@+id/et_noteTitle"
             android:layout_width="match_parent"
@@ -40,6 +23,7 @@
             android:layout_margin="10dp"
             android:hint="@string/title"
             android:padding="5dp"
+            android:text=""
             android:textSize="16sp"/>
 
         <EditText
@@ -50,6 +34,7 @@
             android:background="@null"
             android:hint="@string/content"
             android:padding="5dp"
+            android:text=""
             android:textSize="15sp"/>
     </LinearLayout>
 </layout>

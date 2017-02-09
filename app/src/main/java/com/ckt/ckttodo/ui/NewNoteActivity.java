@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
@@ -14,19 +14,25 @@ import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.Note;
 import com.ckt.ckttodo.databinding.ActivityNewNoteBinding;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class NewNoteActivity extends AppCompatActivity {
 
-    private ImageView iv_noteBack;
-    private ImageView iv_noteSure;
     private EditText et_noteTitle;
     private EditText et_noteContent;
     private String mNoteTag;
-    private Note noteGet;
     private ActivityNewNoteBinding mActivityNewNoteBinding;
+    private Realm mRealm;
+    private Intent mIntent;
+    private RealmResults<Note> baseList;
+    private Note note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getResources().getString(R.string.new_note));
         mActivityNewNoteBinding = DataBindingUtil.setContentView(this, R.layout.activity_new_note);
         init();
     }
@@ -34,64 +40,87 @@ public class NewNoteActivity extends AppCompatActivity {
     private void init() {
         findView();
         initData();
-        setListener();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.new_note, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_sure:
+                mRealm = DatebaseHelper.getInstance(NewNoteActivity.this).getRealm();
+                if (et_noteContent.getText().toString() == null || et_noteTitle.getText().toString() == null) {
+                    Toast.makeText(NewNoteActivity.this, "不能为空哦!", Toast.LENGTH_SHORT).show();
+                } else if (mNoteTag.equals("1")) {
+                    updateNote();
+                } else {
+                    saveNote();
+                }
+                break;
+            case android.R.id.home:
+                finish();
+                break;
+
+
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void initData() {
-        Intent intent = getIntent();
-        mNoteTag = intent.getStringExtra("noteTag");
+        baseList = DatebaseHelper.getInstance(this).findAll(Note.class);
+        mIntent = getIntent();
+        mNoteTag = mIntent.getStringExtra("noteTag");
         if (mNoteTag.equals("1")) {
-            Bundle bundle = intent.getBundleExtra("noteGet");
-            noteGet = (Note) bundle.getSerializable("noteGet");
-            et_noteTitle.setText(noteGet.getNoteTitle());
-            et_noteContent.setText(noteGet.getNoteContent());
+            int mPosition = mIntent.getIntExtra("noteGet", 0);
+            note = baseList.get(mPosition);
+            et_noteTitle.setText(note.getNoteTitle());
+            et_noteContent.setText(note.getNoteContent());
         } else {
 
         }
     }
 
-    private void setListener() {
-        iv_noteBack.setOnClickListener(new MyOnclickListener());
-        iv_noteSure.setOnClickListener(new MyOnclickListener());
-    }
 
     private void findView() {
-        iv_noteBack = mActivityNewNoteBinding.ivNoteBack;
-        iv_noteSure = mActivityNewNoteBinding.ivNoteSure;
         et_noteTitle = mActivityNewNoteBinding.etNoteTitle;
         et_noteContent = mActivityNewNoteBinding.etNoteContent;
     }
 
-    private class MyOnclickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.iv_noteBack:
-                    finish();
-                    break;
-                case R.id.iv_noteSure:
-                    if (et_noteContent.getText().toString() == null || et_noteTitle.getText().toString() == null) {
-                        Toast.makeText(NewNoteActivity.this, "不能为空哦!", Toast.LENGTH_SHORT).show();
-                    } else if (mNoteTag.equals("1")) {
-                        updateNote();
-                    } else {
-                        saveNote();
-                    }
-                    break;
-            }
-        }
-    }
 
     private void updateNote() {
-        noteGet.setNoteContent(et_noteContent.getText().toString());
-        noteGet.setNoteTitle(et_noteTitle.getText().toString());
-        DatebaseHelper.getInstance(this).update(noteGet);
+        note.setNoteContent(et_noteContent.getText().toString().trim());
+        note.setNoteTitle(et_noteTitle.getText().toString().trim());
+        DatebaseHelper.getInstance(this).update(note);
+        mIntent.putExtra("update", "0");
+        setResult(0, mIntent);
+        Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void saveNote() {
         Note note = new Note();
-        note.setNoteContent(et_noteContent.getText().toString());
-        note.setNoteTitle(et_noteTitle.getText().toString());
+        note.setNoteContent(et_noteContent.getText().toString().trim());
+        note.setNoteTitle(et_noteTitle.getText().toString().trim());
+        int id;
+        if (mRealm.where(Note.class).count() == 0) {
+            id = 0;
+        } else {
+            RealmResults<Note> plans = mRealm.where(Note.class).findAllSorted("noteId", false);
+            id = plans.first().getNoteId();
+            id += 1;
+        }
+        RealmResults<Note> notes = mRealm.where(Note.class).findAllSorted("noteId", false);
+        note.setNoteId(id);
         DatebaseHelper.getInstance(this).insert(note);
+        mIntent.putExtra("new", "1");
+        setResult(1, mIntent);
+        Toast.makeText(this, "新建成功", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

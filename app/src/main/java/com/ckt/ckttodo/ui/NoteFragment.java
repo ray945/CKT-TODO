@@ -1,6 +1,8 @@
 package com.ckt.ckttodo.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -8,19 +10,26 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Note;
+import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.FragmentNoteBinding;
 import com.ckt.ckttodo.databinding.NoteItemBinding;
 import com.ckt.ckttodo.databinding.TaskListItemBinding;
 
+import java.util.Date;
+
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class NoteFragment extends Fragment {
@@ -72,14 +81,13 @@ public class NoteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_note, container, false);
-        rv_note = (RecyclerView) view.findViewById(R.id.rv_note);
         return init(inflater);
     }
 
     private View init(LayoutInflater inflater) {
         mFragmentNoteBinding = FragmentNoteBinding.inflate(inflater);
         rv_note = mFragmentNoteBinding.rvNote;
+        baseList = DatebaseHelper.getInstance(getContext()).findAll(Note.class);
         noteAdapter = new NoteAdapter(baseList);
         mContext = getContext();
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
@@ -95,24 +103,27 @@ public class NoteFragment extends Fragment {
     }
 
     private void initOperation() {
-        baseList = DatebaseHelper.getInstance(getContext()).findAll(Note.class);
         noteAdapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View view) {
-                Intent intent = new Intent(getContext(), NewNoteActivity.class);
+                Intent intent = new Intent(mContext, NewNoteActivity.class);
                 intent.putExtra("noteTag", "1");
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("noteGet", baseList.get(position));
-                intent.putExtra("noteGet", bundle);
-                startActivity(intent);
+                intent.putExtra("noteGet",position);
+                startActivityForResult(intent, 1);
             }
         });
         noteAdapter.setOnItemLongClickListener(new NoteAdapter.OnItemLongClickListener() {
             @Override
             public void onItemLongClick(int position, View view) {
-
+                
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        baseList = DatebaseHelper.getInstance(getContext()).findAll(Note.class);
+        noteAdapter.notifyDataSetChanged();
     }
 
     public static class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> implements View.OnClickListener, View.OnLongClickListener {
@@ -124,8 +135,7 @@ public class NoteFragment extends Fragment {
 
         @Override
         public NoteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            NoteItemBinding noteItemBinding = DataBindingUtil.inflate(LayoutInflater.
-                    from(mContext), R.layout.note_item, parent, false);
+            NoteItemBinding noteItemBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.note_item, parent, false);
             noteItemBinding.getRoot().setOnClickListener(this);
             noteItemBinding.getRoot().setOnLongClickListener(this);
             return new NoteViewHolder(noteItemBinding);
@@ -133,13 +143,13 @@ public class NoteFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(NoteViewHolder holder, int position) {
-//            holder.setData(noteList.get(position));
+            holder.itemView.setTag(position);
+            holder.setData(noteList.get(position));
         }
 
         @Override
         public int getItemCount() {
-//            return noteList.size();
-            return 0;
+            return (noteList == null) ? 0 : noteList.size();
         }
 
         private OnItemClickListener onItemClickListener;

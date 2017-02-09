@@ -2,6 +2,7 @@ package com.ckt.ckttodo.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -34,8 +35,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
 
@@ -60,8 +60,7 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.syncState();
         drawer.setDrawerListener(toggle);
 
@@ -115,46 +114,44 @@ public class MainActivity extends AppCompatActivity
                         Log.e(TAG, "project click");
                         View editTextView = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
                         final EditText editText = (EditText) editTextView.findViewById(R.id.new_task_name);
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
-                                .setTitle(R.string.new_plan)
-                                .setView(editTextView)
-                                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Realm realm = DatebaseHelper.getInstance(MainActivity.this).getRealm();
-                                        final String taskName = editText.getText().toString().trim();
-                                        for (Plan plan : DatebaseHelper.getInstance(MainActivity.this).findAll(Plan.class)) {
-                                            if (taskName.equals(plan.getPlanName())) {
-                                                showToast(getResources().getString(R.string.plan_exist));
-                                                return;
-                                            }
-                                        }
-                                        if (!taskName.equals("")) {
-                                            Plan plan = new Plan();
-                                            int id;
-                                            if (realm.where(Plan.class).count() == 0) {
-                                                id = 0;
-                                            } else {
-                                                RealmResults<Plan> plans = realm.where(Plan.class).findAllSorted(PLAN_ID, false);
-                                                id = plans.first().getPlanId();
-                                                id += 1;
-                                            }
-                                            plan.setPlanId(id);
-                                            plan.setPlanName(taskName);
-                                            Date date = new Date();
-                                            plan.setCreateTime(date.getTime());
-                                            DatebaseHelper.getInstance(MainActivity.this).insert(plan);
-                                        } else {
-                                            showToast(getResources().getString(R.string.plan_not_null));
-                                        }
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).setTitle(R.string.new_plan).setView(editTextView).setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Realm realm = DatebaseHelper.getInstance(MainActivity.this).getRealm();
+                                final String taskName = editText.getText().toString().trim();
+                                for (Plan plan : DatebaseHelper.getInstance(MainActivity.this).findAll(Plan.class)) {
+                                    if (taskName.equals(plan.getPlanName())) {
+                                        showToast(getResources().getString(R.string.plan_exist));
+                                        return;
                                     }
-                                })
-                                .setNegativeButton(R.string.cancel, null);
+                                }
+                                if (!taskName.equals("")) {
+                                    Plan plan = new Plan();
+                                    int id;
+                                    if (realm.where(Plan.class).count() == 0) {
+                                        id = 0;
+                                    } else {
+                                        RealmResults<Plan> plans = realm.where(Plan.class).findAllSorted(PLAN_ID, false);
+                                        id = plans.first().getPlanId();
+                                        id += 1;
+                                    }
+                                    plan.setPlanId(id);
+                                    plan.setPlanName(taskName);
+                                    Date date = new Date();
+                                    plan.setCreateTime(date.getTime());
+                                    DatebaseHelper.getInstance(MainActivity.this).insert(plan);
+                                } else {
+                                    showToast(getResources().getString(R.string.plan_not_null));
+                                }
+                            }
+                        }).setNegativeButton(R.string.cancel, null);
                         builder.create().show();
                         break;
                     case 2:
                         Log.e(TAG, "note click");
-                        //TODO Note floating button click
+                        Intent intent = new Intent(MainActivity.this, NewNoteActivity.class);
+                        intent.putExtra("noteTag", "2");
+                        startActivityForResult(intent, 0);
                         break;
                 }
             }
