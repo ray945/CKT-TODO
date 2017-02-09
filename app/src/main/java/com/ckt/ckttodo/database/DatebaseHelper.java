@@ -1,16 +1,20 @@
 package com.ckt.ckttodo.database;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
+import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Realm.Transaction;
+import io.realm.exceptions.RealmMigrationNeededException;
 
 public class DatebaseHelper {
 
@@ -23,10 +27,35 @@ public class DatebaseHelper {
     private Realm mRealm;
 
     private DatebaseHelper(Context context) {
-        mRealm = Realm.getInstance(context);
+       try {
+           Log.e(TAG,"DatebaseHelper configuration ");
+           RealmConfiguration configuration = new RealmConfiguration.Builder(context)
+                   .name(RealmConfiguration.DEFAULT_REALM_NAME)
+                   .schemaVersion(0)
+                   .deleteRealmIfMigrationNeeded()
+                   .build();
+           Realm.migrateRealm(configuration, new RealmMigration() {
+               @Override
+               public long execute(Realm realm, long version) {
+                   // version 0
+                   if (0 == version) {
+                       Log.e(TAG,"migrateRealm version = "+version);
+                       // do some chang
+                       version++;
+                   }
+                   return version;
+               }
+           });
+            mRealm = Realm.getInstance(configuration);
+        } catch (RealmMigrationNeededException e) {
+           Log.e(TAG,"RealmMigrationNeededException e = "+e.getMessage());
+//            mRealm = null;
+//
+//            mRealm = Realm.getInstance(context);
+        }
     }
 
-    public static  DatebaseHelper getInstance(Context context) {
+    public static DatebaseHelper getInstance(Context context) {
         synchronized (lock) {
             if (mInstance == null) {
                 mInstance = new DatebaseHelper(context);
@@ -43,6 +72,7 @@ public class DatebaseHelper {
         checkNotNullObject(mRealm);
         mRealm.executeTransaction(transaction);
     }
+
     public RealmAsyncTask executeTransaction(final Transaction transaction, final Transaction.Callback callback) {
         checkNotNullObject(mRealm);
         return mRealm.executeTransaction(transaction, callback);
@@ -63,12 +93,13 @@ public class DatebaseHelper {
             T result = mRealm.copyToRealm(t);
             mRealm.commitTransaction();
             return result;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             mRealm.cancelTransaction();
             return null;
         }
     }
+
     public <T extends RealmObject> List<T> insert(Iterable<T> objects) {
         try {
             if (objects == null) {
@@ -78,7 +109,7 @@ public class DatebaseHelper {
             List<T> reuslts = mRealm.copyToRealm(objects);
             mRealm.commitTransaction();
             return reuslts;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             mRealm.cancelTransaction();
             return new ArrayList<T>();
@@ -92,12 +123,13 @@ public class DatebaseHelper {
             T result = mRealm.copyToRealmOrUpdate(t);
             mRealm.commitTransaction();
             return result;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             mRealm.cancelTransaction();
             return null;
         }
     }
+
     public <T extends RealmObject> List<T> update(Iterable<T> objects) {
         try {
             if (objects == null) {
@@ -107,7 +139,7 @@ public class DatebaseHelper {
             List<T> reuslts = mRealm.copyToRealmOrUpdate(objects);
             mRealm.commitTransaction();
             return reuslts;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             mRealm.cancelTransaction();
             return new ArrayList<T>();
@@ -121,7 +153,7 @@ public class DatebaseHelper {
             t.removeFromRealm();
             mRealm.commitTransaction();
             return true;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             mRealm.cancelTransaction();
             return false;
@@ -135,14 +167,14 @@ public class DatebaseHelper {
             results.clear();
             mRealm.commitTransaction();
             return true;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             mRealm.cancelTransaction();
             return false;
         }
     }
 
-    public <T extends RealmObject> T deleteIndex(RealmResults<T> results ,int index) {
+    public <T extends RealmObject> T deleteIndex(RealmResults<T> results, int index) {
         try {
             checkNotNullObject(results);
             mRealm.beginTransaction();
@@ -153,7 +185,7 @@ public class DatebaseHelper {
             T result = results.remove(index);
             mRealm.commitTransaction();
             return result;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             mRealm.cancelTransaction();
             return null;
@@ -167,7 +199,7 @@ public class DatebaseHelper {
             results.removeLast();
             mRealm.commitTransaction();
             return true;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             mRealm.cancelTransaction();
             return false;
