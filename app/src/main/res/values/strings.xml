@@ -14,9 +14,9 @@
     <string name="what_to_do">要做什么...</string>
     <string name="kinds">分类：</string>
     <string name="task_level">任务等级：</string>
-    <string name="schedule_time">计划时间：</string>
+    <string name="schedule_time">计划时间(小时)：</string>
     <string name="schedule_date">计划日期：</string>
-    <string name="spend_time">计划用时：</string>
+    <string name="spend_time">计划用时：</string>fab
     <string name="pre_remind">提醒：</string>
     <string name="kind_of_plan">计划：</string>
     <string name="sure">确定</string>
@@ -24,16 +24,30 @@
     <string name="plan">计划</string>
     <string name="plan_time">计划2小时</string>
     <string name="take_time">已用时1.5小时</string>
+    <string name="no">取消</string>
+    <string name="stop_count_down_time">停止计时</string>
+    <string name="tomato_time">番茄时钟</string>
+    <string name="date">日期</string>
+    <string name="time">时间</string>
+    <string name="start_num">0</string>
+    <string name="task_start_remind_default">提前10分钟提醒</string>
     <array name="kind_list">
-        <item>生活</item>
         <item>工作</item>
-        <item>娱乐</item>
+        <item>学习</item>
+        <item>生活</item>
+        <item>休息</item>
     </array>
     <array name="task_level">
         <item>很重要-很紧急</item>
         <item>很重要-不紧急</item>
         <item>不重要-很紧急</item>
         <item>不重要-不紧急</item>
+    </array>
+    <array name="task_remind">
+        <item>提前10分钟提醒</item>
+        <item>提前20分钟提醒</item>
+        <item>提前30分钟提醒</item>
+        <item>提前1小时提醒</item>
     </array>
 
     <string name="new_plan">新建计划</string>

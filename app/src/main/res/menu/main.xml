@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ckt.ckttodo.ui.MainActivity">
+    <!--<item-->
+    <!--android:id="@+id/action_settings"-->
+    <!--android:orderInCategory="100"-->
+    <!--android:title="@string/action_settings"-->
+    <!--app:showAsAction="never" />-->
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/menu_sure"
+        android:icon="@drawable/sure"
+        android:title="@string/sure"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_no"
+        android:icon="@drawable/_false"
+        android:title="@string/no"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_research"
+        android:icon="@drawable/research"
+        android:title="@string/research"
+        app:showAsAction="always" />
 </menu>

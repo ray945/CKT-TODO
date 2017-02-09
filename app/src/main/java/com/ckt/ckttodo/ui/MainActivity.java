@@ -1,5 +1,6 @@
 package com.ckt.ckttodo.ui;
 
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,11 +36,15 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
-
     private ActivityMainBinding mActivityMainBinding;
+    private MenuItem mMenuItemSure;
+    private MenuItem mMenuItemFalse;
+    private TaskFragment mTaskFragment;
     private List<Fragment> mFragmentList;
 
     @Override
@@ -58,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.syncState();
@@ -68,13 +72,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         final ViewPager viewPager = mActivityMainBinding.appBarMain.contentMain.viewPager;
+
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 Fragment fragment = null;
                 switch (position) {
                     case 0:
-                        fragment = new TaskFragment();
+                        mTaskFragment = new TaskFragment();
+                        fragment = mTaskFragment;
                         break;
                     case 1:
                         fragment = new ProjectFragment();
@@ -176,16 +182,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        mMenuItemSure = menu.findItem(R.id.menu_sure);
+        mMenuItemFalse = menu.findItem(R.id.menu_no);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_research:
+                startActivity(new Intent(this, NewTaskActivity.class));
+                break;
+            case R.id.menu_sure:
+                //删除选中项并结束事件
+                mMenuItemFalse.setVisible(false);
+                mMenuItemSure.setVisible(false);
+                mTaskFragment.finishDeleteAction(true);
+                break;
+            case R.id.menu_no:
+                //不删除选中项结束事件
+                mMenuItemFalse.setVisible(false);
+                mMenuItemSure.setVisible(false);
+                mTaskFragment.finishDeleteAction(false);
+                break;
+        }
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -216,4 +247,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void showToast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void setShowMenuItem(boolean isShow) {
+        mMenuItemFalse.setVisible(isShow);
+        mMenuItemSure.setVisible(isShow);
+    }
+
+
 }
