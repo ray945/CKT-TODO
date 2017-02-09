@@ -217,7 +217,7 @@ public class TaskFragment extends Fragment {
     }
 
 
-    interface ShowMainMenuItem {
+    public interface ShowMainMenuItem {
         void setShowMenuItem(boolean isShow);
     }
 

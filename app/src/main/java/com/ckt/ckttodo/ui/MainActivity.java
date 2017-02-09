@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_research:
+                startActivity(new Intent(this, NewTaskActivity.class));
                 break;
             case R.id.menu_sure:
                 //删除选中项并结束事件
