@@ -29,7 +29,7 @@
                 android:id="@+id/text_task_list_plan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{task.planId}"
+                android:text="@{task.taskTitle}"
                />
 
 
@@ -56,6 +56,16 @@
 
         </RelativeLayout>
 
+
+        <CheckBox
+            android:id="@+id/check_task_select"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+             />
         <ImageButton
             android:id="@+id/image_task_status"
             android:layout_width="wrap_content"
@@ -63,6 +73,6 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:src="@drawable/start" />
+            android:src="@drawable/task_start_stop_selection" />
     </RelativeLayout>
 </layout>

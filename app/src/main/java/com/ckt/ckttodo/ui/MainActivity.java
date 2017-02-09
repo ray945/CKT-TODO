@@ -1,11 +1,9 @@
 package com.ckt.ckttodo.ui;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
@@ -26,9 +23,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem {
 
     private ActivityMainBinding mActivityMainBinding;
+    private MenuItem mMenuItemSure;
+    private MenuItem mMenuItemFalse;
+    private TaskFragment mTaskFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -56,6 +55,9 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = mActivityMainBinding.navView;
         navigationView.setNavigationItemSelectedListener(this);
 
+        //TODO here
+        mTaskFragment = new TaskFragment();
+
         ViewPager viewPager = mActivityMainBinding.appBarMain.contentMain.viewPager;
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity
                 Fragment fragment = null;
                 switch (position) {
                     case 0:
-                        fragment = new TaskFragment();
+                        fragment = mTaskFragment;
                         break;
                     case 1:
                         fragment = new ProjectFragment();
@@ -109,16 +111,40 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        mMenuItemSure = menu.findItem(R.id.menu_sure);
+        mMenuItemFalse = menu.findItem(R.id.menu_no);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_research:
+                break;
+            case R.id.menu_sure:
+                //删除选中项并结束事件
+                mMenuItemFalse.setVisible(false);
+                mMenuItemSure.setVisible(false);
+                mTaskFragment.finishDeleteAction(true);
+                break;
+            case R.id.menu_no:
+                //不删除选中项结束事件
+                mMenuItemFalse.setVisible(false);
+                mMenuItemSure.setVisible(false);
+                mTaskFragment.finishDeleteAction(false);
+                break;
+        }
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -145,4 +171,13 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    @Override
+    public void setShowMenuItem(boolean isShow) {
+        mMenuItemFalse.setVisible(isShow);
+        mMenuItemSure.setVisible(isShow);
+    }
+
+
 }
