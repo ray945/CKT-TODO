@@ -55,6 +55,11 @@
     <string name="cancel">取消</string>
     <string name="plan_not_null">任务不能为空，请重新输入。</string>
     <string name="plan_exist">该任务已存在</string>
+    <string name="init_plan_name">初始化计划</string>
+    <string name="init_task_title">任务标题</string>
+    <string name="init_task_content">任务内容</string>
+    <string name="init_note_title">我是初始化便签标题</string>
+    <string name="init_note_content">我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容。</string>
     <string name="accomplishProgress">进度</string>
     <string name="more_task">加载任务</string>
     <!-- TODO: Remove or change this placeholder text -->

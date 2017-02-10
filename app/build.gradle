@@ -35,5 +35,5 @@ dependencies {
     compile files('libs/Msc.jar')
     compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
-    compile (group: 'com.tumblr', name: 'bookends', version: '1.0.0', ext: 'aar')
+    compile 'com.songhang:smart-headerfooter-recyclerview:1.0.1'
 }
