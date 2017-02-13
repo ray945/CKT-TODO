@@ -1,11 +1,14 @@
 package com.ckt.ckttodo.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -48,12 +51,20 @@ public class NewNoteActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ll_space:
+                
+                break;
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_sure:
                 mRealm = DatebaseHelper.getInstance(NewNoteActivity.this).getRealm();
-                if (et_noteContent.getText().toString() == null || et_noteTitle.getText().toString() == null) {
+                if (et_noteContent.getText().toString().trim().equals("") || et_noteTitle.getText().toString().trim().equals("")) {
                     Toast.makeText(NewNoteActivity.this, "不能为空哦!", Toast.LENGTH_SHORT).show();
                 } else if (mNoteTag.equals("1")) {
                     updateNote();
@@ -77,6 +88,7 @@ public class NewNoteActivity extends AppCompatActivity {
         mIntent = getIntent();
         mNoteTag = mIntent.getStringExtra("noteTag");
         if (mNoteTag.equals("1")) {
+            getSupportActionBar().setTitle(getResources().getString(R.string.alter_note));
             int mPosition = mIntent.getIntExtra("noteGet", 0);
             note = baseList.get(mPosition);
             et_noteTitle.setText(note.getNoteTitle());
@@ -84,6 +96,17 @@ public class NewNoteActivity extends AppCompatActivity {
         } else {
 
         }
+        mActivityNewNoteBinding.llSpace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                et_noteContent.setFocusable(true);
+                et_noteContent.setFocusableInTouchMode(true);
+                et_noteContent.requestFocus();
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.showSoftInput(et_noteContent,0);
+            }
+        });
+        
     }
 
 
@@ -94,9 +117,14 @@ public class NewNoteActivity extends AppCompatActivity {
 
 
     private void updateNote() {
-        note.setNoteContent(et_noteContent.getText().toString().trim());
-        note.setNoteTitle(et_noteTitle.getText().toString().trim());
-        DatebaseHelper.getInstance(this).update(note);
+        DatebaseHelper.getInstance(this).getRealm().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                note.setNoteContent(et_noteContent.getText().toString().trim());
+                note.setNoteTitle(et_noteTitle.getText().toString().trim());
+                realm.copyToRealmOrUpdate(note);
+            }
+        });
         mIntent.putExtra("update", "0");
         setResult(0, mIntent);
         Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();

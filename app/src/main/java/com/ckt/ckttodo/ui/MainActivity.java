@@ -46,10 +46,11 @@ public class MainActivity extends AppCompatActivity
     private MenuItem mMenuItemFalse;
     private TaskFragment mTaskFragment;
     private List<Fragment> mFragmentList;
-
+    private ScreenOffBroadcast mScreenOffBroadcast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerScreenOffBroadcast();
         mFragmentList = new ArrayList<>();
         initUI();
     }
@@ -180,7 +181,18 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+    private void registerScreenOffBroadcast( ) {
+        if( mScreenOffBroadcast == null ) {
+            mScreenOffBroadcast = new ScreenOffBroadcast( this );
+        }
+        mScreenOffBroadcast.registerBroadcast( );
+    }
 
+    private void unRegisterScreenOffBroadcast( ) {
+        if( mScreenOffBroadcast != null ) {
+            mScreenOffBroadcast.unregisterBroadcast( );
+        }
+    }
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
@@ -254,5 +266,9 @@ public class MainActivity extends AppCompatActivity
         mMenuItemSure.setVisible(isShow);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unRegisterScreenOffBroadcast();
+    }
 }

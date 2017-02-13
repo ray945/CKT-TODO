@@ -168,7 +168,7 @@ public class SwipeUpLayout extends FrameLayout {
             isSilding = true;
         }
 
-        if (moveX - downY <= 0 && isSilding && downX < viewWidth / 2) {
+        if (moveX - downY <= 0 && isSilding && downX < viewWidth / 2 && deltaX<0) {
             mContentView.scrollBy(deltaX, 0);
         }
     }

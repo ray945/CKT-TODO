@@ -1,7 +1,14 @@
 package com.ckt.ckttodo.ui;
 
+import android.app.KeyguardManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -10,17 +17,26 @@ import com.ckt.ckttodo.R;
 public class LockScreenActivity extends SwipeUpBaseActivity {
 
     private HomeKeyBroadcast mHomeKeyBroadcast;
+    private SelfFinishBroadCast mSelfFinishBroadCast;
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        //        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(0);
+        }
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerSelfFinishBroadCast();
         setContentView(R.layout.activity_screen);
         unLock();
     }
@@ -67,4 +83,68 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
         unRegisterHomeKeyBroadcast();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unRegisterSelfFinishBroadCast();
+    }
+
+    public class SelfFinishBroadCast {
+
+        private final KeyguardManager km;
+        private Context context;
+        private boolean isRegister = false;
+        private BroadcastReceiver mReceiver = new BroadcastReceiver( ) {
+            @Override
+            public void onReceive( Context context, Intent intent ) {
+                receiveBroadcast( intent );
+            }
+        };
+
+        public SelfFinishBroadCast( Context context ) {
+            this.context = context;
+            km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+        }
+
+        public void registerBroadcast( ) {
+            if( null != context && null != mReceiver && !isRegister ) {
+                IntentFilter intentFilter = new IntentFilter( );
+                intentFilter.addAction( Intent.ACTION_USER_PRESENT );
+                intentFilter.setPriority( IntentFilter.SYSTEM_HIGH_PRIORITY );
+                context.registerReceiver( mReceiver, intentFilter );
+                isRegister = true;
+            }
+        }
+
+        public void unregisterBroadcast( ) {
+            if( null != context && null != mReceiver && isRegister ) {
+                context.unregisterReceiver( mReceiver );
+                isRegister = false;
+            }
+        }
+
+        private void receiveBroadcast( Intent intent ) {
+            String action = intent.getAction( );
+            if(action.equals(Intent.ACTION_USER_PRESENT)){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    if(km.isKeyguardSecure()){
+                       LockScreenActivity.this.finish();
+                    }
+                }
+            }
+        }
+
+    }
+    private void registerSelfFinishBroadCast( ) {
+        if( mSelfFinishBroadCast == null ) {
+            mSelfFinishBroadCast = new SelfFinishBroadCast( this );
+        }
+        mSelfFinishBroadCast.registerBroadcast( );
+    }
+
+    private void unRegisterSelfFinishBroadCast( ) {
+        if( mSelfFinishBroadCast != null ) {
+            mSelfFinishBroadCast.unregisterBroadcast( );
+        }
+    }
 }
