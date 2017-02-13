@@ -36,6 +36,7 @@ public class NewNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.new_note));
+        getSupportActionBar().setElevation(0);
         mActivityNewNoteBinding = DataBindingUtil.setContentView(this, R.layout.activity_new_note);
         init();
     }
@@ -49,14 +50,6 @@ public class NewNoteActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.new_note, menu);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_space:
-                
-                break;
-        }
     }
 
     @Override
@@ -96,17 +89,6 @@ public class NewNoteActivity extends AppCompatActivity {
         } else {
 
         }
-        mActivityNewNoteBinding.llSpace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                et_noteContent.setFocusable(true);
-                et_noteContent.setFocusableInTouchMode(true);
-                et_noteContent.requestFocus();
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.showSoftInput(et_noteContent,0);
-            }
-        });
-        
     }
 
 

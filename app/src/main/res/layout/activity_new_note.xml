@@ -14,77 +14,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFE7E7E8"
-        android:padding="8dp"
+        android:padding="5dp"
         tools:context=".ui.NewNoteActivity">
 
-        <RelativeLayout
+        <LinearLayout
             android:background="#fff"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_margin="10dp"
-                android:id="@+id/ll_title"
+            <EditText
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical|start"
+                android:id="@+id/et_noteTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:gravity="center"
-                    android:text="@string/title"
-                    android:textSize="16sp"/>
-
-                <EditText
-                    android:singleLine="true"
-                    android:gravity="center_vertical"
-                    android:id="@+id/et_noteTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="@null"
-                    android:padding="5dp"
-                    android:textSize="14sp"/>
-            </LinearLayout>
+                android:background="@null"
+                android:padding="5dp"
+                android:textSize="16sp"
+                android:textColorHint="#848484"
+                android:hint="@string/title"
+                android:maxLines="1" />
 
             <LinearLayout
                 android:id="@+id/ll_line"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_below="@+id/ll_title"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:background="#ccc"
-                android:orientation="vertical"></LinearLayout>
+                android:orientation="vertical" />
 
-            <LinearLayout
-                android:clickable="true"
-                android:background="#fff"
-                android:id="@+id/ll_space"
-                android:layout_margin="10dp"
+            <EditText
+                android:id="@+id/et_noteContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/ll_line"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/content"/>
-
-                <EditText
-                    android:id="@+id/et_noteContent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@null"
-                    android:padding="10dp"
-                    android:textSize="13sp"/>
-            </LinearLayout>
-        </RelativeLayout>
+                android:gravity="start"
+                android:textSize="15sp"
+                android:textColorHint="#848484"
+                android:hint="@string/content"
+                android:lineSpacingMultiplier="1.5"/>
+        </LinearLayout>
     </LinearLayout>
 </layout>

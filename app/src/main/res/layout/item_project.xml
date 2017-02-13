@@ -14,8 +14,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@color/color_d3d3d3"
+        android:layout_margin="@dimen/card_margin"
+        android:background="@color/background_grey"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -73,7 +73,7 @@
             android:layout_width="400dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:background="@color/color_d3d3d3"
+            android:background="@color/background_grey"
             android:contentDescription="@string/new_task"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_add_black_48dp" />
