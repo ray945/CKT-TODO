@@ -10,6 +10,8 @@ import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.databinding.ItemProjectTasksBinding;
 
+import java.text.SimpleDateFormat;
+
 import io.realm.RealmList;
 
 
@@ -47,6 +49,8 @@ class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(TaskListAdapter.ViewHolder holder, int position) {
         EventTask task = tasks.get(position);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日");
+        holder.binding.tvTaskTime.setText(dateFormat.format(task.getTaskStartTime()));
         holder.bind(task);
     }
 
