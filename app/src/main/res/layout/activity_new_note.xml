@@ -13,28 +13,48 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:background="#FFE7E7E8"
+        android:padding="5dp"
         tools:context=".ui.NewNoteActivity">
 
-        <EditText
-            android:id="@+id/et_noteTitle"
+        <LinearLayout
+            android:background="#fff"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="@string/title"
-            android:padding="5dp"
-            android:text=""
-            android:textSize="16sp"/>
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/et_noteContent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@null"
-            android:hint="@string/content"
-            android:padding="5dp"
-            android:text=""
-            android:textSize="15sp"/>
+            <EditText
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical|start"
+                android:id="@+id/et_noteTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:padding="5dp"
+                android:textSize="16sp"
+                android:textColorHint="#848484"
+                android:hint="@string/title"
+                android:maxLines="1" />
+
+            <LinearLayout
+                android:id="@+id/ll_line"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#ccc"
+                android:orientation="vertical" />
+
+            <EditText
+                android:id="@+id/et_noteContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="start"
+                android:textSize="15sp"
+                android:textColorHint="#848484"
+                android:hint="@string/content"
+                android:lineSpacingMultiplier="1.5"/>
+        </LinearLayout>
     </LinearLayout>
 </layout>

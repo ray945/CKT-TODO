@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
@@ -212,5 +213,10 @@ public class DatebaseHelper {
         } else if (mRealm == null) {
             throw new IllegalArgumentException("Realm object cannot be null.");
         }
+    }
+
+    //Get the realm PrimaryKey id by UUID
+    public static String getPrimaryKeyId() {
+        return UUID.randomUUID().toString();
     }
 }

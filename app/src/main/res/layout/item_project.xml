@@ -14,8 +14,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@android:color/darker_gray"
+        android:layout_margin="@dimen/card_margin"
+        android:background="@color/background_grey"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -27,9 +27,10 @@
                 android:id="@+id/tv_plan_name"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:padding="5dp"
                 android:text="@{plan.planName}"
+                android:textColor="@color/textColor"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -39,7 +40,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignBaseline="@+id/tv_plan_name"
                 android:layout_alignParentEnd="true"
-                android:gravity="center"
+                android:gravity="center_vertical"
+                android:textColor="@color/textColor"
                 android:paddingRight="15dp"
                 android:text="@{plan.accomplishProgress}" />
 
@@ -49,8 +51,9 @@
                 android:layout_alignBaseline="@+id/tv_plan_name"
                 android:layout_alignBottom="@+id/tv_plan_name"
                 android:layout_toStartOf="@+id/tv_plan_progress"
-                android:gravity="center"
-                android:paddingRight="8dp"
+                android:gravity="center_vertical"
+                android:paddingEnd="8dp"
+                android:textColor="@color/textColor"
                 android:text="@string/accomplishProgress" />
 
 
@@ -67,10 +70,10 @@
 
         <ImageButton
             android:id="@+id/btn_addTask"
-            android:layout_width="100dp"
+            android:layout_width="400dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:background="@android:color/darker_gray"
+            android:background="@color/background_grey"
             android:contentDescription="@string/new_task"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_add_black_48dp" />

@@ -71,6 +71,16 @@ public class EventTask extends RealmObject {
     //任务所属计划
     private int planId;
 
+    private Plan plan;
+
+    public Plan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
+    }
+
     public String getTaskId() {
         return taskId;
     }

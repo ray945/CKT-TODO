@@ -4,6 +4,7 @@ package com.ckt.ckttodo.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -25,15 +26,20 @@ import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.EventTask;
+import com.ckt.ckttodo.database.Note;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
+import com.ckt.ckttodo.util.MyApplication;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 
@@ -46,10 +52,11 @@ public class MainActivity extends AppCompatActivity
     private MenuItem mMenuItemFalse;
     private TaskFragment mTaskFragment;
     private List<Fragment> mFragmentList;
-
+    private ScreenOffBroadcast mScreenOffBroadcast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerScreenOffBroadcast();
         mFragmentList = new ArrayList<>();
         initUI();
     }
@@ -164,6 +171,10 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+
+
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
@@ -180,7 +191,18 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+    private void registerScreenOffBroadcast( ) {
+        if( mScreenOffBroadcast == null ) {
+            mScreenOffBroadcast = new ScreenOffBroadcast( this );
+        }
+        mScreenOffBroadcast.registerBroadcast( );
+    }
 
+    private void unRegisterScreenOffBroadcast( ) {
+        if( mScreenOffBroadcast != null ) {
+            mScreenOffBroadcast.unregisterBroadcast( );
+        }
+    }
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
@@ -230,7 +252,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_task) {
             // Handle the camera action
         } else if (id == R.id.nav_count) {
-
+            Intent intent = new Intent(MainActivity.this, ChartActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_team) {
 
         } else if (id == R.id.nav_settings) {
@@ -254,5 +277,9 @@ public class MainActivity extends AppCompatActivity
         mMenuItemSure.setVisible(isShow);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unRegisterScreenOffBroadcast();
+    }
 }
