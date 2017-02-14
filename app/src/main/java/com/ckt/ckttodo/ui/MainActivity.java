@@ -9,14 +9,18 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
+import android.transition.Visibility;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,6 +74,7 @@ public class MainActivity extends AppCompatActivity
         registerScreenOffBroadcast();
         mFragmentList = new ArrayList<>();
         initUI();
+        setupWindowAnimations();
     }
 
     private void initUI() {
@@ -175,14 +180,30 @@ public class MainActivity extends AppCompatActivity
                         Log.e(TAG, "note click");
                         Intent intent = new Intent(MainActivity.this, NewNoteActivity.class);
                         intent.putExtra("noteTag", "2");
-                        startActivityForResult(intent, 0);
+                        transitionTo(intent);
                         break;
                 }
             }
         });
     }
 
+    @SuppressWarnings("unchecked") void transitionTo(Intent i) {
+        final Pair<View, String>[] pairs = TransitionHelper.createSafeTransitionParticipants(this, true);
+        ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(this, pairs);
+        startActivity(i, transitionActivityOptions.toBundle());
+    }
 
+    private void setupWindowAnimations() {
+        Visibility enterTransition = buildEnterTransition();
+        getWindow().setEnterTransition(enterTransition);
+    }
+
+    private Visibility buildEnterTransition() {
+        Fade enterTransition = new Fade();
+        enterTransition.setDuration(getResources().getInteger(R.integer.anim_duration_long));
+        // This view will not be affected by enter transition animation
+        return enterTransition;
+    }
 
 
 
@@ -264,7 +285,7 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_count) {
             Intent intent = new Intent(MainActivity.this, ChartActivity.class);
-            startActivity(intent);
+            transitionTo(intent);
         } else if (id == R.id.nav_team) {
 
         } else if (id == R.id.nav_settings) {
