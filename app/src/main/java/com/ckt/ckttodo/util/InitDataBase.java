@@ -81,7 +81,7 @@ public class InitDataBase {
             }
         }
         Note note = new Note();
-        note.setNoteId(0);
+        note.setNoteId(UUID.randomUUID().toString());
         note.setNoteTitle(context.getResources().getString(R.string.init_note_title));
         note.setNoteContent(context.getResources().getString(R.string.init_note_content));
         note.setNoteCreateTime(time);

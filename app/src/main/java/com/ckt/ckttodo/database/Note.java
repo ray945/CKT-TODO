@@ -9,7 +9,7 @@ import io.realm.annotations.Required;
 public class Note extends RealmObject implements Serializable {
     //便签id
     @PrimaryKey
-    private int noteId;
+    private String noteId;
     //便签标题
     @Required
     private String noteTitle;
@@ -23,11 +23,11 @@ public class Note extends RealmObject implements Serializable {
     //便签创建人
     private String userId;
 
-    public int getNoteId() {
+    public String getNoteId() {
         return noteId;
     }
 
-    public void setNoteId(int noteId) {
+    public void setNoteId(String noteId) {
         this.noteId = noteId;
     }
 

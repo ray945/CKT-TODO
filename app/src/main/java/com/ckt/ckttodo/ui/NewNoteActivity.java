@@ -1,14 +1,11 @@
 package com.ckt.ckttodo.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -16,6 +13,8 @@ import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.Note;
 import com.ckt.ckttodo.databinding.ActivityNewNoteBinding;
+
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -117,16 +116,7 @@ public class NewNoteActivity extends AppCompatActivity {
         Note note = new Note();
         note.setNoteContent(et_noteContent.getText().toString().trim());
         note.setNoteTitle(et_noteTitle.getText().toString().trim());
-        int id;
-        if (mRealm.where(Note.class).count() == 0) {
-            id = 0;
-        } else {
-            RealmResults<Note> plans = mRealm.where(Note.class).findAllSorted("noteId", false);
-            id = plans.first().getNoteId();
-            id += 1;
-        }
-        RealmResults<Note> notes = mRealm.where(Note.class).findAllSorted("noteId", false);
-        note.setNoteId(id);
+        note.setNoteId(UUID.randomUUID().toString());
         DatebaseHelper.getInstance(this).insert(note);
         mIntent.putExtra("new", "1");
         setResult(1, mIntent);
