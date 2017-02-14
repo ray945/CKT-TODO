@@ -63,11 +63,11 @@ public class EventTask extends RealmObject {
     //任务开始时间
     private long taskStartTime;
     //任务预计花费时间
-    private long taskPredictTime;
+    private float taskPredictTime;
     //任务提醒时间
     private long taskRemindTime;
     //任务实际花费时间
-    private long taskRealSpendTime;
+    private float taskRealSpendTime;
     //任务所属计划
     private int planId;
 
@@ -153,11 +153,11 @@ public class EventTask extends RealmObject {
         this.taskStartTime = taskStartTime;
     }
 
-    public long getTaskPredictTime() {
+    public float getTaskPredictTime() {
         return taskPredictTime;
     }
 
-    public void setTaskPredictTime(long taskPredictTime) {
+    public void setTaskPredictTime(float taskPredictTime) {
         this.taskPredictTime = taskPredictTime;
     }
 
@@ -169,11 +169,11 @@ public class EventTask extends RealmObject {
         this.taskRemindTime = taskRemindTime;
     }
 
-    public long getTaskRealSpendTime() {
+    public float getTaskRealSpendTime() {
         return taskRealSpendTime;
     }
 
-    public void setTaskRealSpendTime(long taskRealSpendTime) {
+    public void setTaskRealSpendTime(float taskRealSpendTime) {
         this.taskRealSpendTime = taskRealSpendTime;
     }
 
