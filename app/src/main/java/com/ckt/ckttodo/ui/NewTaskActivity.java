@@ -239,7 +239,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             mHelper.getRealm().commitTransaction();
             Toast.makeText(this, "创建成功！", Toast.LENGTH_SHORT).show();
             finish();
-//            mHelper.update(plan);
         }
 
         mHelper.insert(task);

@@ -61,6 +61,20 @@ public class TaskFragment extends Fragment {
         return init(inflater);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private View init(LayoutInflater inflater) {
         mHelper = DatebaseHelper.getInstance(getContext());
         mTasks = mHelper.findAll(EventTask.class);
@@ -232,11 +246,16 @@ public class TaskFragment extends Fragment {
     public void finishDeleteAction(boolean isDelete) {
         isShowCheckBox = false;
         if (isDelete) {
+            List<EventTask> tasks = new ArrayList<>();
             EventTask task;
             for (int position : mItemsSelectStatus.keySet()) {
                 if (mItemsSelectStatus.get(position)) {
-                    mHelper.delete(mTasks.get(position));
+//                    mHelper.delete(mTasks.get(position));
+                    tasks.add(mTasks.get(position));
                 }
+            }
+            for(EventTask task1:tasks){
+                mHelper.delete(task1);
             }
             mAdapter.customDeleteNotifyDataSetChanged();
         }
