@@ -18,12 +18,15 @@ import android.widget.TextView;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
+import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.FragmentTaskBinding;
 import com.ckt.ckttodo.databinding.TaskListItemBinding;
 import com.ckt.ckttodo.widgt.TaskDividerItemDecoration;
 import com.ckt.ckttodo.widgt.TimeWatchDialog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.realm.RealmResults;
@@ -37,7 +40,7 @@ public class TaskFragment extends Fragment {
     private static boolean isShowCheckBox = false;
     private Map<Integer, Boolean> mItemsSelectStatus = new HashMap<>();
     private ShowMainMenuItem mShowMenuItem;
-
+    private DatebaseHelper mHelper;
 
     @Override
     public void onAttach(Context context) {
@@ -59,7 +62,8 @@ public class TaskFragment extends Fragment {
     }
 
     private View init(LayoutInflater inflater) {
-        mTasks = DatebaseHelper.getInstance(getContext()).findAll(EventTask.class);
+        mHelper = DatebaseHelper.getInstance(getContext());
+        mTasks = mHelper.findAll(EventTask.class);
         mFragmentTaskBinding = FragmentTaskBinding.inflate(inflater);
         mRecyclerView = mFragmentTaskBinding.recyclerTaskList;
         mAdapter = new TaskRecyclerViewAdapter();
@@ -68,6 +72,11 @@ public class TaskFragment extends Fragment {
                 TaskDividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setAdapter(mAdapter);
         return mFragmentTaskBinding.getRoot();
+    }
+
+    public void notifyData() {
+        mTasks = mHelper.findAll(EventTask.class);
+        mAdapter.notifyDataSetChanged();
     }
 
 
@@ -83,10 +92,19 @@ public class TaskFragment extends Fragment {
         }
 
         /**
-         * 每次数据改动时都需要清空存储在map中的数据，在重绘调用onBindViewHolder时初始化map数据
+         * 重绘RecyclerView显示复选框
          */
         public void customNotifyDataSetChanged() {
             mItemsSelectStatus.clear();
+            notifyDataSetChanged();
+        }
+
+        /**
+         * 每次数据改动时都需要清空存储在map中的数据，在重绘调用onBindViewHolder时初始化map数据
+         */
+        public void customDeleteNotifyDataSetChanged() {
+            mItemsSelectStatus.clear();
+            mTasks = mHelper.findAll(EventTask.class);
             notifyDataSetChanged();
         }
 
@@ -94,9 +112,9 @@ public class TaskFragment extends Fragment {
         @Override
         public void onBindViewHolder(TaskRecyclerViewHolder holder, int position) {
 
-//            holder.setData(mTasks.get(position));
+            holder.setData(mTasks.get(position));
             holder.container.setTag(position);
-            mItemsSelectStatus.put(position, isShowCheckBox);
+            mItemsSelectStatus.put(position, false);
             if (isShowCheckBox) {
                 holder.checkBox.setVisibility(View.VISIBLE);
                 holder.imageButtonStatus.setVisibility(View.INVISIBLE);
@@ -109,7 +127,7 @@ public class TaskFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return 4;
+            return mTasks.size();
         }
     }
 
@@ -213,6 +231,16 @@ public class TaskFragment extends Fragment {
      */
     public void finishDeleteAction(boolean isDelete) {
         isShowCheckBox = false;
+        if (isDelete) {
+            EventTask task;
+            for (int position : mItemsSelectStatus.keySet()) {
+                if (mItemsSelectStatus.get(position)) {
+                    mHelper.delete(mTasks.get(position));
+                }
+            }
+            mAdapter.customDeleteNotifyDataSetChanged();
+        }
+
         mAdapter.customNotifyDataSetChanged();
     }
 

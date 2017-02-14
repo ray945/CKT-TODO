@@ -29,8 +29,15 @@
                 android:id="@+id/text_task_list_plan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{task.taskTitle}"
-               />
+                android:text="@{task.taskTitle}" />
+
+            <TextView
+                android:id="@+id/text_task_list_time_pre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_task_list_plan"
+                android:layout_marginTop="5dp"
+                android:text="@string/task_plan_pre" />
 
 
             <TextView
@@ -39,33 +46,57 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_task_list_plan"
                 android:layout_marginTop="5dp"
-                android:text="@{String.valueOf(task.taskPredictTime)}"
-               />
+                android:layout_toRightOf="@+id/text_task_list_time_pre"
+                android:text="@{String.valueOf(task.taskPredictTime)}" />
 
+            <TextView
+                android:id="@+id/text_task_list_time_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_task_list_plan"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/text_task_list_plan_time"
+                android:text="@string/task_hour" />
+
+            <TextView
+                android:id="@+id/text_task_list_take_pre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_task_list_plan"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/text_task_list_time_end"
+                android:text="@string/task_done" />
 
             <TextView
                 android:id="@+id/text_task_list_take_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_task_list_plan"
-                android:layout_marginLeft="20dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/text_task_list_plan_time"
-                android:text="@{String.valueOf(task.taskRealSpendTime)}"
-                />
+                android:layout_toRightOf="@id/text_task_list_take_pre"
+                android:text="@{String.valueOf(task.taskRealSpendTime)}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_task_list_plan"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/text_task_list_take_time"
+                android:text="@string/task_hour" />
 
         </RelativeLayout>
 
 
         <CheckBox
             android:id="@+id/check_task_select"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-             />
+            android:visibility="gone" />
+
         <ImageButton
             android:id="@+id/image_task_status"
             android:layout_width="wrap_content"
