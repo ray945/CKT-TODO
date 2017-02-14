@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DatabaseUtils;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -108,14 +109,28 @@ public class NoteFragment extends Fragment {
             public void onItemClick(int position, View view) {
                 Intent intent = new Intent(mContext, NewNoteActivity.class);
                 intent.putExtra("noteTag", "1");
-                intent.putExtra("noteGet",position);
+                intent.putExtra("noteGet", position);
                 startActivityForResult(intent, 1);
             }
         });
         noteAdapter.setOnItemLongClickListener(new NoteAdapter.OnItemLongClickListener() {
             @Override
-            public void onItemLongClick(int position, View view) {
-                
+            public void onItemLongClick(final int position, View view) {
+                new AlertDialog.Builder(mContext).setTitle("确认删除吗？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 点击“确认”后的操作 
+                        DatebaseHelper.getInstance(mContext).delete(baseList.get(position));
+                        noteAdapter.notifyDataSetChanged();
+                    }
+                }).setNegativeButton("返回", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 点击“返回”后的操作,这里不设置没有任何操作 
+                    }
+                }).show();
             }
         });
     }
@@ -123,6 +138,12 @@ public class NoteFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         baseList = DatebaseHelper.getInstance(getContext()).findAll(Note.class);
+        noteAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         noteAdapter.notifyDataSetChanged();
     }
 
