@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Explode;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -38,6 +41,19 @@ public class NewNoteActivity extends AppCompatActivity {
         getSupportActionBar().setElevation(0);
         mActivityNewNoteBinding = DataBindingUtil.setContentView(this, R.layout.activity_new_note);
         init();
+        setupWindowAnimations();
+    }
+
+    private void setupWindowAnimations() {
+        Transition transition;
+        transition = buildEnterTransition();
+        getWindow().setEnterTransition(transition);
+    }
+
+    private Transition buildEnterTransition() {
+        Explode enterTransition = new Explode();
+        enterTransition.setDuration(getResources().getInteger(R.integer.anim_duration_long));
+        return enterTransition;
     }
 
     private void init() {
