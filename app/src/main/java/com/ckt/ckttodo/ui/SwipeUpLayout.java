@@ -33,7 +33,6 @@ public class SwipeUpLayout extends FrameLayout {
     private int viewHeight;
     private boolean isSilding;
     private boolean isFinish;
-
     private Activity mActivity;
 
     private OnSwipeBackListener mListener;
@@ -140,12 +139,14 @@ public class SwipeUpLayout extends FrameLayout {
     private void recodeInfo(final float velocityX, final float velocityY) {
         if (mContentView.getScrollX() < 0 && !needFinish) {
             needFinish = velocityX > MAX_VELOCITY_X;
+        } else {
+            needFinish = false;
         }
     }
 
     private void touchEvenUp() {
         isSilding = false;
-        if (Math.abs(mContentView.getScrollX()) >= viewWidth * 4 / 9 && mContentView.getScrollX() < 0 || needFinish) {
+        if (Math.abs(mContentView.getScrollX()) >= viewWidth * 3 / 8 && mContentView.getScrollX() < 0 || needFinish) {
             isFinish = true;
             scrollUp();
         } else {
@@ -164,13 +165,15 @@ public class SwipeUpLayout extends FrameLayout {
         int moveX = (int) event.getRawX();
         int deltaX = tempX - moveX;
         tempX = moveX;
-        if (moveX - downX < mTouchSlop && Math.abs((int) event.getRawX() - downX) < mTouchSlop) {
+        if (moveX - downX > mTouchSlop || Math.abs(tempX - downX) > mTouchSlop) {
             isSilding = true;
         }
-
-        if (moveX - downY <= 0 && isSilding && downX < viewWidth / 2 && deltaX<0) {
-            mContentView.scrollBy(deltaX, 0);
+        if (isSilding) {
+            if ((moveX - downY <= 0 && downX < viewWidth / 2 && deltaX < 0) || (deltaX > 0 && (mContentView.getScrollX() + deltaX) <= 0)) {
+                mContentView.scrollBy(deltaX, 0);
+            }
         }
+
     }
 
 
