@@ -15,7 +15,7 @@ import com.ckt.ckttodo.util.Constants;
 import java.util.List;
 
 /**
- * Created by ckt on 2/7/17.
+ * Created by mozre on 2/7/17.
  */
 
 public class TimeWatchDialog extends Dialog {

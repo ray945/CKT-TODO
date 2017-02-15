@@ -20,7 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * Created by ckt on 2/8/17.
+ * Created by mozre on 2/8/17.
  */
 
 public class TaskDateDialog extends Dialog implements View.OnClickListener {

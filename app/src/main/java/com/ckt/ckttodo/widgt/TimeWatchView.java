@@ -8,7 +8,7 @@ import android.widget.Chronometer;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by ckt on 2/7/17.
+ * Created by mozre on 2/7/17.
  */
 
 public class TimeWatchView extends Chronometer {

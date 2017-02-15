@@ -22,6 +22,12 @@ import java.util.UUID;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ *
+ * Created by mozre
+ *
+ */
+
 public class NewNoteActivity extends AppCompatActivity {
 
     private EditText et_noteTitle;
