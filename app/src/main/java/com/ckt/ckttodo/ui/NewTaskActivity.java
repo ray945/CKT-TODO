@@ -57,10 +57,10 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private TaskDateDialog mTaskDateDialog;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
     private Calendar mCalendar = Calendar.getInstance();
-    private Map<String, Integer> mPlanList = new HashMap<>();
+    private Map<String, String> mPlanList = new HashMap<>();
     private String[] mPlans;
     public static final String GET_PLAN_ID_FROM_PROJECT = "planId";
-    private static final int TASK_BELONG_NONE = -1;
+    private static final String TASK_BELONG_NONE = "plan";
     DatebaseHelper mHelper = DatebaseHelper.getInstance(this);
 
     @Override
@@ -221,7 +221,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         if (TextUtils.isEmpty(mTextViewTaskPlan.getText())||mTextViewTaskPlan.getText().toString().replace(" ","").length()<1) {
             task.setPlanId(TASK_BELONG_NONE);
         } else {
-            int planID;
+            String planID;
             String planName = mTextViewTaskPlan.getText().toString();
             planName = planName.replace(" ", "");
             if (mPlanList.containsKey(planName)) {
@@ -247,16 +247,11 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         Log.d("KKK", "checkAndCommit: " + task.getTaskType());
     }
 
-    private int makeNewPlan(String planName) {
+    private String makeNewPlan(String planName) {
 
-        int planID;
-        RealmResults<Plan> plans = mHelper.findAll(Plan.class);
-        if (plans == null || plans.size() == 0) {
-            planID = 0;
-        } else {
-            planID = plans.size() + 1;
-        }
+        String planID;
         Plan newPlan = new Plan();
+        planID = UUID.randomUUID().toString();
         newPlan.setPlanId(planID);
         newPlan.setPlanName(planName);
         newPlan.setCreateTime(Calendar.getInstance().getTimeInMillis());

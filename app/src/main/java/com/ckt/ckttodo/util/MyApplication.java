@@ -3,7 +3,9 @@ package com.ckt.ckttodo.util;
 import android.app.Application;
 import android.content.SharedPreferences;
 
-
+/**
+ * Created by zhiwei.li
+ */
 
 public class MyApplication extends Application {
 

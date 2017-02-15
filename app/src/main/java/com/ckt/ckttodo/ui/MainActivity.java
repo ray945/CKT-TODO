@@ -2,9 +2,9 @@ package com.ckt.ckttodo.ui;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -25,26 +25,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
-import com.ckt.ckttodo.database.EventTask;
-import com.ckt.ckttodo.database.Note;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
-import com.ckt.ckttodo.util.MyApplication;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmResults;
 
 
 public class MainActivity extends AppCompatActivity
@@ -143,10 +141,20 @@ public class MainActivity extends AppCompatActivity
                         Log.e(TAG, "project click");
                         View editTextView = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
                         final EditText editText = (EditText) editTextView.findViewById(R.id.new_task_name);
+                        editText.setFocusable(true);
+                        editText.setFocusableInTouchMode(true);
+                        editText.requestFocus();
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                InputMethodManager inputManager = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                inputManager.showSoftInput(editText, 0);
+                            }
+                        }, 200);
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).setTitle(R.string.new_plan).setView(editTextView).setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Realm realm = DatebaseHelper.getInstance(MainActivity.this).getRealm();
                                 final String taskName = editText.getText().toString().trim();
                                 for (Plan plan : DatebaseHelper.getInstance(MainActivity.this).findAll(Plan.class)) {
                                     if (taskName.equals(plan.getPlanName())) {
@@ -156,15 +164,7 @@ public class MainActivity extends AppCompatActivity
                                 }
                                 if (!taskName.equals("")) {
                                     Plan plan = new Plan();
-                                    int id;
-                                    if (realm.where(Plan.class).count() == 0) {
-                                        id = 0;
-                                    } else {
-                                        RealmResults<Plan> plans = realm.where(Plan.class).findAllSorted(PLAN_ID, false);
-                                        id = plans.first().getPlanId();
-                                        id += 1;
-                                    }
-                                    plan.setPlanId(id);
+                                    plan.setPlanId(UUID.randomUUID().toString());
                                     plan.setPlanName(taskName);
                                     Date date = new Date();
                                     plan.setCreateTime(date.getTime());
@@ -204,7 +204,6 @@ public class MainActivity extends AppCompatActivity
         // This view will not be affected by enter transition animation
         return enterTransition;
     }
-
 
 
     @Override

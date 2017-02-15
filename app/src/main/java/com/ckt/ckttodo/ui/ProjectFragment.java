@@ -1,8 +1,6 @@
 package com.ckt.ckttodo.ui;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,19 +9,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Toast;
 
-import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.FragmentProjectBinding;
 import com.ckt.ckttodo.util.ProjectListAdapter;
 
-import java.util.Date;
-
-import io.realm.Realm;
 import io.realm.RealmResults;
+
+/**
+ * Created by zhiwei.li
+ */
 
 public class ProjectFragment extends Fragment {
 

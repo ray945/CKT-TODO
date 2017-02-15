@@ -3,8 +3,6 @@ package com.ckt.ckttodo.util;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
-import android.graphics.ColorMatrixColorFilter;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,8 +11,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
@@ -25,20 +23,23 @@ import com.ckt.ckttodo.ui.NewTaskActivity;
 import com.ckt.ckttodo.ui.ProjectFragment;
 import com.headerfooter.songhang.library.SmartRecyclerAdapter;
 
+import org.mozilla.universalchardet.prober.statemachine.SMModel;
+
 import java.text.NumberFormat;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
+/**
+ * Created by zhiwei.li
+ */
 
 public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {
 
     private RealmResults<Plan> planList;
     private Context context;
-    private TaskListAdapter adapter;
     private static final String TAG = "ZHIWEI";
-    private RealmList<EventTask> tasks;
 
 
     public ProjectListAdapter(Context context, RealmResults<Plan> planList) {
@@ -55,38 +56,40 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     @Override
     public void onBindViewHolder(ProjectListAdapter.ViewHolder holder, int position) {
         Plan plan = planList.get(position);
-        tasks = plan.getEventTasks();
-        RealmList<EventTask> threeTasks;
-        final int planId = plan.getPlanId();
+
+        final RealmList<EventTask> tasks = plan.getEventTasks();
+        final String planId = plan.getPlanId();
 
         calculateProgress(tasks, planId);
-        holder.binding.btnAddTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        initNewTaskButton(holder.binding.btnAddTask,planId);
 
-                Intent intent = new Intent(context, NewTaskActivity.class);
-                intent.putExtra(NewTaskActivity.GET_PLAN_ID_FROM_PROJECT, planId);
-                context.startActivity(intent);
+        final RecyclerView rvTasks = holder.binding.rvTasks;
+        final TaskListAdapter adapter = new TaskListAdapter(context);
+        final TaskListAdapter threeAdapter = new TaskListAdapter(context);
+        if (tasks.size() <= 3){
+            adapter.setTasks(tasks);
+            rvTasks.setAdapter(adapter);
+        }else if (tasks.size() >= 4){
+            RealmList<EventTask> threeTasks = new RealmList<>();
+            for (int i = 0; i < 3; i++) {
+                threeTasks.add(tasks.get(i));
             }
-        });
-
-
-        holder.binding.btnAddTask.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_BUTTON_PRESS ||motionEvent.getAction() == MotionEvent.ACTION_DOWN ){
-                    view.setBackgroundResource(R.color.colorPrimaryDark);
-                }else if (motionEvent.getAction()== MotionEvent.ACTION_BUTTON_RELEASE||motionEvent.getAction() == MotionEvent.ACTION_UP){
-                    view.setBackgroundResource(R.color.color_d3d3d3);
+            threeAdapter.setTasks(threeTasks);
+            SmartRecyclerAdapter smartRecyclerAdapter = new SmartRecyclerAdapter(threeAdapter);
+            ImageButton footerButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.item_project_tasks_footer,rvTasks,false);
+            footerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    threeAdapter.clear();
+                    threeAdapter.setTasks(tasks);
+                    SmartRecyclerAdapter adapter1 = new SmartRecyclerAdapter(threeAdapter);
+                    rvTasks.setAdapter(adapter1);
                 }
-                return false;
-            }
-        });
+            });
+            smartRecyclerAdapter.setFooterView(footerButton);
+            rvTasks.setAdapter(smartRecyclerAdapter);
+        }
 
-        RecyclerView rvTasks = holder.binding.rvTasks;
-        Log.e(TAG,String.valueOf(tasks.size()));
-        adapter = new TaskListAdapter(context,tasks);
-        rvTasks.setAdapter(adapter);
         holder.bind(plan);
 
     }
@@ -120,7 +123,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         recyclerView.addItemDecoration(new ProjectTaskListDecoration(context));
     }
 
-    private void calculateProgress(RealmList<EventTask> tasks, final int planId) {
+    private void calculateProgress(RealmList<EventTask> tasks, final String planId) {
         float totalTaskTime = 0;
         float doneTaskTime = 0;
         for (EventTask task : tasks) {
@@ -142,4 +145,28 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         });
     }
 
+    private void initNewTaskButton(ImageButton button, final String planId) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, NewTaskActivity.class);
+                intent.putExtra(NewTaskActivity.GET_PLAN_ID_FROM_PROJECT, planId);
+                context.startActivity(intent);
+            }
+        });
+
+        button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    view.setBackgroundResource(R.color.colorPrimaryDark);
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                        motionEvent.getAction() == MotionEvent.ACTION_MOVE ||
+                        motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
+                    view.setBackgroundResource(R.color.color_d3d3d3);
+                }
+                return false;
+            }
+        });
+    }
 }

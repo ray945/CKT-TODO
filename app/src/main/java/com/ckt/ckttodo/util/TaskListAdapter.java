@@ -14,6 +14,9 @@ import java.text.SimpleDateFormat;
 
 import io.realm.RealmList;
 
+/**
+ * Created by zhiwei.li
+ */
 
 class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
 

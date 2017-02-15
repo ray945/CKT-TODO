@@ -1,7 +1,6 @@
 package com.ckt.ckttodo.util;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -9,6 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.ckt.ckttodo.R;
+
+/**
+ * Created by zhiwei.li
+ */
 
 class ProjectTaskListDecoration extends RecyclerView.ItemDecoration {
 

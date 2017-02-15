@@ -32,7 +32,7 @@
                 android:text="@{plan.planName}"
                 android:textColor="@color/textColor"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                />
 
             <TextView
                 android:id="@+id/tv_plan_progress"

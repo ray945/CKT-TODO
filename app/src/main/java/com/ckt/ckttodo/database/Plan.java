@@ -23,7 +23,7 @@ public class Plan extends RealmObject {
 
     //计划id
     @PrimaryKey
-    private int planId;
+    private String planId;
     //计划名称
     @Required
     private String planName;
@@ -44,11 +44,11 @@ public class Plan extends RealmObject {
     //计划包含的任务
     private RealmList<EventTask> eventTasks;
 
-    public int getPlanId() {
+    public String getPlanId() {
         return planId;
     }
 
-    public void setPlanId(int planId) {
+    public void setPlanId(String planId) {
         this.planId = planId;
     }
 
