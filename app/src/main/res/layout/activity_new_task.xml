@@ -176,7 +176,7 @@
                     <EditText
                         android:id="@+id/new_edit_plan_time"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:background="@null"
                         android:gravity="center"
                         android:hint="@string/start_num"

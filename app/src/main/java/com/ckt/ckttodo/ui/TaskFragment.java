@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -60,19 +61,6 @@ public class TaskFragment extends Fragment {
 
         return init(inflater);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private View init(LayoutInflater inflater) {
@@ -169,6 +157,12 @@ public class TaskFragment extends Fragment {
             container.setOnLongClickListener(this);
             container.setOnClickListener(this);
             imageButtonStatus.setOnClickListener(this);
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mItemsSelectStatus.put((Integer) container.getTag(), isChecked);
+                }
+            });
 
         }
 
@@ -198,7 +192,6 @@ public class TaskFragment extends Fragment {
                 }
             } else if (v == imageButtonStatus) {
                 imageButtonStatus.setSelected(true);
-                Log.d("TTT", "onClick: " + container.getTag());
                 showTomatoDialog();
 
 
@@ -247,14 +240,12 @@ public class TaskFragment extends Fragment {
         isShowCheckBox = false;
         if (isDelete) {
             List<EventTask> tasks = new ArrayList<>();
-            EventTask task;
             for (int position : mItemsSelectStatus.keySet()) {
                 if (mItemsSelectStatus.get(position)) {
-//                    mHelper.delete(mTasks.get(position));
                     tasks.add(mTasks.get(position));
                 }
             }
-            for(EventTask task1:tasks){
+            for (EventTask task1 : tasks) {
                 mHelper.delete(task1);
             }
             mAdapter.customDeleteNotifyDataSetChanged();

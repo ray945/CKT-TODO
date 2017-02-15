@@ -283,6 +283,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_task) {
             // Handle the camera action
+            startActivity(new Intent(this,FinishedTaskActivity.class));
+
         } else if (id == R.id.nav_count) {
             Intent intent = new Intent(MainActivity.this, ChartActivity.class);
             transitionTo(intent);
