@@ -163,7 +163,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
                         motionEvent.getAction() == MotionEvent.ACTION_MOVE ||
                         motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
-                    view.setBackgroundResource(R.color.color_d3d3d3);
+                    view.setBackgroundResource(R.color.background_grey);
                 }
                 return false;
             }

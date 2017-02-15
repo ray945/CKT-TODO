@@ -147,7 +147,7 @@ public class ChartManager {
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         legend.setOrientation(Legend.LegendOrientation.VERTICAL);
         legend.setDrawInside(false);
-        legend.setEnabled(false);
+        legend.setEnabled(true);
     }
 
     public static void initBarChart(BarChart barChart) {

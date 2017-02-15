@@ -6,6 +6,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import android.transition.Explode;
 import android.transition.Transition;
@@ -38,6 +44,20 @@ public class ChartActivity extends AppCompatActivity {
         setupWindowAnimations();
     }
 
+
+
+    private void setupWindowAnimations() {
+        Transition transition;
+        transition = buildEnterTransition();
+        getWindow().setEnterTransition(transition);
+    }
+
+    private Transition buildEnterTransition() {
+        Explode enterTransition = new Explode();
+        enterTransition.setDuration(getResources().getInteger(R.integer.anim_duration_long));
+        return enterTransition;
+    }
+
     private void initView() {
         activityChartBinding = DataBindingUtil.setContentView(ChartActivity.this, R.layout.activity_chart);
         Toolbar toolbar = activityChartBinding.toolbar;
@@ -46,7 +66,7 @@ public class ChartActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final String[] titles = getResources().getStringArray(R.array.chart_title);
         final ArrayList<Fragment> fragments = new ArrayList<>();
-        for (String title : titles){
+        for (String title : titles) {
             fragments.add(ChartFragment.getInstance(title));
         }
         ViewPager viewPager = activityChartBinding.viewPager;
@@ -72,30 +92,18 @@ public class ChartActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.data_count_menu,menu);
+        getMenuInflater().inflate(R.menu.data_count_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.click_me:
 
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void setupWindowAnimations() {
-        Transition transition;
-        transition = buildEnterTransition();
-        getWindow().setEnterTransition(transition);
-    }
-
-    private Transition buildEnterTransition() {
-        Explode enterTransition = new Explode();
-        enterTransition.setDuration(getResources().getInteger(R.integer.anim_duration_long));
-        return enterTransition;
     }
 }

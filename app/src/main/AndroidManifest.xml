@@ -35,6 +35,7 @@
             android:parentActivityName=".ui.MainActivity"></activity>
         <activity android:name=".ui.FinishedTaskActivity"></activity>
 
+
     </application>
 
 </manifest>
