@@ -72,8 +72,28 @@ public class EventTask extends RealmObject {
     private float taskRealSpendTime;
     //任务所属计划
     private String planId;
+    //任务最新更新时间
+    private long taskUpdateTime;
+    //置顶，默认值为-1，置顶后数字往上增加，取消置顶还原为-1
+    private int topNumber = -1;
 
     private Plan plan;
+
+    public int getTopNumber() {
+        return topNumber;
+    }
+
+    public void setTopNumber(int topNumber) {
+        this.topNumber = topNumber;
+    }
+
+    public long getTaskUpdateTime() {
+        return taskUpdateTime;
+    }
+
+    public void setTaskUpdateTime(long taskUpdateTime) {
+        this.taskUpdateTime = taskUpdateTime;
+    }
 
     public Plan getPlan() {
         return plan;

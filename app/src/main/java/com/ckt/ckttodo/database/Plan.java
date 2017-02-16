@@ -27,6 +27,8 @@ public class Plan extends RealmObject {
     //计划名称
     @Required
     private String planName;
+    //计划描述
+    private String planContent;
     //计划创建人id
     private String userId;
     //计划创建时间
@@ -43,6 +45,24 @@ public class Plan extends RealmObject {
     private float realSpendTime;
     //计划包含的任务
     private RealmList<EventTask> eventTasks;
+    //所属项目
+    private String projectId;
+
+    public String getPlanContent() {
+        return planContent;
+    }
+
+    public void setPlanContent(String planContent) {
+        this.planContent = planContent;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
     public String getPlanId() {
         return planId;
