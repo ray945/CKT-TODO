@@ -7,36 +7,90 @@
                  android:background="@mipmap/app_lockscreen_bg"
                  android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_main"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="35dp"
-            android:gravity="center"
-            android:text="@string/app_name"
-            android:textColor="#fff"
-            android:textSize="20sp"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_lock"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="90dp"
-            android:padding="8dp"></android.support.v7.widget.RecyclerView>
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="bottom"
-            android:gravity="center">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="100dp"
+            android:orientation="horizontal">
 
-            <com.ckt.ckttodo.ui.CustomTextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/black_circle"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="40dp"
+                    android:background="@color/textColor"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/black_circle"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="40dp"
+                    android:background="@color/textColor"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/black_circle"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="40dp"
+                    android:background="@color/textColor"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/black_circle"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="40dp"
+                    android:background="@color/textColor"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/black_circle"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="40dp"
+                    />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_lock"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text=">>>滑动解锁"
-                android:textColor="#FF7B7A7A"
-                android:textSize="16sp"/>
+                ></android.support.v7.widget.RecyclerView>
         </LinearLayout>
+
+        <com.ckt.ckttodo.ui.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:alpha="0.6"
+            android:text="@string/sliding"
+            android:textColor="@color/textColor"
+            android:textSize="16sp"/>
     </FrameLayout>
 </layout>

@@ -122,4 +122,13 @@
     <string name="setting">设置</string>
     <string name="title">标题</string>
     <string name="content">内容</string>
+    <string name="main">西可土豆</string>
+    <string name="grade">给我们评分</string>
+    <string name="website">网站</string>
+    <string name="GitHub">GitHub</string>
+    <string name="opinion">意见反馈</string>
+    <string name="author">made by CK-Telecom</string>
+    <string name="version">v0.1 Beta</string>
+    <string name="sliding">>>>滑动解锁>>></string>
+    
 </resources>

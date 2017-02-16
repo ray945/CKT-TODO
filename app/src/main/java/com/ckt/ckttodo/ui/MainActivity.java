@@ -45,8 +45,7 @@ import java.util.UUID;
 import io.realm.Realm;
 
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
     public final static int MAIN_TO_NEW_TASK_CODE = 100;
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == MAIN_TO_NEW_TASK_CODE){
+        if (requestCode == MAIN_TO_NEW_TASK_CODE) {
             mTaskFragment.notifyData();
         }
     }
@@ -187,7 +186,8 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    @SuppressWarnings("unchecked") void transitionTo(Intent i) {
+    @SuppressWarnings("unchecked")
+    void transitionTo(Intent i) {
         final Pair<View, String>[] pairs = TransitionHelper.createSafeTransitionParticipants(this, true);
         ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(this, pairs);
         startActivity(i, transitionActivityOptions.toBundle());
@@ -222,18 +222,20 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-    private void registerScreenOffBroadcast( ) {
-        if( mScreenOffBroadcast == null ) {
-            mScreenOffBroadcast = new ScreenOffBroadcast( this );
+
+    private void registerScreenOffBroadcast() {
+        if (mScreenOffBroadcast == null) {
+            mScreenOffBroadcast = new ScreenOffBroadcast(this);
         }
-        mScreenOffBroadcast.registerBroadcast( );
+        mScreenOffBroadcast.registerBroadcast();
     }
 
-    private void unRegisterScreenOffBroadcast( ) {
-        if( mScreenOffBroadcast != null ) {
-            mScreenOffBroadcast.unregisterBroadcast( );
+    private void unRegisterScreenOffBroadcast() {
+        if (mScreenOffBroadcast != null) {
+            mScreenOffBroadcast.unregisterBroadcast();
         }
     }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
@@ -250,7 +252,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_research:
-                startActivityForResult(new Intent(this, NewTaskActivity.class),MAIN_TO_NEW_TASK_CODE);;
+                startActivityForResult(new Intent(this, NewTaskActivity.class), MAIN_TO_NEW_TASK_CODE);
+                ;
                 break;
             case R.id.menu_sure:
                 //删除选中项并结束事件
@@ -267,9 +270,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        //        if (id == R.id.action_settings) {
+        //            return true;
+        //        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -282,7 +285,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_task) {
             // Handle the camera action
-            startActivity(new Intent(this,FinishedTaskActivity.class));
+            startActivity(new Intent(this, FinishedTaskActivity.class));
 
         } else if (id == R.id.nav_count) {
             Intent intent = new Intent(MainActivity.this, ChartActivity.class);
@@ -292,7 +295,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_about) {
-
+            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+            transitionTo(intent);
         }
 
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;

@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,11 @@ import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.databinding.ActivityScreenBinding;
 import com.ckt.ckttodo.databinding.ItemLockBinding;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import io.realm.RealmResults;
 
 public class LockScreenActivity extends SwipeUpBaseActivity {
@@ -31,7 +37,7 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
     private HomeKeyBroadcast mHomeKeyBroadcast;
     private SelfFinishBroadCast mSelfFinishBroadCast;
     private ActivityScreenBinding mActivityScreenBinding;
-    private RealmResults<EventTask> mEventTasks;
+    private List<EventTask> mUnFinishedTasks = new ArrayList<>();
 
     @Override
     public void onAttachedToWindow() {
@@ -58,10 +64,10 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
 
     private void initUI() {
         mActivityScreenBinding = DataBindingUtil.setContentView(LockScreenActivity.this, R.layout.activity_screen);
-        mEventTasks = DatebaseHelper.getInstance(LockScreenActivity.this).findAll(EventTask.class);
+//        getData();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mActivityScreenBinding.rvLock.setLayoutManager(layoutManager);
-        LockAdapter lockAdapter = new LockAdapter(LockScreenActivity.this, mEventTasks);
+        LockAdapter lockAdapter = new LockAdapter(LockScreenActivity.this, mUnFinishedTasks);
         mActivityScreenBinding.rvLock.setAdapter(lockAdapter);
     }
 
@@ -111,6 +117,21 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         unRegisterSelfFinishBroadCast();
+    }
+
+    public void getData() {
+        mUnFinishedTasks.clear();
+        RealmResults<EventTask> tasks = DatebaseHelper.getInstance(LockScreenActivity.this).getRealm().where(EventTask.class).findAllSorted(EventTask.TASK_STATUS, false);
+        for (EventTask task : tasks) {
+            Log.e("-------","task.getTaskStatus()"+task.getTaskStatus());
+            if (task.getTaskStatus() == EventTask.NOT_START && time(task.getTaskStartTime()) == time(System.currentTimeMillis())) {
+                mUnFinishedTasks.add(task);
+            }
+        }
+    }
+
+    public int time(Long time) {
+        return Integer.getInteger(new SimpleDateFormat("dd").format(new Date(time)));
     }
 
     public class SelfFinishBroadCast {
@@ -174,10 +195,10 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
     }
 
     public static class LockAdapter extends RecyclerView.Adapter<LockViewHolder> implements View.OnClickListener, View.OnLongClickListener {
-        RealmResults<EventTask> eventTaskList;
+        List<EventTask> eventTaskList;
         Context context;
 
-        public LockAdapter(Context context, RealmResults<EventTask> eventTaskList) {
+        public LockAdapter(Context context, List<EventTask> eventTaskList) {
             this.context = context;
             this.eventTaskList = eventTaskList;
         }
@@ -239,14 +260,14 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
 
     static class LockViewHolder extends RecyclerView.ViewHolder {
         public TextView tv_lockTitle;
-        public TextView tv_lockContent;
+        public TextView tv_lockTime;
         private ItemLockBinding itemLockBinding;
 
         public LockViewHolder(ItemLockBinding itemLockBinding) {
             super(itemLockBinding.getRoot());
             this.itemLockBinding = itemLockBinding;
             tv_lockTitle = itemLockBinding.tvLockTitle;
-            tv_lockContent = itemLockBinding.tvLockContent;
+            tv_lockTime = itemLockBinding.tvLockTime;
         }
 
         public void setData(EventTask data) {

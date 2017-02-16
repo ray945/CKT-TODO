@@ -38,20 +38,20 @@ public class CustomTextView extends TextView {
         mViewWidth = getMeasuredWidth();
         if (mViewWidth > 0) {
             mPaint = getPaint();
-            mLinearGradient = new LinearGradient(-150, 0, 0, 0, new int[]{0xFF7B7A7A,0xFF7B7A7A, 0xFF7B7A7A,0xffffffff,0xffffffff,0xffffffff,0xFF7B7A7A,0xFF7B7A7A,0xFF7B7A7A}, 
-                    new float[]{0, 0.25f,0.5f,0.75f,1.0f,0.75f,0.5f,0.25f, 0}, Shader.TileMode.MIRROR);
+            mLinearGradient = new LinearGradient(-mViewWidth, 0, 0, 0, new int[]{0xFF000000, 0xFF000000, 0xFF000000, 0xFF000000, 0xffffffff, 0xFF000000, 0xFF000000, 0xFF000000, 0xFF000000}, new 
+                    float[]{0, 0.25f, 0.5f, 0.75f, 1.0f, 0.75f, 0.5f, 0.25f, 0}, Shader.TileMode.MIRROR);
             mPaint.setShader(mLinearGradient);
             mGradientMatrix = new Matrix();
         }
 
         if (mAnimating && mGradientMatrix != null) {
             mTranslate += mViewWidth / 40;
-            if (mTranslate > mViewWidth + 800) {
+            if (mTranslate > mViewWidth * 4) {
                 mTranslate = 0;
             }
             mGradientMatrix.setTranslate(mTranslate, 0);
             mLinearGradient.setLocalMatrix(mGradientMatrix);
-            postInvalidateDelayed(80);
+            postInvalidateDelayed(55);
         }
     }
 }
