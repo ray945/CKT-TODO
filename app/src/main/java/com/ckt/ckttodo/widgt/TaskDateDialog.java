@@ -70,15 +70,15 @@ public class TaskDateDialog extends Dialog implements View.OnClickListener {
         mTextViewTime.setOnClickListener(this);
         mTextViewDate.setOnClickListener(this);
         mButtonSure.setOnClickListener(this);
-        Log.d("KKK", "init: " + mDateTime.getYear() + " "
-                + mDateTime.getMonth() + " " + mDateTime.getDay()
-                + " " + mDateTime.getHour() + " " + mDateTime.getMinute());
+//        Log.d("KKK", "init: " + mDateTime.getYear() + " "
+//                + mDateTime.getMonth() + " " + mDateTime.getDay()
+//                + " " + mDateTime.getHour() + " " + mDateTime.getMinute());
         mTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                mDateTime.setDay(hourOfDay);
+                mDateTime.setHour(hourOfDay);
                 mDateTime.setMinute(minute);
-                Log.d("KKK", "onTimeChanged: " + hourOfDay + " " + minute);
+//                Log.d("KKK", "onTimeChanged: " + hourOfDay + " " + minute);
             }
         });
         Calendar cal = Calendar.getInstance();
@@ -86,9 +86,9 @@ public class TaskDateDialog extends Dialog implements View.OnClickListener {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 mDateTime.setYear(year);
-                mDateTime.setMonth(monthOfYear+1);
+                mDateTime.setMonth(monthOfYear);
                 mDateTime.setDay(dayOfMonth);
-                Log.d("KKK", "onDateChanged: " + year + " " + monthOfYear + " " + dayOfMonth);
+//                Log.d("KKK", "onDateChanged: " + year + " " + monthOfYear + " " + dayOfMonth);
             }
         });
     }
