@@ -99,16 +99,18 @@ public class TaskFragment extends Fragment {
         }
 
         /**
-         * 重绘RecyclerView显示复选框
+         * clear mItemsSelectStatus before notifyDataSetChanged
          */
+
         public void customNotifyDataSetChanged() {
             mItemsSelectStatus.clear();
             notifyDataSetChanged();
         }
 
         /**
-         * 每次数据改动时都需要清空存储在map中的数据，在重绘调用onBindViewHolder时初始化map数据
+         * if delete data,show update mTasks data
          */
+
         public void customDeleteNotifyDataSetChanged() {
             mItemsSelectStatus.clear();
             mTasks = mHelper.findAll(EventTask.class);
@@ -204,9 +206,7 @@ public class TaskFragment extends Fragment {
         }
 
         /**
-         * 展示番茄时钟对话框
-         * 显示任务状态
-         * 结束番茄时钟后更新花费时间
+         * show about tomato time
          */
         private void showTomatoDialog() {
             if (timeWatchDialog == null) {
@@ -215,8 +215,9 @@ public class TaskFragment extends Fragment {
                     @Override
                     public void onCancelClickedListener() {
                         imageButtonStatus.setSelected(false);
-                        long spendTime = timeWatchDialog.stop();
-                        Log.d("TTT", "onCancelClickedListener: " + spendTime);
+                        timeWatchDialog.stop();
+//                        long spendTime = timeWatchDialog.stop();
+//                        Log.d("TTT", "onCancelClickedListener: " + spendTime);
                     }
                 });
             }
@@ -228,8 +229,9 @@ public class TaskFragment extends Fragment {
 
 
     /**
-     * 控制复选框是否口见
+     * control about the delete checkbox visible or not
      */
+
     private void itemContainerLongClickedEvent() {
         isShowCheckBox = true;
         mShowMenuItem.setShowMenuItem(true);
@@ -237,10 +239,11 @@ public class TaskFragment extends Fragment {
     }
 
     /**
-     * 删除长按后，用户选中的项或撤销删除
+     * control delete task listl
      *
      * @param isDelete
      */
+
     public void finishDeleteAction(boolean isDelete) {
         isShowCheckBox = false;
         if (isDelete) {

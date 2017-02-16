@@ -196,19 +196,22 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * commit new task
+     */
+
     private void checkAndCommit() {
         if (TextUtils.isEmpty(mTextViewContent.getText())) {
-            Toast.makeText(this, "任务内容不能为空！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,  getResources().getString(R.string.task_not_empty_content), Toast.LENGTH_SHORT).show();
             return;
         }
         if (TextUtils.isEmpty(mEditViewPlanTime.getText())) {
-            Toast.makeText(this, "请输入计划时间！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.task_not_empty_plan_time), Toast.LENGTH_SHORT).show();
             return;
         }
         if (mCalendar == null) {
             return;
         }
-        RealmResults<EventTask> tasks = mHelper.findAll(EventTask.class);
         EventTask task = new EventTask();
         String taskID = UUID.randomUUID().toString();
         task.setTaskId(taskID);
@@ -237,15 +240,22 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             task.setPlan(plan);
             plan.getEventTasks().add(task);
             mHelper.getRealm().commitTransaction();
-            Toast.makeText(this, "创建成功！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
+
             finish();
         }
-
         mHelper.insert(task);
-        Toast.makeText(this, "创建成功！", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
         finish();
-        Log.d("KKK", "checkAndCommit: " + task.getTaskType());
     }
+
+
+    /**
+     * Create a new Plan in Database
+     *
+     * @param planName
+     * @return
+     */
 
     private String makeNewPlan(String planName) {
 
@@ -258,6 +268,13 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mHelper.insert(newPlan);
         return planID;
     }
+
+    /**
+     * turn text to time
+     *
+     * @param position
+     * @return
+     */
 
     private long getRemindTime(int position) {
         switch (position) {
@@ -282,14 +299,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    /**
-     * 重写dispachTochEvent用于编辑EditText时，用户点击非EditText区域，将软件盘隐藏
-     *
-     * @param ev
-     * @return
-     */
-
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
@@ -301,13 +310,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         return super.dispatchTouchEvent(ev);
     }
 
-    /**
-     * 判断点击时间的位置，是否隐藏软件盘
-     *
-     * @param v
-     * @param event
-     * @return
-     */
 
     private boolean isShouldHideKeyboard(View v, MotionEvent event) {
         if (v != null && (v instanceof EditText)) {
@@ -327,11 +329,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         return false;
     }
 
-    /**
-     * 隐藏软件盘
-     *
-     * @param token
-     */
+
     private void hideKeyboard(IBinder token) {
         if (token != null) {
             InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
