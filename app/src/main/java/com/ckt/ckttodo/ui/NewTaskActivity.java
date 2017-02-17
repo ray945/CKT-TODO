@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -28,6 +29,7 @@ import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.ActivityNewTaskBinding;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.widgt.TaskDateDialog;
+import com.iflytek.cloud.thirdparty.V;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -50,6 +52,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private TextView mTextViewScheduleTime;
     private EditText mEditViewPlanTime;
     private TextView mTextViewContent;
+    private TextView mTextViewTitle;
     private ArrayAdapter<String> mSpinnerTaskKindsAdapter;
     private ArrayAdapter<String> mSpinnerTaskLevelAdapter;
     private ArrayAdapter<String> mSpinnerTaskRemindAdapter;
@@ -82,19 +85,19 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         // 任务分类的下拉栏
         mSpinnerTaskKinds = mActivityNewTaskBinding.spinnerTaskChoose;
         String[] arrayTaskKinds = getResources().getStringArray(R.array.kind_list);
-        mSpinnerTaskKindsAdapter = new ArrayAdapter<>(this, R.layout.common_text_item, arrayTaskKinds);
+        mSpinnerTaskKindsAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, arrayTaskKinds);
         mSpinnerTaskKindsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerTaskKinds.setAdapter(mSpinnerTaskKindsAdapter);
         //任务等级的下拉栏
         mSpinnerTaskLevel = mActivityNewTaskBinding.spinnerTaskLevel;
         String[] arrayTaskLevel = getResources().getStringArray(R.array.task_level);
-        mSpinnerTaskLevelAdapter = new ArrayAdapter<>(this, R.layout.common_text_item, arrayTaskLevel);
+        mSpinnerTaskLevelAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, arrayTaskLevel);
         mSpinnerTaskLevelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerTaskLevel.setAdapter(mSpinnerTaskLevelAdapter);
         // 提醒时间下拉栏
         mSpinnerTaskRemind = mActivityNewTaskBinding.newSpinnerRemind;
         String[] arrayTaskRemind = getResources().getStringArray(R.array.task_remind);
-        mSpinnerTaskRemindAdapter = new ArrayAdapter<>(this, R.layout.common_text_item, arrayTaskRemind);
+        mSpinnerTaskRemindAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, arrayTaskRemind);
         mSpinnerTaskRemind.setAdapter(mSpinnerTaskRemindAdapter);
 
         mEditViewPlanTime = mActivityNewTaskBinding.newEditPlanTime;
@@ -135,6 +138,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         });
 
         mTextViewContent = mActivityNewTaskBinding.newEditConent;
+        mTextViewTitle = mActivityNewTaskBinding.newEditTitle;
 
     }
 
@@ -165,11 +169,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         switch (item.getItemId()) {
             case R.id.menu_sure:
                 if (mLinearLayoutInput.getVisibility() == View.VISIBLE) {
-                    if (!TextUtils.isEmpty(mAutoCompleteTextViewTaskPlan.getText())) {
-                        mTextViewTaskPlan.setText(mAutoCompleteTextViewTaskPlan.getText().toString());
-                        mLinearLayoutInput.setVisibility(View.GONE);
-                        mScrollViewTaskListContainer.setVisibility(View.VISIBLE);
-                    }
+                    finishInputPlan();
                 } else {
                     checkAndCommit();
                 }
@@ -179,12 +179,8 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case android.R.id.home:
                 if (mLinearLayoutInput.getVisibility() == View.VISIBLE) {
-                    if (!TextUtils.isEmpty(mAutoCompleteTextViewTaskPlan.getText())) {
-                        mTextViewTaskPlan.setText(mAutoCompleteTextViewTaskPlan.getText().toString());
-                    }
-                    mLinearLayoutInput.setVisibility(View.GONE);
-                    mScrollViewTaskListContainer.setVisibility(View.VISIBLE);
-                }else {
+                    finishInputPlan();
+                } else {
                     finish();
                 }
                 break;
@@ -201,8 +197,8 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
      */
 
     private void checkAndCommit() {
-        if (TextUtils.isEmpty(mTextViewContent.getText())) {
-            Toast.makeText(this,  getResources().getString(R.string.task_not_empty_content), Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(mTextViewTitle.getText())) {
+            Toast.makeText(this, getResources().getString(R.string.task_not_empty_content), Toast.LENGTH_SHORT).show();
             return;
         }
         if (TextUtils.isEmpty(mEditViewPlanTime.getText())) {
@@ -215,13 +211,14 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         EventTask task = new EventTask();
         String taskID = UUID.randomUUID().toString();
         task.setTaskId(taskID);
-        task.setTaskTitle(mTextViewContent.getText().toString());
+        task.setTaskTitle(mTextViewTitle.getText().toString());
+        task.setTaskContent(TextUtils.isEmpty(mTextViewContent.getText()) ? "" : mTextViewContent.getText().toString());
         task.setTaskType(mSpinnerTaskKinds.getSelectedItemPosition() + 1);
         task.setTaskPriority(mSpinnerTaskLevel.getSelectedItemPosition() + 1);
         task.setTaskStartTime(mCalendar.getTimeInMillis());
         task.setTaskPredictTime(Float.valueOf(mEditViewPlanTime.getText().toString()));
         task.setTaskRemindTime(getRemindTime(mSpinnerTaskRemind.getSelectedItemPosition()));
-        if (TextUtils.isEmpty(mTextViewTaskPlan.getText())||mTextViewTaskPlan.getText().toString().replace(" ","").length()<1) {
+        if (TextUtils.isEmpty(mTextViewTaskPlan.getText()) || mTextViewTaskPlan.getText().toString().replace(" ", "").length() < 1) {
             task.setPlanId(TASK_BELONG_NONE);
         } else {
             String planID;
@@ -335,5 +332,25 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    private void finishInputPlan() {
+        if (!TextUtils.isEmpty(mAutoCompleteTextViewTaskPlan.getText())) {
+            mTextViewTaskPlan.setText(mAutoCompleteTextViewTaskPlan.getText().toString());
+        }
+        mLinearLayoutInput.setVisibility(View.GONE);
+        mScrollViewTaskListContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mLinearLayoutInput.getVisibility() == View.VISIBLE) {
+                finishInputPlan();
+                return true;
+            }
+
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

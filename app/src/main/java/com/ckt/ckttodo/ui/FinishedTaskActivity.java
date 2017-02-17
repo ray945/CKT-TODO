@@ -134,8 +134,8 @@ public class FinishedTaskActivity extends AppCompatActivity {
             }
 
 
-            // TODO test
-            mFinishedTasks.add(task);
+//            // TODO test
+//            mFinishedTasks.add(task);
 
 
         }

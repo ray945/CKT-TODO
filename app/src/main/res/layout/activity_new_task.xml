@@ -37,7 +37,9 @@
         <ScrollView
             android:id="@+id/task_list_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -49,6 +51,30 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin">
+
+                    <EditText
+                        android:id="@+id/new_edit_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="@string/tasks"
+                        android:inputType="text"
+                        android:textSize="16sp" />
+                </FrameLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/color_d3d3d3" />
+
+                <FrameLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin">
 
@@ -137,7 +163,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/schedule_date"
+                        android:gravity="center_vertical"
+                        android:text="@string/schedule_time"
                         android:textSize="16sp" />
 
 
@@ -145,7 +172,9 @@
                         android:id="@+id/new_text_schedule_time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center" />
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/task_input_list_padding"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -169,7 +198,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/schedule_time"
+                        android:text="@string/spend_time"
                         android:textSize="16sp" />
 
 
@@ -178,9 +207,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
-                        android:gravity="center"
+                        android:gravity="center_vertical"
                         android:hint="@string/start_num"
-                        android:inputType="number" />
+                        android:inputType="number"
+                        android:paddingLeft="@dimen/task_input_list_padding" />
 
                 </LinearLayout>
 
@@ -238,8 +268,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
-                        android:gravity="center"
+                        android:gravity="center_vertical"
                         android:hint="@string/plan"
+                        android:paddingLeft="@dimen/task_input_list_padding"
                         android:textSize="16sp" />
 
                 </LinearLayout>
