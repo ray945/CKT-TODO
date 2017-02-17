@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,8 @@ import com.ckt.ckttodo.databinding.ItemLockBinding;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
 
     private void initUI() {
         mActivityScreenBinding = DataBindingUtil.setContentView(LockScreenActivity.this, R.layout.activity_screen);
-//        getData();
+        getData();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mActivityScreenBinding.rvLock.setLayoutManager(layoutManager);
         LockAdapter lockAdapter = new LockAdapter(LockScreenActivity.this, mUnFinishedTasks);
@@ -123,15 +124,31 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
         mUnFinishedTasks.clear();
         RealmResults<EventTask> tasks = DatebaseHelper.getInstance(LockScreenActivity.this).getRealm().where(EventTask.class).findAllSorted(EventTask.TASK_STATUS, false);
         for (EventTask task : tasks) {
-            Log.e("-------","task.getTaskStatus()"+task.getTaskStatus());
-            if (task.getTaskStatus() == EventTask.NOT_START && time(task.getTaskStartTime()) == time(System.currentTimeMillis())) {
+            if (task.getTaskStatus() != EventTask.DONE && task.getTaskStatus() != EventTask.BLOCK && task.getTaskStatus() != EventTask.PENDING && time(task.getTaskStartTime()).equals(time(System.currentTimeMillis()))) {
                 mUnFinishedTasks.add(task);
             }
         }
+        sortList();
     }
 
-    public int time(Long time) {
-        return Integer.getInteger(new SimpleDateFormat("dd").format(new Date(time)));
+    private void sortList() {
+        Collections.sort(mUnFinishedTasks, new Comparator<EventTask>() {
+
+            public int compare(EventTask o1, EventTask o2) {
+
+                if (o1.getTaskStartTime() > o2.getTaskStartTime()) {
+                    return 1;
+                }
+                if (o1.getTaskStartTime() == o2.getTaskStartTime()) {
+                    return 0;
+                }
+                return -1;
+            }
+        });
+    }
+
+    public String time(Long time) {
+        return new SimpleDateFormat("dd").format(new Date(time)).trim();
     }
 
     public class SelfFinishBroadCast {
@@ -219,7 +236,7 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
 
         @Override
         public int getItemCount() {
-            return (eventTaskList == null) ? 0 : eventTaskList.size();
+            return (eventTaskList == null) ? 0 : (eventTaskList.size() > 5 ? 5 : eventTaskList.size());
         }
 
         private OnItemClickListener onItemClickListener;

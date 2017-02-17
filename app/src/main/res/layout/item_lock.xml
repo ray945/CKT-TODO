@@ -6,11 +6,13 @@
         <variable
             name="eventTask"
             type="com.ckt.ckttodo.database.EventTask"/>
+
+        <import type="com.ckt.ckttodo.util.Constants"/>
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
-                  android:layout_height="50dp"
+                  android:layout_height="54dp"
                   android:background="@null"
                   android:orientation="horizontal"
                   android:weightSum="5">
@@ -21,10 +23,10 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:ellipsize="end"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:maxEms="8"
             android:singleLine="true"
-            android:text="@{eventTask.taskTitle}"
+            android:text="@{Constants.hourTime(eventTask.taskStartTime)}"
             android:textColor="@color/textColor"
             android:textSize="16sp"/>
 
@@ -34,11 +36,13 @@
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:ellipsize="end"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:maxEms="8"
             android:singleLine="true"
             android:text="@{eventTask.taskTitle}"
             android:textColor="@color/textColor"
             android:textSize="16sp"/>
     </LinearLayout>
+
+
 </layout>
