@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/activity_chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context="com.ckt.ckttodo.ui.ChartActivity">
 
         <android.support.design.widget.AppBarLayout
@@ -21,21 +22,71 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:titleTextColor="#000" />
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tab_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabIndicatorColor="#388E3C"
-                app:tabSelectedTextColor="#388E3C" />
 
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp">
 
-    </android.support.design.widget.CoordinatorLayout>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingEnd="40dp"
+                android:paddingStart="40dp">
+
+                <RadioButton
+                    android:id="@+id/week_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:buttonTint="@color/main"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="周" />
+
+                <RadioButton
+                    android:id="@+id/month_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/main"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="月" />
+
+                <RadioButton
+                    android:id="@+id/quarter_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/main"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="季" />
+
+                <RadioButton
+                    android:id="@+id/year_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/main"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="年" />
+
+            </RadioGroup>
+
+        </android.support.v7.widget.CardView>
+
+
+        <FrameLayout
+            android:id="@+id/chart_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
 </layout>

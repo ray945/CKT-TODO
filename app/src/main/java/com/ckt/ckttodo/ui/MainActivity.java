@@ -42,8 +42,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-import io.realm.Realm;
-
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem {
     private static final String TAG = "main";
@@ -174,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
                         }).setNegativeButton(R.string.cancel, null);
                         builder.create().show();
+
                         break;
                     case 2:
                         Log.e(TAG, "note click");

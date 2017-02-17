@@ -64,17 +64,15 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         initNewTaskButton(holder.binding.btnAddTask,planId);
 
         final RecyclerView rvTasks = holder.binding.rvTasks;
-        final TaskListAdapter adapter = new TaskListAdapter(context);
-        final TaskListAdapter threeAdapter = new TaskListAdapter(context);
         if (tasks.size() <= 3){
-            adapter.setTasks(tasks);
+            TaskListAdapter adapter = new TaskListAdapter(context,tasks);
             rvTasks.setAdapter(adapter);
         }else if (tasks.size() >= 4){
             RealmList<EventTask> threeTasks = new RealmList<>();
             for (int i = 0; i < 3; i++) {
                 threeTasks.add(tasks.get(i));
             }
-            threeAdapter.setTasks(threeTasks);
+            final TaskListAdapter threeAdapter = new TaskListAdapter(context,threeTasks);
             SmartRecyclerAdapter smartRecyclerAdapter = new SmartRecyclerAdapter(threeAdapter);
             ImageButton footerButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.item_project_tasks_footer,rvTasks,false);
             footerButton.setOnClickListener(new View.OnClickListener() {
