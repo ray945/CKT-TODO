@@ -211,6 +211,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         EventTask task = new EventTask();
         String taskID = UUID.randomUUID().toString();
         task.setTaskId(taskID);
+        task.setTaskStatus(EventTask.NOT_START);
         task.setTaskTitle(mTextViewTitle.getText().toString());
         task.setTaskContent(TextUtils.isEmpty(mTextViewContent.getText()) ? "" : mTextViewContent.getText().toString());
         task.setTaskType(mSpinnerTaskKinds.getSelectedItemPosition() + 1);
