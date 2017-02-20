@@ -112,7 +112,12 @@
     <string name="more_task">加载任务</string>
     <string name="predict_time">计划时间</string>
     <string name="real_spend_time">实际时间</string>
-    <string name="time_distribution">时间分布</string>
+    <array name="time_distribution">
+        <item>本日时间分布</item>
+        <item>本周时间分布</item>
+        <item>本月时间分布</item>
+        <item>本季度时间分布</item>
+    </array>
     <string name="time_correlation">时间对比</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -25,8 +25,7 @@
             android:maxLength="10"
             android:gravity="center_vertical"
             android:text="@{task.taskTitle}"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
+            android:textColor="@color/textColor"/>
 
         <TextView
             android:id="@+id/tv_task_time"
@@ -35,8 +34,7 @@
             android:layout_gravity="end"
             android:layout_alignParentEnd="true"
             android:gravity="center_vertical"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
+            android:textColor="@color/textColor"/>
 
     </RelativeLayout>
 </layout>

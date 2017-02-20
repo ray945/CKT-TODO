@@ -31,7 +31,7 @@
                 android:padding="5dp"
                 android:text="@{plan.planName}"
                 android:textColor="@color/textColor"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 />
 
             <TextView
