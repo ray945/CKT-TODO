@@ -3,6 +3,9 @@ package com.ckt.ckttodo.util;
 import android.app.Application;
 import android.content.SharedPreferences;
 
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
+
 /**
  * Created by zhiwei.li
  */
@@ -20,6 +23,7 @@ public class MyApplication extends Application {
             SharedPreferences.Editor editor = getSharedPreferences(MyApplication.INIT_DATA, MODE_PRIVATE).edit();
             editor.putBoolean(MyApplication.IS_FIRST, false);
             editor.apply();
+
         }
     }
 

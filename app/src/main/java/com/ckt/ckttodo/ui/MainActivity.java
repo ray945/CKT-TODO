@@ -5,10 +5,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -33,6 +37,9 @@ import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
+import com.ckt.ckttodo.util.Constants;
+import com.ckt.ckttodo.util.PermissionUtil;
+import com.ckt.ckttodo.util.VoiceInputUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,9 +50,11 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        TaskFragment.ShowMainMenuItem, VoiceInputUtil.VoiceChangeListener, ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
+    private static final int REQUEST_PERMISSIONS = 1;
     public final static int MAIN_TO_NEW_TASK_CODE = 100;
     private ActivityMainBinding mActivityMainBinding;
     private MenuItem mMenuItemSure;
@@ -53,6 +62,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TaskFragment mTaskFragment;
     private List<Fragment> mFragmentList;
     private ScreenOffBroadcast mScreenOffBroadcast;
+    private VoiceInputUtil mVoiceInput;
+    private static String[] PERMISSION_LIST = new String[]{
+            Constants.RECORD_AUDIO,
+            Constants.READ_PHONE_STATE,
+            Constants.READ_EXTERNAL_STORAGE,
+            Constants.WRITE_EXTERNAL_STORAGE
+    };
 
 
     @Override
@@ -64,10 +80,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSIONS) {
+            if (PermissionUtil.verifyPermission(grantResults)) {
+//                Snackbar.make()
+                Toast.makeText(this, "获取权限成功！", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerScreenOffBroadcast();
         mFragmentList = new ArrayList<>();
+        mVoiceInput = new VoiceInputUtil(this);
+        mVoiceInput.setOnVoiceChangeListener(this);
         initUI();
         setupWindowAnimations();
     }
@@ -131,8 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 switch (viewPager.getCurrentItem()) {
                     case 0:
-                        Log.e(TAG, "task click");
-                        //TODO Task floating button click
+                        getTheVoiceInput();
                         break;
                     case 1:
                         Log.e(TAG, "project click");
@@ -185,6 +216,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    private void getTheVoiceInput() {
+        if (ActivityCompat.checkSelfPermission(this, Constants.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Constants.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Constants.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Constants.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            requestContactsPermission();
+
+        }
+        mVoiceInput.startListening();
+        Log.e(TAG, "task click " + mVoiceInput.isListening());
+    }
+
+    private void requestContactsPermission() {
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.RECORD_AUDIO)
+                || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.READ_PHONE_STATE)
+                || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.READ_EXTERNAL_STORAGE)
+                || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.WRITE_EXTERNAL_STORAGE)) {
+
+            ActivityCompat.requestPermissions(this, PERMISSION_LIST, REQUEST_PERMISSIONS);
+        } else {
+            Toast.makeText(this, "获取权限成功！", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @SuppressWarnings("unchecked")
     void transitionTo(Intent i) {
         final Pair<View, String>[] pairs = TransitionHelper.createSafeTransitionParticipants(this, true);
@@ -230,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void unRegisterScreenOffBroadcast() {
+        new Intent(MainActivity.this, NewTaskActivity.class);
         if (mScreenOffBroadcast != null) {
             mScreenOffBroadcast.unregisterBroadcast();
         }
@@ -252,7 +308,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.menu_research:
                 startActivityForResult(new Intent(this, NewTaskActivity.class), MAIN_TO_NEW_TASK_CODE);
-                ;
                 break;
             case R.id.menu_sure:
                 //删除选中项并结束事件
@@ -317,5 +372,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         unRegisterScreenOffBroadcast();
+    }
+
+    @Override
+    public void onVoiceChanged(int volume) {
+
+    }
+
+    @Override
+    public void onBackResult(String result) {
+        Intent intent = new Intent(this, NewTaskActivity.class);
+        if (result != null && result.trim().length() > 0) {
+            intent.putExtra(NewTaskActivity.VOICE_INPUT, result);
+        }
+        startActivity(intent);
     }
 }

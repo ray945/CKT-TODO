@@ -1,6 +1,7 @@
 package com.ckt.ckttodo.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -64,7 +65,9 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private String[] mPlans;
     public static final String GET_PLAN_ID_FROM_PROJECT = "planId";
     private static final String TASK_BELONG_NONE = "plan";
+    public static final String VOICE_INPUT = "voice_input";
     DatebaseHelper mHelper = DatebaseHelper.getInstance(this);
+    private Object intentData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +143,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mTextViewContent = mActivityNewTaskBinding.newEditConent;
         mTextViewTitle = mActivityNewTaskBinding.newEditTitle;
 
+        getIntentData();
     }
 
     /**
@@ -353,5 +357,13 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
 
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    public void getIntentData() {
+        Intent intent = getIntent();
+        String content = intent.getStringExtra(VOICE_INPUT);
+        if (content != null && content.length() > 0) {
+            mTextViewTitle.setText(content);
+        }
     }
 }
