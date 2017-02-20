@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
 import android.transition.Visibility;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -386,5 +387,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             intent.putExtra(NewTaskActivity.VOICE_INPUT, result);
         }
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && mMenuItemSure.isVisible()) {
+            mTaskFragment.finishDeleteAction(false);
+            mMenuItemSure.setVisible(false);
+            mMenuItemFalse.setVisible(false);
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 }
