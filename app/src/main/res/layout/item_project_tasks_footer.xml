@@ -5,7 +5,7 @@
     android:scaleType="center"
     android:layout_gravity="start"
     android:contentDescription="@string/more_task"
-    android:background="@color/colorPrimary"
+    android:background="@android:color/white"
     android:src="@drawable/ic_more_horiz_black_48dp">
 
 </ImageButton>

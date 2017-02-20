@@ -18,7 +18,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
+                android:background="@android:color/white"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:titleTextColor="#000" />
 
@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:checked="true"
-                    android:buttonTint="@color/main"
+                    android:buttonTint="@color/colorAccent"
                     android:onClick="onRadioButtonClicked"
                     android:text="周" />
 
@@ -55,7 +55,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:buttonTint="@color/main"
+                    android:buttonTint="@color/colorAccent"
                     android:onClick="onRadioButtonClicked"
                     android:text="月" />
 
@@ -64,7 +64,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:buttonTint="@color/main"
+                    android:buttonTint="@color/colorAccent"
                     android:onClick="onRadioButtonClicked"
                     android:text="季" />
 
@@ -73,7 +73,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:buttonTint="@color/main"
+                    android:buttonTint="@color/colorAccent"
                     android:onClick="onRadioButtonClicked"
                     android:text="年" />
 

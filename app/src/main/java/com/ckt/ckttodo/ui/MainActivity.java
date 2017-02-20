@@ -154,7 +154,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String[] mTitles = {getString(R.string.task), getString(R.string.project), getString(R.string.note)};
                 return mTitles[position];
             }
+
+
         };
+
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        mActivityMainBinding.appBarMain.fab.setVisibility(View.INVISIBLE);
+                        mActivityMainBinding.appBarMain.fam.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                    case 2:
+                        mActivityMainBinding.appBarMain.fam.collapse();
+                        mActivityMainBinding.appBarMain.fab.setVisibility(View.VISIBLE);
+                        mActivityMainBinding.appBarMain.fam.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         viewPager.setAdapter(fragmentPagerAdapter);
         TabLayout tabLayout = mActivityMainBinding.appBarMain.contentMain.tabLayout;
         tabLayout.setupWithViewPager(viewPager);

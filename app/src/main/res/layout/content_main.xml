@@ -17,9 +17,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            app:tabSelectedTextColor="#388E3C"
-            app:tabIndicatorColor="#388E3C"
-            android:background="@color/colorPrimary">
+            app:tabSelectedTextColor="@color/colorAccent"
+            app:tabIndicatorColor="@color/colorAccent"
+            android:background="@android:color/white">
         </android.support.design.widget.TabLayout>
 
         <android.support.v4.view.ViewPager

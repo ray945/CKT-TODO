@@ -3,7 +3,7 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="@dimen/nav_header_height"
-              android:background="@color/main"
+              android:background="@color/colorPrimary"
               android:gravity="bottom"
               android:orientation="vertical"
               android:paddingBottom="@dimen/activity_vertical_margin"
@@ -22,7 +22,7 @@
             android:layout_height="70dp"
             android:scaleType="fitCenter"
             android:src="@mipmap/ic_launcher"
-            app:riv_border_color="#000000"
+            app:riv_border_color="#fff"
             app:riv_border_width="1dp"
             app:riv_oval="true"
             app:srcCompat="@android:drawable/sym_def_app_icon"/>
@@ -36,7 +36,8 @@
             android:layout_toRightOf="@+id/tv_userIcon"
             android:text="Sink"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:textColor="@android:color/white"/>
 
         <TextView
             android:id="@+id/tv_userEmail"
@@ -46,7 +47,8 @@
             android:layout_marginTop="45dp"
             android:layout_toRightOf="@+id/tv_userIcon"
             android:text="lovesink@qq.com"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            android:textColor="@android:color/white"/>
     </RelativeLayout>
 
 
