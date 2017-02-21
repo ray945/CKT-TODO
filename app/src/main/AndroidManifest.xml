@@ -44,6 +44,7 @@
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.FinishedTaskActivity"/>
+        <activity android:name=".ui.ClockAnimationActivity" />
 
 
     </application>

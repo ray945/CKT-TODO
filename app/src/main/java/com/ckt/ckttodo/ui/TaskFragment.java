@@ -1,12 +1,12 @@
 package com.ckt.ckttodo.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
-import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.FragmentTaskBinding;
 import com.ckt.ckttodo.databinding.TaskListItemBinding;
 import com.ckt.ckttodo.widgt.TaskDividerItemDecoration;
@@ -199,7 +198,9 @@ public class TaskFragment extends Fragment {
                 }
             } else if (v == imageButtonStatus) {
                 imageButtonStatus.setSelected(true);
-                showTomatoDialog();
+                Intent intent = new Intent(getActivity(),ClockAnimationActivity.class);
+                startActivity(intent);
+               /* showTomatoDialog();*/
 
 
             }
