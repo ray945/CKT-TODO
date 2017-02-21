@@ -1,7 +1,9 @@
 package com.ckt.ckttodo.ui;
 
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,12 +38,15 @@ import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
 import com.ckt.ckttodo.util.Constants;
+import com.ckt.ckttodo.util.NotificationBroadcastReceiver;
 import com.ckt.ckttodo.util.PermissionUtil;
 import com.ckt.ckttodo.util.VoiceInputUtil;
 
+import io.realm.RealmResults;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -103,6 +108,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mVoiceInput.setOnVoiceChangeListener(this);
         initUI();
         setupWindowAnimations();
+        initNotification();
+    }
+
+    private void initNotification(){
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent("com.ckt.ckttodo.alarm");
+        intent.putExtra(NotificationBroadcastReceiver.NOTIFICATION_TITLE,getResources().getString(R.string.remind_title));
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,1,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),100000,pendingIntent);
     }
 
     private void initUI() {
@@ -431,4 +446,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return super.onKeyDown(keyCode, event);
     }
+
 }

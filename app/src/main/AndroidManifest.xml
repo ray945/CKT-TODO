@@ -46,6 +46,11 @@
         <activity android:name=".ui.FinishedTaskActivity"/>
         <activity android:name=".ui.ClockAnimationActivity" />
 
+        <receiver android:name=".util.NotificationBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.ckt.ckttodo.alarm"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

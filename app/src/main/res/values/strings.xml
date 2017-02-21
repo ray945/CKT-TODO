@@ -112,6 +112,7 @@
     <string name="more_task">加载任务</string>
     <string name="predict_time">计划时间</string>
     <string name="real_spend_time">实际时间</string>
+    <string name="remind_title">您有即将开始的任务</string>
     <array name="time_distribution">
         <item>本日时间分布</item>
         <item>本周时间分布</item>
