@@ -44,7 +44,9 @@
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.FinishedTaskActivity"/>
-        <activity android:name=".ui.ClockAnimationActivity" />
+        <activity android:name=".ui.ClockAnimationActivity"
+            android:screenOrientation="portrait"
+            />
 
         <receiver android:name=".util.NotificationBroadcastReceiver">
             <intent-filter>

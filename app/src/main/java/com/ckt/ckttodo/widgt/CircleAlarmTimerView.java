@@ -101,7 +101,7 @@ public class CircleAlarmTimerView extends View {
             super.handleMessage(msg);
             if (mCurrentRadian > 0 && mCurrentTime > 0)
             {
-                mCurrentRadian -= (2 * Math.PI) / 3600;
+                mCurrentRadian -= (2 * Math.PI) / 1500;
                 mCurrentTime--;
                 if (mCircleTimerListener != null)
                 {
