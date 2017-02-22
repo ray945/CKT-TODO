@@ -1,7 +1,147 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">西可土豆</string>
-    <string name="task">任务</string>
-    <string name="project">计划</string>
-    <string name="note">便签</string>
+    <string name="app_name">CKT Todo</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+
+    <string name="task">task</string>
+    <string name="project">project</string>
+    <string name="note">note</string>
+    <string name="new_task">新建任务</string>
+    <string name="what_to_do">描述</string>
+    <string name="kinds">任务分类：</string>
+    <string name="task_level">任务等级：</string>
+    <string name="schedule_time">开始时间：</string>
+    <string name="schedule_date">计划日期：</string>
+    <string name="spend_time">预计用时：</string>
+    <string name="pre_remind">提醒时间：</string>
+    <string name="kind_of_plan">所属计划：</string>
+    <string name="sure">确定</string>
+    <string name="research">搜索</string>
+    <string name="plan">计划</string>
+    <string name="plan_time">计划2小时</string>
+    <string name="take_time">已用时1.5小时</string>
+    <string name="new_task_successful">新建任务成功</string>
+    <string name="task_not_empty_content">任务名不能为空！</string>
+    <string name="task_not_empty_plan_time">请输入计划时间！</string>
+    <string name="no">取消</string>
+    <string name="stop_count_down_time">停止计时</string>
+    <string name="tomato_time">番茄时钟</string>
+    <string name="date">日期</string>
+    <string name="time">时间</string>
+    <string name="start_num">0</string>
+    <string name="task_start_remind_default">提前10分钟提醒</string>
+    <string name="task_plan_pre">计划</string>
+    <string name="task_hour">小时</string>
+    <string name="task_done">已用</string>
+    <string name="task_history">历史任务</string>
+    <array name="kind_list">
+        <item>工作</item>
+        <item>学习</item>
+        <item>生活</item>
+        <item>休息</item>
+    </array>
+    <array name="task_level">
+        <item>很重要-很紧急</item>
+        <item>很重要-不紧急</item>
+        <item>不重要-很紧急</item>
+        <item>不重要-不紧急</item>
+    </array>
+    <array name="task_remind">
+        <item>提前10分钟提醒</item>
+        <item>提前20分钟提醒</item>
+        <item>提前30分钟提醒</item>
+        <item>提前1小时提醒</item>
+    </array>
+    <array name="chart_title">
+        <item>周</item>
+        <item>月</item>
+        <item>季度</item>
+        <item>年</item>
+    </array>
+    <array name="weeks">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+    </array>
+    <array name="months">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>May</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Aug</item>
+        <item>Sep</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dec</item>
+    </array>
+    <array name="quarters">
+        <item>Q1</item>
+        <item>Q2</item>
+        <item>Q3</item>
+        <item>Q4</item>
+    </array>
+    <array name="years">
+        <item>去年</item>
+        <item>今年</item>
+    </array>
+    <string name="new_plan">新建计划</string>
+    <string name="new_project">新建项目</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="plan_not_null">计划不能为空，请重新输入。</string>
+    <string name="plan_exist">该计划已存在</string>
+    <string name="project_exist">该项目已存在</string>
+    <string name="init_project_name">初始项目</string>
+    <string name="init_project_summary">项目描述</string>
+    <string name="init_plan_name">计划</string>
+    <string name="init_plan_content">计划内容</string>
+    <string name="init_task_title">任务标题</string>
+    <string name="init_task_content">任务内容</string>
+    <string name="init_note_title">我是初始化便签标题</string>
+    <string name="init_note_content">我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容。</string>
+    <string name="accomplishProgress">进度</string>
+    <string name="more_task">加载任务</string>
+    <string name="more_plan">加载计划</string>
+    <string name="predict_time">计划时间</string>
+    <string name="real_spend_time">实际时间</string>
+    <string name="remind_title">您有即将开始的任务</string>
+    <array name="time_distribution">
+        <item>本日时间分布</item>
+        <item>本周时间分布</item>
+        <item>本月时间分布</item>
+        <item>本季度时间分布</item>
+    </array>
+    <string name="time_correlation">时间对比</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="about">关于</string>
+    <string name="tasks">任务</string>
+    <string name="file">归档</string>
+    <string name="new_note">新建便签</string>
+    <string name="alter_note">修改</string>
+    <string name="dataCount">数据统计</string>
+    <string name="team">团队</string>
+    <string name="setting">设置</string>
+    <string name="title">标题</string>
+    <string name="content">内容</string>
+    <string name="main">西可土豆</string>
+    <string name="grade">给我们评分</string>
+    <string name="website">网站</string>
+    <string name="GitHub">GitHub</string>
+    <string name="opinion">意见反馈</string>
+    <string name="author">made by CK-Telecom</string>
+    <string name="version">v0.1 Beta</string>
+    <string name="sliding">>>>滑动解锁>>></string>
+    
 </resources>

@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="plan"
-            type="com.ckt.ckttodo.database.Plan" />
+            name="project"
+            type="com.ckt.ckttodo.database.Project" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:padding="5dp"
-                android:text="@{plan.planName}"
+                android:text="@{project.projectTitle}"
                 android:textColor="@color/textColor"
                 android:textSize="20sp"
                 />
@@ -43,7 +43,7 @@
                 android:gravity="center_vertical"
                 android:textColor="@color/textColor"
                 android:paddingRight="15dp"
-                android:text="@{plan.accomplishProgress}" />
+                android:text="@{project.accomplishProgress}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
         </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_tasks"
+            android:id="@+id/rv_plans"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -69,12 +69,12 @@
             android:scrollbars="none" />
 
         <ImageButton
-            android:id="@+id/btn_addTask"
+            android:id="@+id/btn_addPlan"
             android:layout_width="400dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:background="@color/background_grey"
-            android:contentDescription="@string/new_task"
+            android:contentDescription="@string/new_plan"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_add_black_48dp" />
 

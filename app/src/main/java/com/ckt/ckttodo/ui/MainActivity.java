@@ -40,6 +40,7 @@ import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
+import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.NotificationBroadcastReceiver;
@@ -47,6 +48,7 @@ import com.ckt.ckttodo.util.PermissionUtil;
 import com.ckt.ckttodo.util.VoiceInputUtil;
 
 import io.realm.RealmResults;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,8 +58,7 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        TaskFragment.ShowMainMenuItem, VoiceInputUtil.VoiceChangeListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem, VoiceInputUtil.VoiceChangeListener, ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
     private static final int REQUEST_PERMISSIONS = 1;
@@ -69,12 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private List<Fragment> mFragmentList;
     private ScreenOffBroadcast mScreenOffBroadcast;
     private VoiceInputUtil mVoiceInput;
-    private static String[] PERMISSION_LIST = new String[]{
-            Constants.RECORD_AUDIO,
-            Constants.READ_PHONE_STATE,
-            Constants.READ_EXTERNAL_STORAGE,
-            Constants.WRITE_EXTERNAL_STORAGE
-    };
+    private static String[] PERMISSION_LIST = new String[]{Constants.RECORD_AUDIO, Constants.READ_PHONE_STATE, Constants.READ_EXTERNAL_STORAGE, Constants.WRITE_EXTERNAL_STORAGE};
 
 
     @Override
@@ -89,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSIONS) {
             if (PermissionUtil.verifyPermission(grantResults)) {
-//                Snackbar.make()
+                //                Snackbar.make()
                 Toast.makeText(this, "获取权限成功！", Toast.LENGTH_SHORT).show();
             }
 
@@ -111,13 +107,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initNotification();
     }
 
-    private void initNotification(){
+    private void initNotification() {
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
         Intent intent = new Intent("com.ckt.ckttodo.alarm");
-        intent.putExtra(NotificationBroadcastReceiver.NOTIFICATION_TITLE,getResources().getString(R.string.remind_title));
+        intent.putExtra(NotificationBroadcastReceiver.NOTIFICATION_TITLE, getResources().getString(R.string.remind_title));
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,1,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),100000,pendingIntent);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 100000, pendingIntent);
     }
 
     private void initUI() {
@@ -226,23 +222,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 inputManager.showSoftInput(editText, 0);
                             }
                         }, 200);
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).setTitle(R.string.new_plan).setView(editTextView).setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).setTitle(R.string.new_project).setView(editTextView).setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                final String taskName = editText.getText().toString().trim();
-                                for (Plan plan : DatebaseHelper.getInstance(MainActivity.this).findAll(Plan.class)) {
-                                    if (taskName.equals(plan.getPlanName())) {
-                                        showToast(getResources().getString(R.string.plan_exist));
+                                final String projectName = editText.getText().toString().trim();
+                                for (Project project : DatebaseHelper.getInstance(MainActivity.this).findAll(Project.class)) {
+                                    if (projectName.equals(project.getProjectTitle())) {
+                                        showToast(getResources().getString(R.string.project_exist));
                                         return;
                                     }
                                 }
-                                if (!taskName.equals("")) {
-                                    Plan plan = new Plan();
-                                    plan.setPlanId(UUID.randomUUID().toString());
-                                    plan.setPlanName(taskName);
+                                if (!projectName.equals("")) {
+                                    Project project = new Project();
+                                    project.setProjectId(UUID.randomUUID().toString());
+                                    project.setProjectTitle(projectName);
                                     Date date = new Date();
-                                    plan.setCreateTime(date.getTime());
-                                    DatebaseHelper.getInstance(MainActivity.this).insert(plan);
+                                    project.setCreateTime(date.getTime());
+                                    project.setEndTime(date.getTime());
+                                    project.setLastUpdateTime(date.getTime());
+                                    DatebaseHelper.getInstance(MainActivity.this).insert(project);
                                 } else {
                                     showToast(getResources().getString(R.string.plan_not_null));
                                 }
@@ -263,10 +261,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getTheVoiceInput() {
-        if (ActivityCompat.checkSelfPermission(this, Constants.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, Constants.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, Constants.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, Constants.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Constants.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Constants.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Constants.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Constants.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             requestContactsPermission();
 
         }
@@ -275,10 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void requestContactsPermission() {
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.RECORD_AUDIO)
-                || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.READ_PHONE_STATE)
-                || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.READ_EXTERNAL_STORAGE)
-                || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.WRITE_EXTERNAL_STORAGE)) {
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.RECORD_AUDIO) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.READ_PHONE_STATE) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.READ_EXTERNAL_STORAGE) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.WRITE_EXTERNAL_STORAGE)) {
 
             ActivityCompat.requestPermissions(this, PERMISSION_LIST, REQUEST_PERMISSIONS);
         } else {
@@ -385,8 +377,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_task) {
             // Handle the camera action
-            startActivity(new Intent(this, FinishedTaskActivity.class));
 
+        } else if (id == R.id.nav_file) {
+            startActivity(new Intent(this, FinishedTaskActivity.class));
         } else if (id == R.id.nav_count) {
             Intent intent = new Intent(MainActivity.this, ChartActivity.class);
             transitionTo(intent);

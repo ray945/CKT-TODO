@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ckt.ckttodo.database.DatebaseHelper;
-import com.ckt.ckttodo.database.Plan;
+import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.FragmentProjectBinding;
 import com.ckt.ckttodo.util.ProjectListAdapter;
 
@@ -24,6 +24,7 @@ import io.realm.RealmResults;
 public class ProjectFragment extends Fragment {
 
     public static final String PLAN_ID = "planId";
+    public static final String PROJECT_ID = "projectId";
     public static final String TASK_START_TIME = "taskStartTime";
 
 
@@ -34,8 +35,8 @@ public class ProjectFragment extends Fragment {
         FragmentProjectBinding binding = FragmentProjectBinding.inflate(inflater);
         RecyclerView rvProjects = binding.rvProject;
 
-        RealmResults<Plan> planList = DatebaseHelper.getInstance(getContext()).findAll(Plan.class);
-        ProjectListAdapter adapter = new ProjectListAdapter(getContext(), planList);
+        RealmResults<Project> projectList = DatebaseHelper.getInstance(getContext()).findAll(Project.class);
+        ProjectListAdapter adapter = new ProjectListAdapter(getContext(), projectList);
         initRecyclerView(rvProjects, adapter, getContext());
         return binding.getRoot();
     }

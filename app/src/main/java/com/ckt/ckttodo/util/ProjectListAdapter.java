@@ -1,29 +1,23 @@
 package com.ckt.ckttodo.util;
 
 import android.content.Context;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
-import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
+import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ItemProjectBinding;
-import com.ckt.ckttodo.ui.NewTaskActivity;
 import com.ckt.ckttodo.ui.ProjectFragment;
 import com.headerfooter.songhang.library.SmartRecyclerAdapter;
-
-import org.mozilla.universalchardet.prober.statemachine.SMModel;
 
 import java.text.NumberFormat;
 
@@ -37,13 +31,13 @@ import io.realm.RealmResults;
 
 public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {
 
-    private RealmResults<Plan> planList;
+    private RealmResults<Project> projectList;
     private Context context;
     private static final String TAG = "ZHIWEI";
 
 
-    public ProjectListAdapter(Context context, RealmResults<Plan> planList) {
-        this.planList = planList;
+    public ProjectListAdapter(Context context, RealmResults<Project> projectList) {
+        this.projectList = projectList;
         this.context = context;
     }
 
@@ -54,48 +48,73 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ProjectListAdapter.ViewHolder holder, int position) {
-        Plan plan = planList.get(position);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Project project = projectList.get(position);
 
-        final RealmList<EventTask> tasks = plan.getEventTasks();
-        final String planId = plan.getPlanId();
+        final RealmList<Plan> plans = project.getPlans();
+        final String projectId = project.getProjectId();
 
-        calculateProgress(tasks, planId);
-        initNewTaskButton(holder.binding.btnAddTask,planId);
+        calculateProgress(plans, projectId);
+        initNewTaskButton(holder.binding.btnAddPlan, projectId);
 
-        final RecyclerView rvTasks = holder.binding.rvTasks;
-        if (tasks.size() <= 3){
-            TaskListAdapter adapter = new TaskListAdapter(context,tasks);
-            rvTasks.setAdapter(adapter);
-        }else if (tasks.size() >= 4){
-            RealmList<EventTask> threeTasks = new RealmList<>();
+        final RecyclerView rvPlans = holder.binding.rvPlans;
+        if (plans.size() <= 3) {
+            PlanListAdapter adapter = new PlanListAdapter(context, plans);
+            adapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position, View view) {
+
+                }
+            });
+            rvPlans.setAdapter(adapter);
+        } else if (plans.size() >= 4) {
+            RealmList<Plan> threePlans = new RealmList<>();
             for (int i = 0; i < 3; i++) {
-                threeTasks.add(tasks.get(i));
+                threePlans.add(plans.get(i));
             }
-            final TaskListAdapter threeAdapter = new TaskListAdapter(context,threeTasks);
+            final PlanListAdapter threeAdapter = new PlanListAdapter(context, threePlans);
             SmartRecyclerAdapter smartRecyclerAdapter = new SmartRecyclerAdapter(threeAdapter);
-            ImageButton footerButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.item_project_tasks_footer,rvTasks,false);
+            ImageButton footerButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.item_project_plan_footer, rvPlans, false);
             footerButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     threeAdapter.clear();
-                    threeAdapter.setTasks(tasks);
+                    threeAdapter.setPlans(plans);
                     SmartRecyclerAdapter adapter1 = new SmartRecyclerAdapter(threeAdapter);
-                    rvTasks.setAdapter(adapter1);
+                    rvPlans.setAdapter(adapter1);
                 }
             });
             smartRecyclerAdapter.setFooterView(footerButton);
-            rvTasks.setAdapter(smartRecyclerAdapter);
+            rvPlans.setAdapter(smartRecyclerAdapter);
         }
 
-        holder.bind(plan);
+        holder.bind(project);
 
+    }
+
+    private void calculateProgress(RealmList<Plan> plans, final String projectId) {
+        float finishPlan = 0;
+        for (Plan plan : plans) {
+            if (plan.getStatus() == Plan.DONE) {
+                finishPlan++;
+            }
+        }
+        float accomplishProgressTemp = finishPlan / plans.size();
+        NumberFormat numberFormat = NumberFormat.getPercentInstance();
+        final String accomplishProgress = numberFormat.format(accomplishProgressTemp);
+        DatebaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Project tempProject = DatebaseHelper.getInstance(context).getRealm().where(Project.class).equalTo(ProjectFragment.PROJECT_ID, projectId).findFirst();
+                tempProject.setAccomplishProgress(accomplishProgress);
+            }
+        });
     }
 
 
     @Override
     public int getItemCount() {
-        return (planList == null) ? 0 : planList.size();
+        return (projectList == null) ? 0 : projectList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -105,11 +124,11 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         ViewHolder(ItemProjectBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            initRecyclerView(binding.rvTasks, context);
+            initRecyclerView(binding.rvPlans, context);
         }
 
-        void bind(Plan plan) {
-            binding.setPlan(plan);
+        void bind(Project project) {
+            binding.setProject(project);
             binding.executePendingBindings();
         }
     }
@@ -121,7 +140,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         recyclerView.addItemDecoration(new ProjectTaskListDecoration(context));
     }
 
-    private void calculateProgress(RealmList<EventTask> tasks, final String planId) {
+   /* private void calculateProgress(RealmList<EventTask> tasks, final String planId) {
         float totalTaskTime = 0;
         float doneTaskTime = 0;
         for (EventTask task : tasks) {
@@ -141,15 +160,15 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                 tempPlan.setAccomplishProgress(accomplishProgress);
             }
         });
-    }
+    }*/
 
     private void initNewTaskButton(ImageButton button, final String planId) {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, NewTaskActivity.class);
+               /* Intent intent = new Intent(context, NewTaskActivity.class);
                 intent.putExtra(NewTaskActivity.GET_PLAN_ID_FROM_PROJECT, planId);
-                context.startActivity(intent);
+                context.startActivity(intent);*/
             }
         });
 

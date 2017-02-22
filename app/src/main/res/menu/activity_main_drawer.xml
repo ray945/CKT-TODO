@@ -7,6 +7,10 @@
             android:icon="@mipmap/nav_task"
             android:title="@string/tasks"/>
         <item
+            android:id="@+id/nav_file"
+            android:icon="@drawable/file"
+            android:title="@string/file"/>
+        <item
             android:id="@+id/nav_count"
             android:icon="@mipmap/nav_count"
             android:title="@string/dataCount"/>

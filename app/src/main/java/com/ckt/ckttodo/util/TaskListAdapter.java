@@ -51,10 +51,10 @@ class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(TaskListAdapter.ViewHolder holder, int position) {
-        EventTask task = tasks.get(position);
+        EventTask eventTask = tasks.get(position);
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日");
-        holder.binding.tvTaskTime.setText(dateFormat.format(task.getTaskStartTime()));
-        holder.bind(task);
+        holder.binding.tvTaskTime.setText(dateFormat.format(eventTask.getTaskStartTime()));
+        holder.bind(eventTask);
     }
 
     @Override

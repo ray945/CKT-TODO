@@ -14,7 +14,7 @@ public class Plan extends RealmObject {
      * 等待:PLAN_PENDING
      * 阻塞:PLAN_BLOCK
      * 完成:DONE
-     * */
+     */
     public static final int PLAN_NOT_START = -1;
     public static final int PLAN_START = 1;
     public static final int PLAN_PENDING = 2;
@@ -35,6 +35,27 @@ public class Plan extends RealmObject {
     private long createTime;
     //计划最新更新时间
     private long lastUpdateTime;
+    //计划周期开始时间
+    private long startTime;
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    //计划周期结束时间
+    private long endTime;
     //计划状态
     private int status = PLAN_NOT_START;
     //计划进度

@@ -42,7 +42,7 @@ public class InitDataBase {
             DatebaseHelper.getInstance(context).insert(project);
             final String projectId = project.getProjectId();
 
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < 4; j++) {
                 final String planId = UUID.randomUUID().toString();
                 DatebaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {
                     @Override
@@ -54,12 +54,14 @@ public class InitDataBase {
                         plan.setPlanContent(context.getResources().getString(R.string.init_plan_content));
                         plan.setUserId(NOT_USER_ID);
                         plan.setCreateTime(time);
+                        plan.setStartTime(time);
+                        plan.setEndTime(time);
                         plan.setLastUpdateTime(time);
                         plan.setStatus(Plan.PLAN_START);
                         plan.setPredictSpendTime(20f);
                         plan.setProjectId(projectId);
                         sProject.getPlans().add(plan);
-//                        DatebaseHelper.getInstance(context).insert(plan);
+                        //                        DatebaseHelper.getInstance(context).insert(plan);
                     }
                 });
 
