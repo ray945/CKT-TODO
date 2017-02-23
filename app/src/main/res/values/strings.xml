@@ -11,6 +11,7 @@
     <string name="project">project</string>
     <string name="note">note</string>
     <string name="new_task">新建任务</string>
+    <string name="new_project">新建项目</string>
     <string name="what_to_do">描述</string>
     <string name="kinds">任务分类：</string>
     <string name="task_level">任务等级：</string>

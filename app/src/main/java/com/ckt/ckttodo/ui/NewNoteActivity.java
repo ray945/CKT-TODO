@@ -1,5 +1,7 @@
 package com.ckt.ckttodo.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -23,9 +26,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- *
  * Created by mozre
- *
  */
 
 public class NewNoteActivity extends AppCompatActivity {
@@ -78,13 +79,7 @@ public class NewNoteActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_sure:
                 mRealm = DatebaseHelper.getInstance(NewNoteActivity.this).getRealm();
-                if (et_noteContent.getText().toString().trim().equals("") || et_noteTitle.getText().toString().trim().equals("")) {
-                    Toast.makeText(NewNoteActivity.this, "不能为空哦!", Toast.LENGTH_SHORT).show();
-                } else if (mNoteTag.equals("1")) {
-                    updateNote();
-                } else {
-                    saveNote();
-                }
+                save();
                 break;
             case android.R.id.home:
                 finish();
@@ -95,6 +90,48 @@ public class NewNoteActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void save() {
+        if (et_noteContent.getText().toString().trim().equals("") || et_noteTitle.getText().toString().trim().equals("")) {
+            Toast.makeText(NewNoteActivity.this, "不能为空哦!", Toast.LENGTH_SHORT).show();
+        } else if (mNoteTag.equals("1")) {
+            updateNote();
+        } else {
+            saveNote();
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mNoteTag.equals("1")) {
+                if (note.getNoteContent().equals(et_noteContent.getText().toString().trim()) && note.getNoteTitle().equals(et_noteTitle.getText().toString().trim())) {
+                    
+                } else {
+                    show();
+                }
+            } else {
+                show();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void show() {
+        new AlertDialog.Builder(this).setTitle("是否保存？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("是", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                save();
+            }
+        }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        }).show();
     }
 
     private void initData() {

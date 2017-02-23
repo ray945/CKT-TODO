@@ -7,9 +7,9 @@
     <string name="action_settings">Settings</string>
 
 
-    <string name="task">task</string>
-    <string name="project">project</string>
-    <string name="note">note</string>
+    <string name="task">任务</string>
+    <string name="project">项目</string>
+    <string name="note">便签</string>
     <string name="new_task">新建任务</string>
     <string name="what_to_do">描述</string>
     <string name="kinds">任务分类：</string>
