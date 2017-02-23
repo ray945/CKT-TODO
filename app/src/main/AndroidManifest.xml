@@ -47,6 +47,7 @@
         <activity android:name=".ui.ClockAnimationActivity"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".ui.VoiceActivity" />
 
         <receiver android:name=".util.NotificationBroadcastReceiver">
             <intent-filter>

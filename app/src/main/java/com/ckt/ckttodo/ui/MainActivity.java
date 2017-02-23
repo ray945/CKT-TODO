@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ScreenOffBroadcast mScreenOffBroadcast;
     private VoiceInputUtil mVoiceInput;
     private static String[] PERMISSION_LIST = new String[]{Constants.RECORD_AUDIO, Constants.READ_PHONE_STATE, Constants.READ_EXTERNAL_STORAGE, Constants.WRITE_EXTERNAL_STORAGE};
+    private boolean isFirstTime = true;
 
 
     @Override
@@ -200,6 +201,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TabLayout tabLayout = mActivityMainBinding.appBarMain.contentMain.tabLayout;
         tabLayout.setupWithViewPager(viewPager);
 
+        mActivityMainBinding.appBarMain.addVoid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isFirstTime){
+                    getTheVoiceInput();
+                    isFirstTime = false;
+                }else {
+                    transitionTo(new Intent(MainActivity.this, VoiceActivity.class));
+                }
+            }
+        });
+
         mActivityMainBinding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -265,8 +278,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             requestContactsPermission();
 
         }
-        mVoiceInput.startListening();
-        Log.e(TAG, "task click " + mVoiceInput.isListening());
+       /* mVoiceInput.startListening();
+        Log.e(TAG, "task click " + mVoiceInput.isListening());*/
     }
 
     private void requestContactsPermission() {
@@ -379,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Handle the camera action
 
         } else if (id == R.id.nav_file) {
-            startActivity(new Intent(this, FinishedTaskActivity.class));
+            transitionTo(new Intent(this, FinishedTaskActivity.class));
         } else if (id == R.id.nav_count) {
             Intent intent = new Intent(MainActivity.this, ChartActivity.class);
             transitionTo(intent);

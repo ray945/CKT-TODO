@@ -2,6 +2,8 @@ package com.ckt.ckttodo.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.transition.Explode;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -21,10 +23,22 @@ public class ClockAnimationActivity extends Activity  implements CircleAlarmTime
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clockanimation);
+        setupWindowAnimations();
         mTimer = (CircleAlarmTimerView) findViewById(R.id.ctv);
         mTimer.setCurrentTime(1500);
         mTimer.setCircleTimerListener(this);
         mTimer.startTimer();
+    }
+    private void setupWindowAnimations() {
+        Transition transition;
+        transition = buildEnterTransition();
+        getWindow().setEnterTransition(transition);
+    }
+
+    private Transition buildEnterTransition() {
+        Explode enterTransition = new Explode();
+        enterTransition.setDuration(getResources().getInteger(R.integer.anim_duration_long));
+        return enterTransition;
     }
 
 
@@ -41,7 +55,6 @@ public class ClockAnimationActivity extends Activity  implements CircleAlarmTime
 
     @Override
     public void onTimerStart(int time) {
-        Toast.makeText(this, "onTimerStart", Toast.LENGTH_LONG).show();
     }
 
     @Override

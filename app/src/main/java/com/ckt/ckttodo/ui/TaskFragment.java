@@ -199,7 +199,8 @@ public class TaskFragment extends Fragment {
             } else if (v == imageButtonStatus) {
                 imageButtonStatus.setSelected(true);
                 Intent intent = new Intent(getActivity(),ClockAnimationActivity.class);
-                startActivity(intent);
+                MainActivity activity = (MainActivity) getActivity();
+                activity.transitionTo(intent);
                /* showTomatoDialog();*/
 
 

@@ -6,6 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.Visibility;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,15 +51,29 @@ public class FinishedTaskActivity extends AppCompatActivity {
     private boolean isShowCheckBox = false;
     private Map<Integer, Boolean> mItemSelectedStatus = new HashMap<>();
     private DatebaseHelper mHelper = DatebaseHelper.getInstance(this);
+    private Transition transition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupWindowAnimations();
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setTitle(getResources().getString(R.string.task_history));
         mActivityFinishedTaskBinding = DataBindingUtil.setContentView(this, R.layout.activity_finished_task);
         init();
+    }
+
+    private void setupWindowAnimations() {
+        transition = buildEnterTransition();;
+        getWindow().setEnterTransition(transition);
+    }
+
+    private Visibility buildEnterTransition() {
+        Slide enterTransition = new Slide();
+        enterTransition.setDuration(getResources().getInteger(R.integer.anim_duration_long));
+        enterTransition.setSlideEdge(Gravity.RIGHT);
+        return enterTransition;
     }
 
     @Override
