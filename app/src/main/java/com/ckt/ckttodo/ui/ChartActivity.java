@@ -106,8 +106,10 @@ public class ChartActivity extends AppCompatActivity {
             case R.id.click_me:
 
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            case android.R.id.home:
+                onBackPressed();
+                break;
         }
+        return true;
     }
 }

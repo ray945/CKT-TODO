@@ -105,7 +105,7 @@ public class FinishedTaskActivity extends AppCompatActivity {
                 deleteSelectDataAndNotifyDataChanged();
                 break;
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 break;
         }
 

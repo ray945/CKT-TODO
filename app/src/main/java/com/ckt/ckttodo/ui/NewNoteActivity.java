@@ -82,7 +82,7 @@ public class NewNoteActivity extends AppCompatActivity {
                 save();
                 break;
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 break;
 
 
