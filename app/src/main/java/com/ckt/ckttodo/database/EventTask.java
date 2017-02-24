@@ -44,6 +44,7 @@ public class EventTask extends RealmObject {
     public static final int DONE = 4;
 
     public static final String TASK_STATUS = "taskStatus";
+    public static final String TASK_ID = "taskId";
 
     //任务id
     @PrimaryKey

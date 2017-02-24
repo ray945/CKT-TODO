@@ -28,8 +28,6 @@ public class Constants {
     public static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
     public static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
 
-    public static String hourTime(Long time) {
-        return new SimpleDateFormat("HH:mm").format(new Date(time)).trim();
-    }
+
 
 }

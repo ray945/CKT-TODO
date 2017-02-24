@@ -9,4 +9,5 @@
     <dimen name="card_margin">8dp</dimen>
     <integer name="anim_duration_long">300</integer>
     <dimen name="task_input_list_padding">40dp</dimen>
+    <dimen name="card_corner">2dp</dimen>
 </resources>

@@ -26,7 +26,7 @@
     <style name="AppTheme.DrawerArrowToggle" parent="Base.Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@android:color/white</item>
     </style>
-    
+
     <style name="InputEditText" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@android:color/holo_blue_light</item>
     </style>

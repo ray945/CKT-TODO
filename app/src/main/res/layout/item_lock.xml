@@ -7,7 +7,7 @@
             name="eventTask"
             type="com.ckt.ckttodo.database.EventTask"/>
 
-        <import type="com.ckt.ckttodo.util.Constants"/>
+        <import type="com.ckt.ckttodo.util.TranserverUtil"/>
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,7 +26,7 @@
             android:gravity="center"
             android:maxEms="8"
             android:singleLine="true"
-            android:text="@{Constants.hourTime(eventTask.taskStartTime)}"
+            android:text="@{TranserverUtil.hourTime(eventTask.taskStartTime)}"
             android:textColor="@color/textColor"
             android:textSize="16sp"/>
 

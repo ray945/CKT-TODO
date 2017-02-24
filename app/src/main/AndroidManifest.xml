@@ -28,33 +28,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.NewTaskActivity"/>
+        <activity android:name=".ui.NewTaskActivity" />
         <activity
             android:name=".ui.LockScreenActivity"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:taskAffinity="com.ckt.ckttodo.lockscreen"
-            android:theme="@style/LockScreenTheme"/>
-        <activity android:name=".ui.NewNoteActivity"/>
-        <activity android:name=".ui.AboutActivity"/>
-
+            android:theme="@style/LockScreenTheme" />
+        <activity android:name=".ui.NewNoteActivity" />
+        <activity android:name=".ui.AboutActivity" />
         <activity
             android:name=".ui.ChartActivity"
             android:label="@string/dataCount"
             android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".ui.FinishedTaskActivity"/>
-        <activity android:name=".ui.ClockAnimationActivity"
-            android:screenOrientation="portrait"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.FinishedTaskActivity" />
+        <activity
+            android:name=".ui.ClockAnimationActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.VoiceActivity" />
 
         <receiver android:name=".util.NotificationBroadcastReceiver">
             <intent-filter>
-                <action android:name="com.ckt.ckttodo.alarm"/>
+                <action android:name="com.ckt.ckttodo.alarm" />
             </intent-filter>
         </receiver>
-
+        <activity android:name=".ui.TaskDetailActivity"></activity>
     </application>
 
 </manifest>

@@ -32,9 +32,7 @@ import java.util.Map;
 import io.realm.RealmResults;
 
 /**
- *
  * Created by mozre
- *
  */
 public class TaskFragment extends Fragment {
 
@@ -149,6 +147,7 @@ public class TaskFragment extends Fragment {
         TextView textViewSpendTime;
         ImageButton imageButtonStatus;
         CheckBox checkBox;
+        EventTask mTask;
         private TaskListItemBinding mBinding;
 
         public TaskRecyclerViewHolder(TaskListItemBinding binding) {
@@ -174,6 +173,7 @@ public class TaskFragment extends Fragment {
 
 
         public void setData(EventTask data) {
+            this.mTask = data;
             mBinding.setTask(data);
             mBinding.executePendingBindings();
         }
@@ -189,12 +189,18 @@ public class TaskFragment extends Fragment {
         @Override
         public void onClick(View v) {
             if (v == container) {
-                if (checkBox.isChecked()) {
-                    checkBox.setChecked(false);
-                    mItemsSelectStatus.put((Integer) container.getTag(), false);
+                if (isShowCheckBox) {
+                    if (checkBox.isChecked()) {
+                        checkBox.setChecked(false);
+                        mItemsSelectStatus.put((Integer) container.getTag(), false);
+                    } else {
+                        checkBox.setChecked(true);
+                        mItemsSelectStatus.put((Integer) container.getTag(), true);
+                    }
                 } else {
-                    checkBox.setChecked(true);
-                    mItemsSelectStatus.put((Integer) container.getTag(), true);
+                    Intent intent = new Intent(getContext(), TaskDetailActivity.class);
+                    intent.putExtra(TaskDetailActivity.EVENT_TASK_ID, mTask.getTaskId());
+                    startActivity(intent);
                 }
             } else if (v == imageButtonStatus) {
                 imageButtonStatus.setSelected(true);
