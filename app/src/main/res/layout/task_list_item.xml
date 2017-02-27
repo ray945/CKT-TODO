@@ -29,6 +29,7 @@
                 android:id="@+id/text_task_list_plan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="16sp"
                 android:text="@{task.taskTitle}" />
 
             <TextView
@@ -104,6 +105,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
+            android:background="@android:color/transparent"
             android:src="@drawable/task_start_stop_selection" />
     </RelativeLayout>
 </layout>

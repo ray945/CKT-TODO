@@ -17,7 +17,6 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.about));
-        getSupportActionBar().setElevation(0);
         mActivityNewNoteBinding = DataBindingUtil.setContentView(this, R.layout.activity_about);
     }
 

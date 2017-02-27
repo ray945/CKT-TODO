@@ -120,9 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void initUI() {
         mActivityMainBinding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
         Toolbar toolbar = mActivityMainBinding.appBarMain.toolbar;
-        SimpleDateFormat formatter = new SimpleDateFormat("MM月dd日");
-        Date curDate = new Date(System.currentTimeMillis());
-        toolbar.setTitle(formatter.format(curDate));
+        toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

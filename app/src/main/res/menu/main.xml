@@ -10,13 +10,13 @@
     <!--app:showAsAction="never" />-->
     <item
         android:id="@+id/menu_sure"
-        android:icon="@drawable/sure"
+        android:icon="@drawable/ic_done_white_48dp"
         android:title="@string/sure"
         android:visible="false"
         app:showAsAction="always" />
     <item
         android:id="@+id/menu_no"
-        android:icon="@drawable/_false"
+        android:icon="@drawable/ic_clear_white_48dp"
         android:title="@string/no"
         android:visible="false"
         app:showAsAction="always" />

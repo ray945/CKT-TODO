@@ -34,70 +34,72 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/white"
                 android:orientation="vertical"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp">
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="@{task.taskTitle}"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:text="@{task.taskContent}"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="@string/kind"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/detail_text_kinds"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:text="test"
+                    android:textColor="@android:color/secondary_text_light"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="15dp"
                     android:background="@color/color_d3d3d3" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/task_levels"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/detail_text_level"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@android:color/secondary_text_light" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="15dp"
                     android:background="@color/color_d3d3d3" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/schedule_dates"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/detail_text_date"
@@ -105,40 +107,42 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="@{TranserverUtil.millsToDate(task.taskStartTime)}"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@android:color/secondary_text_light" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="15dp"
                     android:background="@color/color_d3d3d3" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/remind"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/detail_text_remind"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@android:color/secondary_text_light" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="15dp"
                     android:background="@color/color_d3d3d3" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/spend_times"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/detail_text_plan_time"
@@ -146,19 +150,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="@{String.valueOf(task.taskPredictTime)}"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="@android:color/secondary_text_light" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="15dp"
                     android:background="@color/color_d3d3d3" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_marginBottom="15dp"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
@@ -169,14 +175,21 @@
 
                     <EditText
                         android:id="@+id/detail_edit_send_time"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
                         android:background="@null"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
                         android:inputType="number"
                         android:text="@{String.valueOf(task.taskRealSpendTime)}"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColor="@android:color/secondary_text_light" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hour"/>
                 </LinearLayout>
 
             </LinearLayout>

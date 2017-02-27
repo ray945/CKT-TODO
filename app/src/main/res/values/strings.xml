@@ -146,5 +146,6 @@
     <string name="author">made by CK-Telecom</string>
     <string name="version">v0.1 Beta</string>
     <string name="sliding">>>>滑动解锁>>></string>
+    <string name="hour">小时</string>
 
 </resources>

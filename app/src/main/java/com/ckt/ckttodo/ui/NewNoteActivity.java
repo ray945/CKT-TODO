@@ -45,7 +45,6 @@ public class NewNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.new_note));
-        getSupportActionBar().setElevation(0);
         mActivityNewNoteBinding = DataBindingUtil.setContentView(this, R.layout.activity_new_note);
         init();
         setupWindowAnimations();

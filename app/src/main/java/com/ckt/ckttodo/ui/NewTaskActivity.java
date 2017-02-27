@@ -74,7 +74,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.new_task));
-        getSupportActionBar().setElevation(0);
         mActivityNewTaskBinding = DataBindingUtil.setContentView(NewTaskActivity.this, R.layout.activity_new_task);
         init();
     }
