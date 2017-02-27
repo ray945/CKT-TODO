@@ -27,7 +27,7 @@
             android:maxEms="8"
             android:singleLine="true"
             android:text="@{TranserverUtil.hourTime(eventTask.taskStartTime)}"
-            android:textColor="@color/textColor"
+            android:textColor="@color/LockTextColor"
             android:textSize="16sp"/>
 
         <TextView
@@ -40,7 +40,7 @@
             android:maxEms="8"
             android:singleLine="true"
             android:text="@{eventTask.taskTitle}"
-            android:textColor="@color/textColor"
+            android:textColor="@color/LockTextColor"
             android:textSize="16sp"/>
     </LinearLayout>
 

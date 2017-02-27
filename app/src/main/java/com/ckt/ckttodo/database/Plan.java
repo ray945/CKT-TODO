@@ -38,6 +38,22 @@ public class Plan extends RealmObject {
     //计划周期开始时间
     private long startTime;
 
+    //计划周期结束时间
+    private long endTime;
+
+    //计划状态
+    private int status = PLAN_NOT_START;
+    //计划进度
+    private String accomplishProgress;
+    //计划预计时间
+    private float predictSpendTime;
+    //计划实际花费时间
+    private float realSpendTime;
+    //计划包含的任务
+    private RealmList<EventTask> eventTasks;
+    //所属项目
+    private String projectId;
+
     public long getStartTime() {
         return startTime;
     }
@@ -53,21 +69,6 @@ public class Plan extends RealmObject {
     public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
-
-    //计划周期结束时间
-    private long endTime;
-    //计划状态
-    private int status = PLAN_NOT_START;
-    //计划进度
-    private String accomplishProgress;
-    //计划预计时间
-    private float predictSpendTime;
-    //计划实际花费时间
-    private float realSpendTime;
-    //计划包含的任务
-    private RealmList<EventTask> eventTasks;
-    //所属项目
-    private String projectId;
 
     public String getPlanContent() {
         return planContent;

@@ -34,7 +34,7 @@
                 <View
                     android:layout_width="2dp"
                     android:layout_height="44dp"
-                    android:background="@color/textColor"
+                    android:background="@color/LockTextColor"
                     />
 
                 <ImageView
@@ -45,7 +45,7 @@
                 <View
                     android:layout_width="2dp"
                     android:layout_height="44dp"
-                    android:background="@color/textColor"
+                    android:background="@color/LockTextColor"
                     />
 
                 <ImageView
@@ -56,7 +56,7 @@
                 <View
                     android:layout_width="2dp"
                     android:layout_height="44dp"
-                    android:background="@color/textColor"
+                    android:background="@color/LockTextColor"
                     />
 
                 <ImageView
@@ -67,7 +67,7 @@
                 <View
                     android:layout_width="2dp"
                     android:layout_height="44dp"
-                    android:background="@color/textColor"
+                    android:background="@color/LockTextColor"
                     />
 
                 <ImageView

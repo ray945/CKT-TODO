@@ -139,6 +139,9 @@
     <string name="team">团队</string>
     <string name="setting">设置</string>
     <string name="title">标题</string>
+    <string name="planDescription">描述</string>
+    <string name="planCycle">计划周期</string>
+    <string name="to">至</string>
     <string name="content">内容</string>
     <string name="main">西可土豆</string>
     <string name="grade">给我们评分</string>

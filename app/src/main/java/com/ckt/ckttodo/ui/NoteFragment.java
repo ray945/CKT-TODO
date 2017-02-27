@@ -173,12 +173,12 @@ public class NoteFragment extends Fragment {
             return (noteList == null) ? 0 : noteList.size();
         }
 
-        private OnItemClickListener onItemClickListener;
         private OnItemLongClickListener onItemLongClickListener;
-
         public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
             this.onItemLongClickListener = onItemLongClickListener;
         }
+
+        private OnItemClickListener onItemClickListener;
 
         public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
             this.onItemClickListener = onItemClickListener;

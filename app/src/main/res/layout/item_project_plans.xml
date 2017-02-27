@@ -5,36 +5,43 @@
 
         <variable
             name="plan"
-            type="com.ckt.ckttodo.database.Plan" />
+            type="com.ckt.ckttodo.database.Plan"/>
     </data>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="30dp"
-        android:paddingTop="5dp">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:paddingBottom="5dp"
+                  android:paddingEnd="30dp"
+                  android:paddingStart="10dp"
+                  android:paddingTop="5dp"
+                  android:weightSum="10">
 
         <TextView
             android:id="@+id/tv_task"
-            android:layout_width="240dp"
+            android:layout_width="0dp"
             android:layout_height="44dp"
             android:layout_alignParentStart="true"
             android:layout_gravity="start"
-            android:maxLength="10"
+            android:layout_weight="4"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLength="10"
+            android:maxLines="1"
             android:text="@{plan.planName}"
             android:textColor="@color/textColor"/>
 
         <TextView
             android:id="@+id/tv_plan_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="44dp"
-            android:layout_gravity="end"
             android:layout_alignParentEnd="true"
-            android:gravity="center_vertical"
+            android:layout_weight="6"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
             android:textColor="@color/textColor"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 </layout>

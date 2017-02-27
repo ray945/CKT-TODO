@@ -68,6 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="@string/grade"/>
@@ -82,6 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="@string/website"/>
@@ -96,6 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="@string/GitHub"/>
@@ -110,6 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="8dp"
                 android:text="@string/opinion"/>

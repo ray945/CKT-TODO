@@ -1,6 +1,7 @@
 package com.ckt.ckttodo.ui;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -8,10 +9,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
 import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -20,6 +21,8 @@ import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.Note;
 import com.ckt.ckttodo.databinding.ActivityNewNoteBinding;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import io.realm.Realm;
@@ -35,7 +38,6 @@ public class NewNoteActivity extends AppCompatActivity {
     private EditText et_noteContent;
     private String mNoteTag;
     private ActivityNewNoteBinding mActivityNewNoteBinding;
-    private Realm mRealm;
     private Intent mIntent;
     private RealmResults<Note> baseList;
     private Note note;
@@ -63,6 +65,14 @@ public class NewNoteActivity extends AppCompatActivity {
     }
 
     private void init() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                InputMethodManager inputManager = (InputMethodManager) NewNoteActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInput(mActivityNewNoteBinding.etNoteTitle, 0);
+            }
+        }, 200);
         findView();
         initData();
     }
@@ -77,11 +87,10 @@ public class NewNoteActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_sure:
-                mRealm = DatebaseHelper.getInstance(NewNoteActivity.this).getRealm();
                 save();
                 break;
             case android.R.id.home:
-                onBackPressed();
+                show();
                 break;
 
 
@@ -106,7 +115,6 @@ public class NewNoteActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (mNoteTag.equals("1")) {
                 if (note.getNoteContent().equals(et_noteContent.getText().toString().trim()) && note.getNoteTitle().equals(et_noteTitle.getText().toString().trim())) {
-                    
                 } else {
                     show();
                 }
@@ -118,19 +126,23 @@ public class NewNoteActivity extends AppCompatActivity {
     }
 
     private void show() {
-        new AlertDialog.Builder(this).setTitle("是否保存？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("是", new DialogInterface.OnClickListener() {
+        if ((et_noteTitle.getText().toString().trim().equals("") && et_noteContent.getText().toString().trim().equals(""))) {
+            onBackPressed();
+        } else {
+            new AlertDialog.Builder(this).setTitle("是否保存？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("是", new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                save();
-            }
-        }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    save();
+                }
+            }).setNegativeButton("否", new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        }).show();
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    onBackPressed();
+                }
+            }).show();
+        }
     }
 
     private void initData() {
@@ -167,7 +179,7 @@ public class NewNoteActivity extends AppCompatActivity {
         mIntent.putExtra("update", "0");
         setResult(0, mIntent);
         Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
-        finish();
+        onBackPressed();
     }
 
     private void saveNote() {
@@ -179,6 +191,6 @@ public class NewNoteActivity extends AppCompatActivity {
         mIntent.putExtra("new", "1");
         setResult(1, mIntent);
         Toast.makeText(this, "新建成功", Toast.LENGTH_SHORT).show();
-        finish();
+        onBackPressed();
     }
 }

@@ -1,12 +1,12 @@
 package com.ckt.ckttodo.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -16,6 +16,7 @@ import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ItemProjectBinding;
+import com.ckt.ckttodo.ui.NewPlanActivity;
 import com.ckt.ckttodo.ui.ProjectFragment;
 import com.headerfooter.songhang.library.SmartRecyclerAdapter;
 
@@ -29,11 +30,12 @@ import io.realm.RealmResults;
  * Created by zhiwei.li
  */
 
-public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {
+public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> implements View.OnClickListener {
 
     private RealmResults<Project> projectList;
     private Context context;
     private static final String TAG = "ZHIWEI";
+    private SmartRecyclerAdapter mSmartRecyclerAdapter;
 
 
     public ProjectListAdapter(Context context, RealmResults<Project> projectList) {
@@ -44,18 +46,20 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemProjectBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_project, parent, false);
+        binding.btnAddPlan.setOnClickListener(this);
         return new ViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.itemView.setTag(position);
         Project project = projectList.get(position);
 
         final RealmList<Plan> plans = project.getPlans();
         final String projectId = project.getProjectId();
 
         calculateProgress(plans, projectId);
-        initNewTaskButton(holder.binding.btnAddPlan, projectId);
+        initNewPlanButton(holder.binding.btnAddPlan, projectId);
 
         final RecyclerView rvPlans = holder.binding.rvPlans;
         if (plans.size() <= 3) {
@@ -73,7 +77,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                 threePlans.add(plans.get(i));
             }
             final PlanListAdapter threeAdapter = new PlanListAdapter(context, threePlans);
-            SmartRecyclerAdapter smartRecyclerAdapter = new SmartRecyclerAdapter(threeAdapter);
+            mSmartRecyclerAdapter = new SmartRecyclerAdapter(threeAdapter);
             ImageButton footerButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.item_project_plan_footer, rvPlans, false);
             footerButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,12 +88,32 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                     rvPlans.setAdapter(adapter1);
                 }
             });
-            smartRecyclerAdapter.setFooterView(footerButton);
-            rvPlans.setAdapter(smartRecyclerAdapter);
+            mSmartRecyclerAdapter.setFooterView(footerButton);
+            rvPlans.setAdapter(mSmartRecyclerAdapter);
         }
-
         holder.bind(project);
 
+    }
+    public void flash(){
+        if(mSmartRecyclerAdapter!=null){
+            mSmartRecyclerAdapter.notifyDataSetChanged();
+        }
+    }
+    private OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public static interface OnItemClickListener {
+        void onItemClick(int position, View view);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClick((Integer) v.getTag(), v);
+        }
     }
 
     private void calculateProgress(RealmList<Plan> plans, final String projectId) {
@@ -162,28 +186,15 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         });
     }*/
 
-    private void initNewTaskButton(ImageButton button, final String planId) {
+    private void initNewPlanButton(ImageButton button, final String projectId) {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               /* Intent intent = new Intent(context, NewTaskActivity.class);
-                intent.putExtra(NewTaskActivity.GET_PLAN_ID_FROM_PROJECT, planId);
-                context.startActivity(intent);*/
+                Intent intent = new Intent(context, NewPlanActivity.class);
+                intent.putExtra("projectId", projectId);
+                context.startActivity(intent);
             }
         });
 
-        button.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    view.setBackgroundResource(R.color.colorPrimaryDark);
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
-                        motionEvent.getAction() == MotionEvent.ACTION_MOVE ||
-                        motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
-                    view.setBackgroundResource(R.color.background_grey);
-                }
-                return false;
-            }
-        });
     }
 }
