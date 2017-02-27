@@ -11,7 +11,7 @@ public class EventTask extends RealmObject {
      * 学习：STUDY
      * 生活:LIVE
      * 休息:REST
-     * */
+     */
     public static final int WORK = 1;
     public static final int STUDY = 2;
     public static final int LIVE = 3;
@@ -23,7 +23,7 @@ public class EventTask extends RealmObject {
      * 很重要-不紧急：MAJOR major
      * 不重要-很紧急:MINOR minor
      * 不重要-不紧急:ENHANCEMENT enhancement
-     * */
+     */
     public static final int CRITICAL = 1;
     public static final int MAJOR = 2;
     public static final int MINOR = 3;
@@ -36,7 +36,7 @@ public class EventTask extends RealmObject {
      * 等待:PENDING
      * 阻塞:BLOCK
      * 完成:DONE
-     * */
+     */
     public static final int NOT_START = -1;
     public static final int START = 1;
     public static final int PENDING = 2;
@@ -65,7 +65,7 @@ public class EventTask extends RealmObject {
     private int taskStatus;
     //任务开始时间
     private long taskStartTime;
-    //任务预计花费时间
+    //任务预计花费时间EventTask
     private float taskPredictTime;
     //任务提醒时间
     private long taskRemindTime;
@@ -207,4 +207,6 @@ public class EventTask extends RealmObject {
     public void setPlanId(String planId) {
         this.planId = planId;
     }
+
+
 }

@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String PLAN_ID = "planId";
     private static final int REQUEST_PERMISSIONS = 1;
     public final static int MAIN_TO_NEW_TASK_CODE = 100;
+    public final static int MAIN_TO_TASK_DETAIL_CODE = 200;
     private ActivityMainBinding mActivityMainBinding;
     private MenuItem mMenuItemSure;
     private MenuItem mMenuItemFalse;
@@ -79,6 +80,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MAIN_TO_NEW_TASK_CODE) {
             mTaskFragment.notifyData();
+        } else if (resultCode == TaskDetailActivity.TASK_DETAIL_MAIN_RESULT_CODE) {
+            if (data != null) {
+                boolean shouldUpdateData = data.getBooleanExtra(TaskDetailActivity.IS_TASK_DETAIL_MODIFY, false);
+                if (shouldUpdateData) {
+                    mTaskFragment.notifyData();
+                }
+            }
         }
     }
 
@@ -202,10 +210,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActivityMainBinding.appBarMain.addVoid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isFirstTime){
+                if (isFirstTime) {
                     getTheVoiceInput();
                     isFirstTime = false;
-                }else {
+                } else {
                     transitionTo(new Intent(MainActivity.this, VoiceActivity.class));
                 }
             }

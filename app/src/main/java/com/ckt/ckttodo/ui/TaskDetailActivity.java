@@ -1,11 +1,21 @@
 package com.ckt.ckttodo.ui;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.IBinder;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -20,19 +30,23 @@ import org.w3c.dom.Text;
 public class TaskDetailActivity extends AppCompatActivity {
 
     public final static String EVENT_TASK_ID = "event_task";
+    public final static int TASK_DETAIL_MAIN_RESULT_CODE = 20;
+    public final static String IS_TASK_DETAIL_MODIFY = "is_task_detail_modify";
     private ActivityTaskDetailBinding mActivityTaskDetailBinding;
     private TextView mTextViewKinds;
     private TextView mTextViewLevels;
     private TextView mTextViewRemind;
     private EditText mEditTextSpendTime;
+    private DatebaseHelper mHelper;
     private EventTask mTask;
+    private boolean isModify = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(getResources().getString(R.string.task_detail));
-        actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         mActivityTaskDetailBinding = DataBindingUtil.setContentView(this, R.layout.activity_task_detail);
         init();
     }
@@ -40,15 +54,17 @@ public class TaskDetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            if (!TextUtils.isEmpty(mEditTextSpendTime.getText())) {
-                String content = mEditTextSpendTime.getText().toString().replace(" ","");
-                if (content.length() > 0) {
-                    float update = Float.valueOf(content);
-
-                }
-            }
+            finishActivity();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finishActivity();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void init() {
@@ -62,7 +78,8 @@ public class TaskDetailActivity extends AppCompatActivity {
     private void setData() {
         String taskID = getIntent().getStringExtra(EVENT_TASK_ID);
         if (taskID != null) {
-            mTask = DatebaseHelper.getInstance(this).getRealm().where(EventTask.class).contains(EventTask.TASK_ID, taskID).findFirst();
+            mHelper = DatebaseHelper.getInstance(this);
+            mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, taskID).findFirst();
             mActivityTaskDetailBinding.setTask(mTask);
             mActivityTaskDetailBinding.executePendingBindings();
             mTextViewKinds.setText(transKinds(mTask.getTaskType()));
@@ -95,5 +112,107 @@ public class TaskDetailActivity extends AppCompatActivity {
             return "";
         }
     }
+
+    private void finishActivity() {
+        if (!TextUtils.isEmpty(mEditTextSpendTime.getText())) {
+            String content = mEditTextSpendTime.getText().toString().replace(" ", "");
+            Float update = Float.valueOf(content);
+            if (update.compareTo(new Float(0)) > 0
+                    && update.compareTo(mTask.getTaskRealSpendTime()) != 0) {
+                Dialog dialog = initDialog(update);
+                dialog.show();
+            }else {
+                setResult(TASK_DETAIL_MAIN_RESULT_CODE);
+                finish();
+            }
+        } else {
+            setResult(TASK_DETAIL_MAIN_RESULT_CODE);
+            finish();
+        }
+
+    }
+
+    private Dialog initDialog(final float update) {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.remind_save))
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        isModify = true;
+                        EventTask task = new EventTask();
+                        task.setTaskId(mTask.getTaskId());
+                        task.setPlan(mTask.getPlan());
+                        task.setCreateUerId(mTask.getCreateUerId());
+                        task.setTaskContent(mTask.getTaskContent());
+                        task.setTaskPredictTime(mTask.getTaskPredictTime());
+                        task.setTaskPriority(mTask.getTaskPriority());
+                        task.setTaskStatus(mTask.getTaskStatus());
+                        task.setTaskTitle(mTask.getTaskTitle());
+                        task.setTaskRealSpendTime(update);
+                        task.setTaskUpdateTime(mTask.getTaskUpdateTime());
+                        task.setExecUserId(mTask.getExecUserId());
+                        task.setPlanId(mTask.getPlanId());
+                        task.setTaskRemindTime(mTask.getTaskRemindTime());
+                        task.setTaskStartTime(mTask.getTaskStartTime());
+                        task.setTaskType(mTask.getTaskType());
+                        mHelper.update(task);
+                        dialog.dismiss();
+                        Intent intent = new Intent();
+                        intent.putExtra(IS_TASK_DETAIL_MODIFY, isModify);
+                        setResult(TASK_DETAIL_MAIN_RESULT_CODE, intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        setResult(TASK_DETAIL_MAIN_RESULT_CODE);
+                        finish();
+                    }
+                }).create();
+
+        return dialog;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (isShouldHideKeyboard(v, ev)) {
+                hideKeyboard(v.getWindowToken());
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+
+    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            int[] l = {0, 0};
+            v.getLocationInWindow(l);
+            int left = l[0],
+                    top = l[1],
+                    bottom = top + v.getHeight(),
+                    right = left + v.getWidth();
+            if (event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private void hideKeyboard(IBinder token) {
+        if (token != null) {
+            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
 
 }

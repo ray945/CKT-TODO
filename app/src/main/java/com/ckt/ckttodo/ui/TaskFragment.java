@@ -200,11 +200,11 @@ public class TaskFragment extends Fragment {
                 } else {
                     Intent intent = new Intent(getContext(), TaskDetailActivity.class);
                     intent.putExtra(TaskDetailActivity.EVENT_TASK_ID, mTask.getTaskId());
-                    startActivity(intent);
+                    startActivityForResult(intent, MainActivity.MAIN_TO_TASK_DETAIL_CODE);
                 }
             } else if (v == imageButtonStatus) {
                 imageButtonStatus.setSelected(true);
-                Intent intent = new Intent(getActivity(),ClockAnimationActivity.class);
+                Intent intent = new Intent(getActivity(), ClockAnimationActivity.class);
                 MainActivity activity = (MainActivity) getActivity();
                 activity.transitionTo(intent);
                /* showTomatoDialog();*/

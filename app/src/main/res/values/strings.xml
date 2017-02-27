@@ -20,10 +20,12 @@
     <string name="schedule_time">开始时间：</string>
     <string name="schedule_date">计划日期：</string>
     <string name="schedule_dates">计划日期</string>
+    <string name="file">归档</string>
     <string name="spend_time">预计用时：</string>
     <string name="spend_times">预计用时</string>
     <string name="pre_remind">提醒时间：</string>
     <string name="remind">提醒</string>
+    <string name="remind_save">是否保存修改？</string>
     <string name="kind_of_plan">所属计划：</string>
     <string name="sure">确定</string>
     <string name="research">搜索</string>
