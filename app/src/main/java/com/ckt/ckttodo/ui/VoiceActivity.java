@@ -79,4 +79,9 @@ public class VoiceActivity extends AppCompatActivity implements VoiceView.OnReco
     public void onBackResult(String result) {
 
     }
+
+    @Override
+    public void onNoInput() {
+
+    }
 }

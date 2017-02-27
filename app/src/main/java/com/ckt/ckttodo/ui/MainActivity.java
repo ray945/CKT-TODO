@@ -7,12 +7,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -38,18 +38,14 @@ import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
-import com.ckt.ckttodo.database.EventTask;
-import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.NotificationBroadcastReceiver;
 import com.ckt.ckttodo.util.PermissionUtil;
 import com.ckt.ckttodo.util.VoiceInputUtil;
+import com.ckt.ckttodo.widgt.VoiceInputDialog;
 
-import io.realm.RealmResults;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,9 +54,13 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem, VoiceInputUtil.VoiceChangeListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+        , TaskFragment.ShowMainMenuItem,  ActivityCompat.OnRequestPermissionsResultCallback
+        , VoiceInputDialog.VoiceInputFinishedListener {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
+    public static final String SHARE_PREFERENCES_NAME = "com.ckt.ckttodo";
+    private static final String IS_FIRST_CHECK_PERMISSION = "permission_status";
     private static final int REQUEST_PERMISSIONS = 1;
     public final static int MAIN_TO_NEW_TASK_CODE = 100;
     public final static int MAIN_TO_TASK_DETAIL_CODE = 200;
@@ -70,10 +70,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TaskFragment mTaskFragment;
     private List<Fragment> mFragmentList;
     private ScreenOffBroadcast mScreenOffBroadcast;
-    private VoiceInputUtil mVoiceInput;
     private static String[] PERMISSION_LIST = new String[]{Constants.RECORD_AUDIO, Constants.READ_PHONE_STATE, Constants.READ_EXTERNAL_STORAGE, Constants.WRITE_EXTERNAL_STORAGE};
-    private boolean isFirstTime = true;
-
+    private VoiceInputDialog mDialog;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -109,8 +107,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         registerScreenOffBroadcast();
         mFragmentList = new ArrayList<>();
-        mVoiceInput = new VoiceInputUtil(this);
-        mVoiceInput.setOnVoiceChangeListener(this);
         initUI();
         setupWindowAnimations();
         initNotification();
@@ -126,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initUI() {
+        mDialog = new VoiceInputDialog(this, this);
         mActivityMainBinding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
         Toolbar toolbar = mActivityMainBinding.appBarMain.toolbar;
         toolbar.setTitle(R.string.app_name);
@@ -210,11 +207,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActivityMainBinding.appBarMain.addVoid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences preferences = MainActivity.this.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
+                boolean isFirstTime = preferences.getBoolean(IS_FIRST_CHECK_PERMISSION, true);
                 if (isFirstTime) {
                     getTheVoiceInput();
-                    isFirstTime = false;
+                    preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
                 } else {
-                    transitionTo(new Intent(MainActivity.this, VoiceActivity.class));
+                    mDialog.show();
                 }
             }
         });
@@ -337,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void registerScreenOffBroadcast() {
         if (mScreenOffBroadcast == null) {
             mScreenOffBroadcast = new ScreenOffBroadcast(this);
+
         }
         mScreenOffBroadcast.registerBroadcast();
     }
@@ -432,19 +432,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         unRegisterScreenOffBroadcast();
     }
 
-    @Override
-    public void onVoiceChanged(int volume) {
-
-    }
-
-    @Override
-    public void onBackResult(String result) {
-        Intent intent = new Intent(this, NewTaskActivity.class);
-        if (result != null && result.trim().length() > 0) {
-            intent.putExtra(NewTaskActivity.VOICE_INPUT, result);
-        }
-        startActivity(intent);
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -459,4 +446,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onKeyDown(keyCode, event);
     }
 
+
+    @Override
+    public void onVoiceInputFinished(String result) {
+        Intent intent = new Intent(this, NewTaskActivity.class);
+        intent.putExtra(NewTaskActivity.VOICE_INPUT, result);
+        startActivityForResult(intent, MAIN_TO_NEW_TASK_CODE);
+    }
 }

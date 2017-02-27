@@ -78,6 +78,7 @@ public class VoiceInputUtil {
             // 错误码：10118(您没有说话)，可能是录音机权限被禁，需要提示用户打开应用的录音权限。
             // 如果使用本地功能（语记）需要提示用户开启语记的录音权限。
             showTip(error.getPlainDescription(true));
+            mListener.onNoInput();
         }
 
         @Override
@@ -210,6 +211,7 @@ public class VoiceInputUtil {
 
         void onBackResult(String result);
 
+        void onNoInput();
     }
 
 
