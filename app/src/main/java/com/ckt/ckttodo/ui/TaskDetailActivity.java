@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +32,7 @@ public class TaskDetailActivity extends AppCompatActivity {
 
     public final static String EVENT_TASK_ID = "event_task";
     public final static int TASK_DETAIL_MAIN_RESULT_CODE = 20;
+    public final static int TASK_DETAIL_TO_EDIT_TASK_REQUEST_CODE = 300;
     public final static String IS_TASK_DETAIL_MODIFY = "is_task_detail_modify";
     private ActivityTaskDetailBinding mActivityTaskDetailBinding;
     private TextView mTextViewKinds;
@@ -40,6 +42,11 @@ public class TaskDetailActivity extends AppCompatActivity {
     private DatebaseHelper mHelper;
     private EventTask mTask;
     private boolean isModify = false;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +59,22 @@ public class TaskDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.task_detail, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finishActivity();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finishActivity();
+                break;
+            case R.id.menu_edit:
+                Intent intent = new Intent(this, NewTaskActivity.class);
+                intent.putExtra(NewTaskActivity.PASS_TASK_ID, mTask.getTaskId());
+                startActivityForResult(intent, TASK_DETAIL_TO_EDIT_TASK_REQUEST_CODE);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -121,7 +141,7 @@ public class TaskDetailActivity extends AppCompatActivity {
                     && update.compareTo(mTask.getTaskRealSpendTime()) != 0) {
                 Dialog dialog = initDialog(update);
                 dialog.show();
-            }else {
+            } else {
                 setResult(TASK_DETAIL_MAIN_RESULT_CODE);
                 finish();
             }

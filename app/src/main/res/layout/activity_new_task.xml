@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout>
+    <data>
+        <variable
+            name="task"
+            type="com.ckt.ckttodo.database.EventTask"/>
+        <import type="com.ckt.ckttodo.util.TranserverUtil"/>
+    </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -55,12 +61,14 @@
                     android:paddingRight="@dimen/activity_horizontal_margin">
 
                     <EditText
+                        android:text="@{task.taskTitle}"
                         android:id="@+id/new_edit_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:background="@null"
                         android:hint="@string/tasks"
+
                         android:inputType="text"
                         android:textSize="16sp" />
                 </FrameLayout>
@@ -86,6 +94,7 @@
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:hint="@string/what_to_do"
+                        android:text="@{task.taskContent}"
                         android:maxLines="5"
                         android:textSize="16sp" />
                 </FrameLayout>
@@ -179,6 +188,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:paddingLeft="@dimen/task_input_list_padding"
+                        android:text="@{TranserverUtil.millsToDate(task.taskStartTime)}"
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -209,6 +219,7 @@
 
 
                     <EditText
+                        android:text="@{String.valueOf(task.taskPredictTime)}"
                         android:id="@+id/new_edit_plan_time"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -271,6 +282,7 @@
 
 
                     <EditText
+                        android:text="@{task.plan.planName}"
                         android:id="@+id/new_text_show_plan"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

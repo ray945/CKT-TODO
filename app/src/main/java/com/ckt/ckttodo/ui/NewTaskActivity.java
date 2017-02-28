@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class NewTaskActivity extends AppCompatActivity implements View.OnClickListener {
@@ -63,11 +64,16 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private Calendar mCalendar = Calendar.getInstance();
     private Map<String, String> mPlanList = new HashMap<>();
     private String[] mPlans;
+    private EventTask mTask;
     public static final String GET_PLAN_ID_FROM_PROJECT = "planId";
     private static final String TASK_BELONG_NONE = "plan";
+    public static final String PASS_TASK_ID = "task_id";
     public static final String VOICE_INPUT = "voice_input";
+    public static final int MODIFY_TASK_RESULT_CODE = 40;
+    private boolean isEditMode = false;
+
     DatebaseHelper mHelper = DatebaseHelper.getInstance(this);
-    private Object intentData;
+    private String mTaskID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,12 +214,25 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             Toast.makeText(this, getResources().getString(R.string.task_not_empty_plan_time), Toast.LENGTH_SHORT).show();
             return;
         }
+        if (Float.valueOf(mEditViewPlanTime.getText().toString()).compareTo(new Float(0)) <= 0) {
+            Toast.makeText(this, getResources().getString(R.string.task_not_empty_plan_time), Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (mCalendar == null) {
             return;
         }
         EventTask task = new EventTask();
-        String taskID = UUID.randomUUID().toString();
-        task.setTaskId(taskID);
+        if (mTaskID == null) {
+            String taskID = UUID.randomUUID().toString();
+            task.setTaskId(taskID);
+        } else {
+            task.setTaskId(mTaskID);
+            Realm realm = mHelper.getRealm();
+            EventTask deleteTask = realm.where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
+            realm.beginTransaction();
+            deleteTask.removeFromRealm();
+            realm.commitTransaction();
+        }
         task.setTaskStatus(EventTask.NOT_START);
         task.setTaskTitle(mTextViewTitle.getText().toString());
         task.setTaskContent(TextUtils.isEmpty(mTextViewContent.getText()) ? "" : mTextViewContent.getText().toString());
@@ -236,12 +255,19 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 planID = makeNewPlan(planName);
                 task.setPlanId(planID);
             }
+
+
             Plan plan = mHelper.getRealm().where(Plan.class).equalTo("planId", planID).findFirst();
             mHelper.getRealm().beginTransaction();
             task.setPlan(plan);
             plan.getEventTasks().add(task);
             mHelper.getRealm().commitTransaction();
-            Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
+            if(isEditMode){
+                Toast.makeText(this, getResources().getString(R.string.task_modify_successful), Toast.LENGTH_SHORT).show();
+                setResult(MODIFY_TASK_RESULT_CODE);
+            }else {
+                Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
+            }
 
             finish();
         }
@@ -359,10 +385,40 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void getIntentData() {
+
         Intent intent = getIntent();
         String content = intent.getStringExtra(VOICE_INPUT);
         if (content != null && content.length() > 0) {
             mTextViewTitle.setText(content);
         }
+        mTaskID = intent.getStringExtra(PASS_TASK_ID);
+        if (mTaskID != null) {
+            mHelper = DatebaseHelper.getInstance(this);
+            mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
+            mSpinnerTaskKinds.setSelection(mTask.getTaskType() - 1);
+            mSpinnerTaskLevel.setSelection(mTask.getTaskPriority() - 1);
+            mSpinnerTaskRemind.setSelection(transRemind(mTask.getTaskRemindTime()));
+            mActivityNewTaskBinding.setTask(mTask);
+            mActivityNewTaskBinding.executePendingBindings();
+            isEditMode = true;
+        }
+
+
     }
+
+    private int transRemind(long i) {
+        String[] reminds = getResources().getStringArray(R.array.task_remind);
+        if (i == Constants.TEN_MIN_TO_SEC) {
+            return 0;
+        } else if (i == Constants.TWENTY_MIN_TO_SEC) {
+            return 1;
+        } else if (i == Constants.HALF_HOUR_TO_SEC) {
+            return 2;
+        } else if (i == Constants.ONE_HOUR_TO_SEC) {
+            return 3;
+        } else {
+            return 0;
+        }
+    }
+
 }
