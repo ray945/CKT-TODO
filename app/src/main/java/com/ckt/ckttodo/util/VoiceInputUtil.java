@@ -55,7 +55,8 @@ public class VoiceInputUtil {
         @Override
         public void onInit(int code) {
             if (code != ErrorCode.SUCCESS) {
-                showTip("初始化失败，错误码：" + code);
+//                showTip("初始化失败，错误码：" + code);
+                showTip("初始化失败!");
             }
         }
     };
@@ -69,7 +70,7 @@ public class VoiceInputUtil {
         @Override
         public void onBeginOfSpeech() {
             // 此回调表示：sdk内部录音机已经准备好了，用户可以开始语音输入
-            showTip("开始说话");
+//            showTip("开始说话");
         }
 
         @Override
@@ -77,7 +78,8 @@ public class VoiceInputUtil {
             // Tips：
             // 错误码：10118(您没有说话)，可能是录音机权限被禁，需要提示用户打开应用的录音权限。
             // 如果使用本地功能（语记）需要提示用户开启语记的录音权限。
-            showTip(error.getPlainDescription(true));
+            showTip("您没有说话或没有录音权限");
+//            showTip(error.getPlainDescription(true));
             mListener.onNoInput();
         }
 
@@ -105,8 +107,8 @@ public class VoiceInputUtil {
         @Override
         public void onVolumeChanged(int volume, byte[] data) {
             mListener.onVoiceChanged(volume);
-            showTip("当前正在说话，音量大小：" + volume);
-            Log.d(TAG, "返回音频数据：" + data.length);
+//            showTip("当前正在说话，音量大小：" + volume);
+//            Log.d(TAG, "返回音频数据：" + data.length);
         }
 
         @Override
@@ -151,7 +153,7 @@ public class VoiceInputUtil {
         mRecognizer.setParameter(SpeechConstant.VAD_BOS, mSharedPreferences.getString("iat_vadbos_preference", "4000"));
 
         // 设置语音后端点:后端点静音检测时间，即用户停止说话多长时间内即认为不再输入， 自动停止录音
-        mRecognizer.setParameter(SpeechConstant.VAD_EOS, mSharedPreferences.getString("iat_vadeos_preference", "1000"));
+        mRecognizer.setParameter(SpeechConstant.VAD_EOS, mSharedPreferences.getString("iat_vadeos_preference", "1500"));
 
         // 设置标点符号,设置为"0"返回结果无标点,设置为"1"返回结果有标点
         mRecognizer.setParameter(SpeechConstant.ASR_PTT, mSharedPreferences.getString("iat_punc_preference", "1"));

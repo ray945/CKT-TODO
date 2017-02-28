@@ -87,7 +87,6 @@ public class FinishedTaskActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         mMenuItemSure = menu.findItem(R.id.menu_sure);
         mMenuItemCancel = menu.findItem(R.id.menu_no);
-        menu.findItem(R.id.menu_research).setVisible(false);
         return true;
     }
 

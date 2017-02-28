@@ -72,7 +72,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     public static final int MODIFY_TASK_RESULT_CODE = 40;
     private boolean isEditMode = false;
 
-    DatebaseHelper mHelper = DatebaseHelper.getInstance(this);
+    DatebaseHelper mHelper;
     private String mTaskID;
 
     @Override
@@ -81,12 +81,15 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.new_task));
         mActivityNewTaskBinding = DataBindingUtil.setContentView(NewTaskActivity.this, R.layout.activity_new_task);
+        mHelper = DatebaseHelper.getInstance(this);
+        getPlanData();
         init();
+        getIntentData();
     }
+
 
     private void init() {
 
-        getPlanData();
 
         mScrollViewTaskListContainer = mActivityNewTaskBinding.taskListContainer;
 
@@ -148,7 +151,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mTextViewContent = mActivityNewTaskBinding.newEditConent;
         mTextViewTitle = mActivityNewTaskBinding.newEditTitle;
 
-        getIntentData();
+
     }
 
     /**
@@ -182,9 +185,6 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 } else {
                     checkAndCommit();
                 }
-                break;
-            case R.id.menu_research:
-
                 break;
             case android.R.id.home:
                 if (mLinearLayoutInput.getVisibility() == View.VISIBLE) {
@@ -262,10 +262,10 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             task.setPlan(plan);
             plan.getEventTasks().add(task);
             mHelper.getRealm().commitTransaction();
-            if(isEditMode){
+            if (isEditMode) {
                 Toast.makeText(this, getResources().getString(R.string.task_modify_successful), Toast.LENGTH_SHORT).show();
                 setResult(MODIFY_TASK_RESULT_CODE);
-            }else {
+            } else {
                 Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
             }
 
@@ -389,6 +389,9 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         Intent intent = getIntent();
         String content = intent.getStringExtra(VOICE_INPUT);
         if (content != null && content.length() > 0) {
+            mTask = new EventTask();
+            mActivityNewTaskBinding.setTask(mTask);
+            mActivityNewTaskBinding.executePendingBindings();
             mTextViewTitle.setText(content);
         }
         mTaskID = intent.getStringExtra(PASS_TASK_ID);
@@ -407,17 +410,26 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private int transRemind(long i) {
-        String[] reminds = getResources().getStringArray(R.array.task_remind);
         if (i == Constants.TEN_MIN_TO_SEC) {
-            return 0;
+
+            return Constants.AHEAD_SCHEDULE_TIME_TEM_MIN;
+
         } else if (i == Constants.TWENTY_MIN_TO_SEC) {
-            return 1;
+
+            return Constants.AHEAD_SCHEDULE_TIME_THENTY_MIN;
+
         } else if (i == Constants.HALF_HOUR_TO_SEC) {
-            return 2;
+
+            return Constants.AHEAD_SCHEDULE_TIME_HALF_HOUR;
+
         } else if (i == Constants.ONE_HOUR_TO_SEC) {
-            return 3;
+
+            return Constants.AHEAD_SCHEDULE_TIME_ONE_HOUR;
+
         } else {
-            return 0;
+
+            return Constants.AHEAD_SCHEDULE_TIME_TEM_MIN;
+
         }
     }
 

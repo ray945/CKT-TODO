@@ -20,9 +20,5 @@
         android:title="@string/no"
         android:visible="false"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/menu_research"
-        android:icon="@drawable/research"
-        android:title="@string/research"
-        app:showAsAction="always" />
+
 </menu>

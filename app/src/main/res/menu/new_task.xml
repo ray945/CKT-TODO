@@ -6,10 +6,5 @@
         android:icon="@drawable/ic_done_white_48dp"
         android:title="@string/sure"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/menu_research"
-        android:icon="@drawable/research"
-        app:showAsAction="always"
-        android:title="@string/research" />
 
 </menu>

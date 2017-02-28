@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +101,7 @@ public class TaskFragment extends Fragment {
          */
 
         public void customNotifyDataSetChanged() {
-            mItemsSelectStatus.clear();
+            resetItemSelectStatus(mItemsSelectStatus);
             notifyDataSetChanged();
         }
 
@@ -109,25 +110,33 @@ public class TaskFragment extends Fragment {
          */
 
         public void customDeleteNotifyDataSetChanged() {
-            mItemsSelectStatus.clear();
             mTasks = mHelper.findAll(EventTask.class);
+            resetItemSelectStatus(mItemsSelectStatus);
             notifyDataSetChanged();
         }
 
+
+        private void resetItemSelectStatus(Map<Integer, Boolean> map) {
+            map.clear();
+            for (int i = 0; mTasks.size() > i; ++i) {
+                map.put(i, false);
+            }
+
+        }
 
         @Override
         public void onBindViewHolder(TaskRecyclerViewHolder holder, int position) {
 
             holder.setData(mTasks.get(position));
             holder.container.setTag(position);
-            mItemsSelectStatus.put(position, false);
             if (isShowCheckBox) {
+                holder.checkBox.setChecked(mItemsSelectStatus.get(position));
                 holder.checkBox.setVisibility(View.VISIBLE);
                 holder.imageButtonStatus.setVisibility(View.INVISIBLE);
             } else {
                 holder.checkBox.setVisibility(View.GONE);
-                holder.checkBox.setChecked(false);
                 holder.imageButtonStatus.setVisibility(View.VISIBLE);
+                holder.checkBox.setChecked(false);
             }
         }
 

@@ -55,7 +55,7 @@ import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
-        , TaskFragment.ShowMainMenuItem,  ActivityCompat.OnRequestPermissionsResultCallback
+        , TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback
         , VoiceInputDialog.VoiceInputFinishedListener {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
@@ -91,9 +91,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSIONS) {
-            if (PermissionUtil.verifyPermission(grantResults)) {
-                //                Snackbar.make()
-                Toast.makeText(this, "获取权限成功！", Toast.LENGTH_SHORT).show();
+            boolean flag = PermissionUtil.verifyPermission(grantResults);
+            if (flag) {
+                Toast.makeText(this, getResources().getString(R.string.get_permission_success), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.get_permission_fail), Toast.LENGTH_LONG).show();
             }
 
         } else {
@@ -110,6 +112,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initUI();
         setupWindowAnimations();
         initNotification();
+        initPermission();
+    }
+
+    private void initPermission() {
+        SharedPreferences preferences = MainActivity.this.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        boolean isFirstTime = preferences.getBoolean(IS_FIRST_CHECK_PERMISSION, true);
+        if (isFirstTime) {
+            getTheVoiceInput();
+            preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
+        }
+
     }
 
     private void initNotification() {
@@ -122,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initUI() {
-        mDialog = new VoiceInputDialog(this, R.style.VoiceInputDialog,this);
+        mDialog = new VoiceInputDialog(this, R.style.VoiceInputDialog, this);
         mActivityMainBinding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
         Toolbar toolbar = mActivityMainBinding.appBarMain.toolbar;
         toolbar.setTitle(R.string.app_name);
@@ -207,23 +220,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActivityMainBinding.appBarMain.addVoid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences preferences = MainActivity.this.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
-                boolean isFirstTime = preferences.getBoolean(IS_FIRST_CHECK_PERMISSION, true);
-                if (isFirstTime) {
-                    getTheVoiceInput();
-                    preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
-                } else {
-                    mDialog.show();
-                }
+//                SharedPreferences preferences = MainActivity.this.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
+//                boolean isFirstTime = preferences.getBoolean(IS_FIRST_CHECK_PERMISSION, true);
+//                if (isFirstTime) {
+//                    getTheVoiceInput();
+//                    preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
+//                } else {
+                mDialog.show();
+//                }
             }
         });
+        mActivityMainBinding.appBarMain.addText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(MainActivity.this, NewTaskActivity.class), MAIN_TO_NEW_TASK_CODE);
+            }
+        });
+
 
         mActivityMainBinding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switch (viewPager.getCurrentItem()) {
                     case 0:
-                        getTheVoiceInput();
+//                        getTheVoiceInput();
                         break;
                     case 1:
                         Log.e(TAG, "project click");
@@ -291,8 +311,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.RECORD_AUDIO) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.READ_PHONE_STATE) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.READ_EXTERNAL_STORAGE) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Constants.WRITE_EXTERNAL_STORAGE)) {
 
             ActivityCompat.requestPermissions(this, PERMISSION_LIST, REQUEST_PERMISSIONS);
-        } else {
-            Toast.makeText(this, "获取权限成功！", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -326,12 +344,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
 
     private void registerScreenOffBroadcast() {
         if (mScreenOffBroadcast == null) {
@@ -349,6 +361,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         mMenuItemSure = menu.findItem(R.id.menu_sure);
@@ -363,9 +382,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
-            case R.id.menu_research:
-                startActivityForResult(new Intent(this, NewTaskActivity.class), MAIN_TO_NEW_TASK_CODE);
-                break;
             case R.id.menu_sure:
                 //删除选中项并结束事件
                 mMenuItemFalse.setVisible(false);

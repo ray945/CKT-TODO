@@ -3,10 +3,10 @@ package com.ckt.ckttodo.util;
 import android.content.pm.PackageManager;
 
 /**
- * Created by ckt on 2/19/17.
+ * Created by MOZRE on 2/19/17.
  */
 
-public class PermissionUtil {
+public abstract class PermissionUtil {
 
     public static boolean verifyPermission(int[] grantResults) {
 
@@ -14,7 +14,7 @@ public class PermissionUtil {
             return false;
         }
         for (int result : grantResults) {
-            if (result != PackageManager.PERMISSION_DENIED) {
+            if (result == PackageManager.PERMISSION_DENIED) {
                 return false;
             }
 
