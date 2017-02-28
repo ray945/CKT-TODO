@@ -42,10 +42,17 @@ public class TaskDetailActivity extends AppCompatActivity {
     private DatebaseHelper mHelper;
     private EventTask mTask;
     private boolean isModify = false;
+    private String mTaskID;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == NewTaskActivity.MODIFY_TASK_RESULT_CODE) {
+            mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
+            mActivityTaskDetailBinding.setTask(mTask);
+            mActivityTaskDetailBinding.executePendingBindings();
+            isModify = true;
+        }
     }
 
     @Override
@@ -96,10 +103,10 @@ public class TaskDetailActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        String taskID = getIntent().getStringExtra(EVENT_TASK_ID);
-        if (taskID != null) {
+        mTaskID = getIntent().getStringExtra(EVENT_TASK_ID);
+        if (mTaskID != null) {
             mHelper = DatebaseHelper.getInstance(this);
-            mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, taskID).findFirst();
+            mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
             mActivityTaskDetailBinding.setTask(mTask);
             mActivityTaskDetailBinding.executePendingBindings();
             mTextViewKinds.setText(transKinds(mTask.getTaskType()));
@@ -178,9 +185,6 @@ public class TaskDetailActivity extends AppCompatActivity {
                         task.setTaskType(mTask.getTaskType());
                         mHelper.update(task);
                         dialog.dismiss();
-                        Intent intent = new Intent();
-                        intent.putExtra(IS_TASK_DETAIL_MODIFY, isModify);
-                        setResult(TASK_DETAIL_MAIN_RESULT_CODE, intent);
                         finish();
                     }
                 })
@@ -194,6 +198,18 @@ public class TaskDetailActivity extends AppCompatActivity {
                 }).create();
 
         return dialog;
+    }
+
+
+    @Override
+    public void finish() {
+        if(isModify){
+            Intent intent = new Intent();
+            intent.putExtra(IS_TASK_DETAIL_MODIFY, isModify);
+            setResult(TASK_DETAIL_MAIN_RESULT_CODE, intent);
+        }
+
+        super.finish();
     }
 
     @Override

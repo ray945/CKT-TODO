@@ -183,7 +183,11 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 if (mLinearLayoutInput.getVisibility() == View.VISIBLE) {
                     finishInputPlan();
                 } else {
-                    checkAndCommit();
+                    if (isEditMode) {
+                        checkAndUpdate();
+                    } else {
+                        checkAndCommit();
+                    }
                 }
                 break;
             case android.R.id.home:
@@ -199,6 +203,64 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkAndUpdate() {
+        if (TextUtils.isEmpty(mTextViewTitle.getText())) {
+            Toast.makeText(this, getResources().getString(R.string.task_not_empty_content), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (TextUtils.isEmpty(mEditViewPlanTime.getText())) {
+            Toast.makeText(this, getResources().getString(R.string.task_not_empty_plan_time), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (Float.valueOf(mEditViewPlanTime.getText().toString()).compareTo(new Float(0)) <= 0) {
+            Toast.makeText(this, getResources().getString(R.string.task_not_empty_plan_time), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (mCalendar == null) {
+            return;
+        }
+        EventTask task = new EventTask();
+        task.setTaskId(mTaskID);
+        task.setTaskTitle(mTextViewTitle.getText().toString());
+        task.setTaskContent(TextUtils.isEmpty(mTextViewContent.getText()) ? "" : mTextViewContent.getText().toString());
+        task.setTaskType(mSpinnerTaskKinds.getSelectedItemPosition() + 1);
+        task.setTaskPriority(mSpinnerTaskLevel.getSelectedItemPosition() + 1);
+        task.setTaskStartTime(mCalendar.getTimeInMillis());
+        task.setTaskPredictTime(Float.valueOf(mEditViewPlanTime.getText().toString()));
+        task.setTaskRemindTime(getRemindTime(mSpinnerTaskRemind.getSelectedItemPosition()));
+        Realm realm = mHelper.getRealm();
+        EventTask deleteTask = realm.where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
+        realm.beginTransaction();
+        deleteTask.removeFromRealm();
+        realm.commitTransaction();
+        if (TextUtils.isEmpty(mTextViewTaskPlan.getText()) || mTextViewTaskPlan.getText().toString().replace(" ", "").length() < 1) {
+            task.setPlanId(TASK_BELONG_NONE);
+        } else {
+            String planID;
+            String planName = mTextViewTaskPlan.getText().toString();
+            planName = planName.replace(" ", "");
+            if (mPlanList.containsKey(planName)) {
+                planID = mPlanList.get(planName);
+                task.setPlanId(planID);
+            } else {
+                // new plan
+                planID = makeNewPlan(planName);
+                task.setPlanId(planID);
+            }
+            Plan plan = mHelper.getRealm().where(Plan.class).equalTo("planId", planID).findFirst();
+            mHelper.getRealm().beginTransaction();
+            task.setPlan(plan);
+            plan.getEventTasks().add(task);
+            mHelper.getRealm().commitTransaction();
+            Toast.makeText(this, getResources().getString(R.string.task_modify_successful), Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        mHelper.insert(task);
+        setResult(MODIFY_TASK_RESULT_CODE);
+        Toast.makeText(this, getResources().getString(R.string.task_modify_successful), Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     /**
@@ -222,17 +284,8 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             return;
         }
         EventTask task = new EventTask();
-        if (mTaskID == null) {
-            String taskID = UUID.randomUUID().toString();
-            task.setTaskId(taskID);
-        } else {
-            task.setTaskId(mTaskID);
-            Realm realm = mHelper.getRealm();
-            EventTask deleteTask = realm.where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
-            realm.beginTransaction();
-            deleteTask.removeFromRealm();
-            realm.commitTransaction();
-        }
+        String taskID = UUID.randomUUID().toString();
+        task.setTaskId(taskID);
         task.setTaskStatus(EventTask.NOT_START);
         task.setTaskTitle(mTextViewTitle.getText().toString());
         task.setTaskContent(TextUtils.isEmpty(mTextViewContent.getText()) ? "" : mTextViewContent.getText().toString());
@@ -256,19 +309,12 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
                 task.setPlanId(planID);
             }
 
-
             Plan plan = mHelper.getRealm().where(Plan.class).equalTo("planId", planID).findFirst();
             mHelper.getRealm().beginTransaction();
             task.setPlan(plan);
             plan.getEventTasks().add(task);
             mHelper.getRealm().commitTransaction();
-            if (isEditMode) {
-                Toast.makeText(this, getResources().getString(R.string.task_modify_successful), Toast.LENGTH_SHORT).show();
-                setResult(MODIFY_TASK_RESULT_CODE);
-            } else {
-                Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
-            }
-
+            Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
             finish();
         }
         mHelper.insert(task);
