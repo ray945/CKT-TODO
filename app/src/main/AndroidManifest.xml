@@ -57,6 +57,7 @@
 
         <activity android:name=".ui.TaskDetailActivity"></activity>
         <activity android:name=".ui.NewPlanActivity"></activity>
+        <activity android:name=".ui.PlanDetailActivity"></activity>
     </application>
 
 </manifest>

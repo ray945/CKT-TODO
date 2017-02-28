@@ -48,7 +48,6 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.new_plan));
-        getSupportActionBar().setElevation(0);
         mActivityNewPlanBinding = DataBindingUtil.setContentView(this, R.layout.activity_new_plan);
         init();
     }
@@ -77,14 +76,12 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_sure:
-                save();
+                savePlan();
                 break;
             case android.R.id.home:
                 show();
                 break;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -96,14 +93,6 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
         return super.onKeyDown(keyCode, event);
     }
 
-    private void save() {
-        if (mActivityNewPlanBinding.etPlanTitle.getText().toString().trim().equals("") || mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
-            Toast.makeText(NewPlanActivity.this, "不能为空哦!", Toast.LENGTH_SHORT).show();
-        } else {
-            savePlan();
-        }
-    }
-
     private void show() {
         if (mActivityNewPlanBinding.etPlanTitle.getText().toString().trim().equals("") && mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
             onBackPressed();
@@ -112,7 +101,7 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    save();
+                    savePlan();
                 }
             }).setNegativeButton("否", new DialogInterface.OnClickListener() {
 
@@ -125,21 +114,31 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void savePlan() {
-        DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                Project sProject = DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().where(Project.class).equalTo(PROJECT_ID, mProjectId).findFirst();
-                Plan plan = new Plan();
-                plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
-                plan.setPlanName(mActivityNewPlanBinding.etPlanTitle.getText().toString().trim());
-                plan.setPlanId(UUID.randomUUID().toString());
-                plan.setCreateTime(System.currentTimeMillis());
-                plan.setProjectId(mProjectId);
-                sProject.getPlans().add(plan);
+        if (mActivityNewPlanBinding.etPlanTitle.getText().toString().trim().equals("") || mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
+            Toast.makeText(NewPlanActivity.this, "不能为空哦!", Toast.LENGTH_SHORT).show();
+        } else {
+            if (planStartTime > planEndTime) {
+                toast();
+            } else {
+                DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        Project sProject = DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().where(Project.class).equalTo(PROJECT_ID, mProjectId).findFirst();
+                        Plan plan = new Plan();
+                        plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
+                        plan.setPlanName(mActivityNewPlanBinding.etPlanTitle.getText().toString().trim());
+                        plan.setPlanId(UUID.randomUUID().toString());
+                        plan.setCreateTime(System.currentTimeMillis());
+                        plan.setStartTime(planStartTime);
+                        plan.setEndTime(planEndTime);
+                        plan.setProjectId(mProjectId);
+                        sProject.getPlans().add(plan);
+                    }
+                });
+                Toast.makeText(this, "新建成功", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
-        });
-        Toast.makeText(this, "新建成功", Toast.LENGTH_SHORT).show();
-        onBackPressed();
+        }
     }
 
     @Override
@@ -175,9 +174,15 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                         planEndTime = cal.getTime().getTime();
                     }
                 }
+                if (planStartTime > planEndTime) {
+                    toast();
+                }
                 mTaskDateDialog.dismiss();
-                ;
             }
         });
+    }
+
+    private void toast() {
+        Toast.makeText(this, "亲结束时间要比开始时间要晚的哦！", Toast.LENGTH_SHORT).show();
     }
 }

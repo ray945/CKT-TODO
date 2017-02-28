@@ -92,11 +92,7 @@ public class NewNoteActivity extends AppCompatActivity {
             case android.R.id.home:
                 show();
                 break;
-
-
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 

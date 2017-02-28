@@ -10,25 +10,23 @@ import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.databinding.ItemProjectTasksBinding;
 
-import java.text.SimpleDateFormat;
-
 import io.realm.RealmList;
 
 /**
  * Created by zhiwei.li
  */
 
-class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
+public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
 
     private RealmList<EventTask> tasks;
     private Context context;
 
-    TaskListAdapter(Context context, RealmList<EventTask> tasks) {
+    public TaskListAdapter(Context context, RealmList<EventTask> tasks) {
         this.tasks = tasks;
         this.context = context;
     }
 
-    TaskListAdapter(Context context) {
+    public TaskListAdapter(Context context) {
         this.context = context;
     }
 
@@ -44,7 +42,6 @@ class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
 
     @Override
     public TaskListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         ItemProjectTasksBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_project_tasks, parent, false);
         return new ViewHolder(binding);
     }
@@ -52,8 +49,6 @@ class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(TaskListAdapter.ViewHolder holder, int position) {
         EventTask eventTask = tasks.get(position);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM月dd日");
-        holder.binding.tvTaskTime.setText(dateFormat.format(eventTask.getTaskStartTime()));
         holder.bind(eventTask);
     }
 

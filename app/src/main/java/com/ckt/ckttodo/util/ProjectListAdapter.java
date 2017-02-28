@@ -17,6 +17,7 @@ import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ItemProjectBinding;
 import com.ckt.ckttodo.ui.NewPlanActivity;
+import com.ckt.ckttodo.ui.PlanDetailActivity;
 import com.ckt.ckttodo.ui.ProjectFragment;
 import com.headerfooter.songhang.library.SmartRecyclerAdapter;
 
@@ -36,6 +37,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     private Context context;
     private static final String TAG = "ZHIWEI";
     private SmartRecyclerAdapter mSmartRecyclerAdapter;
+    private RealmList<Plan> mThreePlans;
 
 
     public ProjectListAdapter(Context context, RealmResults<Project> projectList) {
@@ -67,16 +69,18 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
             adapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position, View view) {
-
+                    Intent intent = new Intent(context, PlanDetailActivity.class);
+                    intent.putExtra("planId",plans.get(position).getPlanId());
+                    context.startActivity(intent);
                 }
             });
             rvPlans.setAdapter(adapter);
         } else if (plans.size() >= 4) {
-            RealmList<Plan> threePlans = new RealmList<>();
+            mThreePlans = new RealmList<>();
             for (int i = 0; i < 3; i++) {
-                threePlans.add(plans.get(i));
+                mThreePlans.add(plans.get(i));
             }
-            final PlanListAdapter threeAdapter = new PlanListAdapter(context, threePlans);
+            final PlanListAdapter threeAdapter = new PlanListAdapter(context, mThreePlans);
             mSmartRecyclerAdapter = new SmartRecyclerAdapter(threeAdapter);
             ImageButton footerButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.item_project_plan_footer, rvPlans, false);
             footerButton.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +93,15 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                 }
             });
             mSmartRecyclerAdapter.setFooterView(footerButton);
+            threeAdapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener(){
+
+                @Override
+                public void onItemClick(int position, View view) {
+                    Intent intent = new Intent(context, PlanDetailActivity.class);
+                    intent.putExtra("planId", plans.get(position).getPlanId());
+                    context.startActivity(intent);
+                }
+            });
             rvPlans.setAdapter(mSmartRecyclerAdapter);
         }
         holder.bind(project);

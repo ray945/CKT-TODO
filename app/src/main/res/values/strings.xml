@@ -156,5 +156,7 @@
     <string name="version">v0.1 Beta</string>
     <string name="sliding">>>>滑动解锁>>></string>
     <string name="hour">小时</string>
+    <string name="containTask">包含任务</string>
+    <string name="planDetail">计划详情</string>
 
 </resources>
