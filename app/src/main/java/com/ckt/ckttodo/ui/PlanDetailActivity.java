@@ -41,7 +41,6 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
     private long planStartTime;
     private long planEndTime;
     private Plan plan;
-    private TaskListAdapter mTasklistAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,18 +101,10 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
         });
         planStartTime = plan.getStartTime();
         planEndTime = plan.getEndTime();
-        mTasklistAdapter = new TaskListAdapter(this, plan.getEventTasks());
-        mTasklistAdapter.setOnItemClickListener(new NoteFragment.NoteAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, View view) {
-                Intent intent = new Intent(PlanDetailActivity.this, TaskDetailActivity.class);
-                intent.putExtra(TaskDetailActivity.EVENT_TASK_ID, plan.getEventTasks().get(position).getTaskId());
-                startActivityForResult(intent, MainActivity.MAIN_TO_TASK_DETAIL_CODE);
-            }
-        });
+        TaskListAdapter tasklistAdapter = new TaskListAdapter(this, plan.getEventTasks());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mActivityPlanDetailBinding.rvTask.setLayoutManager(layoutManager);
-        mActivityPlanDetailBinding.rvTask.setAdapter(mTasklistAdapter);
+        mActivityPlanDetailBinding.rvTask.setAdapter(tasklistAdapter);
     }
 
     @Override
@@ -182,16 +173,10 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
                     }
                 });
                 Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
-                onBackPressed();
             }
         }
+        onBackPressed();
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mTasklistAdapter.notifyDataSetChanged();
     }
 
     @Override
