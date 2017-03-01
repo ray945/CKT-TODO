@@ -47,6 +47,7 @@ import com.ckt.ckttodo.util.VoiceInputUtil;
 import com.ckt.ckttodo.widgt.VoiceInputDialog;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mFragmentList = new ArrayList<>();
         initUI();
         setupWindowAnimations();
-        initNotification();
+        initNotification(this);
         initPermission();
     }
 
@@ -125,12 +126,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void initNotification() {
-        AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+    public static void initNotification(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         Intent intent = new Intent("com.ckt.ckttodo.alarm");
-        intent.putExtra(NotificationBroadcastReceiver.NOTIFICATION_TITLE, getResources().getString(R.string.remind_title));
+        intent.putExtra(NotificationBroadcastReceiver.NOTIFICATION_TITLE, context.getResources().getString(R.string.remind_title));
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 100000, pendingIntent);
     }
 
@@ -426,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(MainActivity.this, AboutActivity.class);
             transitionTo(intent);
         }
-
+        item.setChecked(true);
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         drawer.closeDrawer(GravityCompat.START);
         return true;

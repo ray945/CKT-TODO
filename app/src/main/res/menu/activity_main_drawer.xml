@@ -5,6 +5,7 @@
         <item
             android:id="@+id/nav_task"
             android:icon="@mipmap/nav_task"
+            android:checked="true"
             android:title="@string/tasks"/>
         <item
             android:id="@+id/nav_file"

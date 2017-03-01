@@ -1,5 +1,6 @@
 package com.ckt.ckttodo.util;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
@@ -29,11 +31,15 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             .findAll(EventTask.class);
         for (int i = 0; i < tasks.size(); i++) {
             EventTask task = tasks.get(i);
-            if ((new Date()).getTime() - task.getTaskRemindTime() <= 600000) {
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(
-                    context).setContentTitle(intent.getStringExtra(NOTIFICATION_TITLE))
-                    .setContentText(task.getTaskTitle()).setSmallIcon(
-                        R.mipmap.ic_launcher);
+            long time = task.getTaskStartTime() - (new Date()).getTime();
+            if (time < (task.getTaskRemindTime() + 59) * 1000 &&
+                time > (task.getTaskRemindTime() - 30) * 1000) {
+                NotificationCompat.Builder builder = new NotificationCompat
+                    .Builder(context)
+                    .setContentTitle(intent.getStringExtra(NOTIFICATION_TITLE))
+                    .setContentText(task.getTaskTitle())
+                    .setSmallIcon(R.mipmap.ic_launcher);
+                builder.build().flags = Notification.FLAG_AUTO_CANCEL;
 
                 Intent resultIntent = new Intent(context, MainActivity.class);
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);

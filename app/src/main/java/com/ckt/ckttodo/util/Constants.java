@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class Constants {
 
-    public static final long ONE_HOUR_TO_SEC = 1 * 60 * 60;
+    public static final long ONE_HOUR_TO_SEC = 60 * 60;
 
     public static final long HALF_HOUR_TO_SEC = ONE_HOUR_TO_SEC / 2;
 
