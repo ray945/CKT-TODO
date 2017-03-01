@@ -4,33 +4,23 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.DatabaseUtils;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
-import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Note;
-import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.FragmentNoteBinding;
 import com.ckt.ckttodo.databinding.NoteItemBinding;
-import com.ckt.ckttodo.databinding.TaskListItemBinding;
 
-import java.util.Date;
-
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class NoteFragment extends Fragment {

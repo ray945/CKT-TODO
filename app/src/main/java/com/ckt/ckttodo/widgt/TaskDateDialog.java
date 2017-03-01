@@ -2,9 +2,7 @@ package com.ckt.ckttodo.widgt;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyboardShortcutGroup;
 import android.view.Menu;
 import android.view.View;
@@ -117,7 +115,14 @@ public class TaskDateDialog extends Dialog implements View.OnClickListener {
         mDatePicker.setVisibility(View.VISIBLE);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(dateMills);
-        mDatePicker.updateDate(calendar.YEAR, calendar.MONTH, calendar.WEEK_OF_MONTH);
+        mDatePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                mDateTime.setYear(year);
+                mDateTime.setMonth(monthOfYear);
+                mDateTime.setDay(dayOfMonth);
+            }
+        });
     }
 
 

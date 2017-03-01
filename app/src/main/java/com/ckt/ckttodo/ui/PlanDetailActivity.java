@@ -41,6 +41,7 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
     private long planStartTime;
     private long planEndTime;
     private Plan plan;
+    private TaskListAdapter mTasklistAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,10 +102,18 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
         });
         planStartTime = plan.getStartTime();
         planEndTime = plan.getEndTime();
-        TaskListAdapter tasklistAdapter = new TaskListAdapter(this, plan.getEventTasks());
+        mTasklistAdapter = new TaskListAdapter(this, plan.getEventTasks());
+        mTasklistAdapter.setOnItemClickListener(new NoteFragment.NoteAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, View view) {
+                Intent intent = new Intent(PlanDetailActivity.this, TaskDetailActivity.class);
+                intent.putExtra(TaskDetailActivity.EVENT_TASK_ID, plan.getEventTasks().get(position).getTaskId());
+                startActivityForResult(intent, MainActivity.MAIN_TO_TASK_DETAIL_CODE);
+            }
+        });
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mActivityPlanDetailBinding.rvTask.setLayoutManager(layoutManager);
-        mActivityPlanDetailBinding.rvTask.setAdapter(tasklistAdapter);
+        mActivityPlanDetailBinding.rvTask.setAdapter(mTasklistAdapter);
     }
 
     @Override
@@ -173,10 +182,16 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
                     }
                 });
                 Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
         }
-        onBackPressed();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mTasklistAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -184,11 +199,12 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
         switch (v.getId()) {
             case R.id.tv_detailStartTime:
                 flag = 1;
+                mTaskDateDialog.show(planStartTime);
                 break;
             case R.id.tv_detailEndTime:
                 flag = 2;
+                mTaskDateDialog.show(planEndTime);
                 break;
         }
-        mTaskDateDialog.show();
     }
 }

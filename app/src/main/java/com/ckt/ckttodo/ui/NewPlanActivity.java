@@ -12,7 +12,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -147,12 +146,13 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.tv_planStartTime:
                 flag = 1;
+                mTaskDateDialog.show(planStartTime);
                 break;
             case R.id.tv_planEndTime:
                 flag = 2;
+                mTaskDateDialog.show(planEndTime);
                 break;
         }
-        mTaskDateDialog.show();
     }
 
     public void getData() {
