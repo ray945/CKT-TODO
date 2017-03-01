@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -28,6 +29,8 @@ public class TaskDateDialog extends Dialog implements View.OnClickListener {
 
     private TextView mTextViewDate;
     private TextView mTextViewTime;
+    private TextView mTextViewPlan;
+    private LinearLayout mLinearLayoutTask;
     private TimePicker mTimePicker;
     private DatePicker mDatePicker;
     private Button mButtonSure;
@@ -69,6 +72,8 @@ public class TaskDateDialog extends Dialog implements View.OnClickListener {
         mDatePicker = (DatePicker) findViewById(R.id.dialog_date_picker);
         mTimePicker = (TimePicker) findViewById(R.id.dialog_time_picker);
         mButtonSure = (Button) findViewById(R.id.dialog_button_sure);
+        mTextViewPlan = (TextView) findViewById(R.id.dialog_text_time_plan);
+        mLinearLayoutTask = (LinearLayout) findViewById(R.id.dialog_linear_title);
         mTimePicker.setIs24HourView(true);
         mTextViewTime.setSelected(true);
         mTextViewDate.setSelected(false);
@@ -92,6 +97,29 @@ public class TaskDateDialog extends Dialog implements View.OnClickListener {
             }
         });
     }
+
+
+    public void show(boolean isOnlyShowDate) {
+        super.show();
+        if (isOnlyShowDate) {
+            mTextViewPlan.setVisibility(View.VISIBLE);
+            mLinearLayoutTask.setVisibility(View.GONE);
+            mTimePicker.setVisibility(View.GONE);
+            mDatePicker.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void show(long dateMills){
+        super.show();
+        mTextViewPlan.setVisibility(View.VISIBLE);
+        mLinearLayoutTask.setVisibility(View.GONE);
+        mTimePicker.setVisibility(View.GONE);
+        mDatePicker.setVisibility(View.VISIBLE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dateMills);
+        mDatePicker.updateDate(calendar.YEAR, calendar.MONTH, calendar.WEEK_OF_MONTH);
+    }
+
 
     @Override
     public void onClick(View v) {
