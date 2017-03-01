@@ -113,7 +113,11 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
 
         mEditViewPlanTime = mActivityNewTaskBinding.newEditPlanTime;
         mTextViewScheduleTime = mActivityNewTaskBinding.newTextScheduleTime;
-        mTextViewScheduleTime.setText(mDateFormat.format(Calendar.getInstance().getTime()));
+//        mCalendar.setTimeInMillis(System.currentTimeMillis());
+//        Toast.makeText(this, mDateFormat.format(mCalendar.getTime()), Toast.LENGTH_LONG).show();
+//
+//
+//        mTextViewScheduleTime.setText(mDateFormat.format(mCalendar.getTime()));
 
         //计划时间点击域
         mLinearLayoutScheduleTime = mActivityNewTaskBinding.newLinearScheduleTime;
@@ -434,14 +438,14 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
 
         Intent intent = getIntent();
         String content = intent.getStringExtra(VOICE_INPUT);
-        if (content != null && content.length() > 0) {
+        mTaskID = intent.getStringExtra(PASS_TASK_ID);
+        if (content != null) {
             mTask = new EventTask();
+            mTask.setTaskStartTime(System.currentTimeMillis());
             mActivityNewTaskBinding.setTask(mTask);
             mActivityNewTaskBinding.executePendingBindings();
             mTextViewTitle.setText(content);
-        }
-        mTaskID = intent.getStringExtra(PASS_TASK_ID);
-        if (mTaskID != null) {
+        } else if (mTaskID != null) {
             mHelper = DatebaseHelper.getInstance(this);
             mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
             mSpinnerTaskKinds.setSelection(mTask.getTaskType() - 1);
@@ -450,6 +454,11 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             mActivityNewTaskBinding.setTask(mTask);
             mActivityNewTaskBinding.executePendingBindings();
             isEditMode = true;
+        } else {
+            mTask = new EventTask();
+            mTask.setTaskStartTime(System.currentTimeMillis());
+            mActivityNewTaskBinding.setTask(mTask);
+            mActivityNewTaskBinding.executePendingBindings();
         }
 
 
