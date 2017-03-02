@@ -90,7 +90,15 @@ public class NewNoteActivity extends AppCompatActivity {
                 save();
                 break;
             case android.R.id.home:
-                show();
+                if (mNoteTag.equals("1")) {
+                    if (note.getNoteContent().equals(et_noteContent.getText().toString().trim()) && note.getNoteTitle().equals(et_noteTitle.getText().toString().trim())) {
+                        onBackPressed();
+                    } else {
+                        show();
+                    }
+                } else {
+                    show();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
