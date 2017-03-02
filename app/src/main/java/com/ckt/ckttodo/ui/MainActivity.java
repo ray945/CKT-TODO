@@ -410,24 +410,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        switch (id){
+            case R.id.nav_task:
 
-        if (id == R.id.nav_task) {
-            // Handle the camera action
+                break;
+            case R.id.nav_file:
+                transitionTo(new Intent(this, FinishedTaskActivity.class));
+                break;
+            case R.id.nav_count:
+                transitionTo(new Intent(this, ChartActivity.class));
+                break;
+            case R.id.nav_team:
 
-        } else if (id == R.id.nav_file) {
-            transitionTo(new Intent(this, FinishedTaskActivity.class));
-        } else if (id == R.id.nav_count) {
-            Intent intent = new Intent(MainActivity.this, ChartActivity.class);
-            transitionTo(intent);
-        } else if (id == R.id.nav_team) {
+                break;
+            case R.id.nav_settings:
 
-        } else if (id == R.id.nav_settings) {
-
-        } else if (id == R.id.nav_about) {
-            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-            transitionTo(intent);
+                break;
+            case R.id.nav_about:
+                transitionTo(new Intent(this, AboutActivity.class));
+                break;
         }
-        item.setChecked(true);
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         drawer.closeDrawer(GravityCompat.START);
         return true;

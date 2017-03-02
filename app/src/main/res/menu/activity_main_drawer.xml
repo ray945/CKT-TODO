@@ -10,22 +10,27 @@
         <item
             android:id="@+id/nav_file"
             android:icon="@drawable/file"
+            android:checkable="false"
             android:title="@string/file"/>
         <item
             android:id="@+id/nav_count"
             android:icon="@mipmap/nav_count"
+            android:checkable="false"
             android:title="@string/dataCount"/>
         <item
             android:id="@+id/nav_team"
             android:icon="@mipmap/nav_team"
+            android:checkable="false"
             android:title="@string/team"/>
         <item
             android:id="@+id/nav_settings"
             android:icon="@mipmap/nav_settings"
+            android:checkable="false"
             android:title="@string/setting"/>
         <item
             android:id="@+id/nav_about"
             android:icon="@mipmap/nav_about"
+            android:checkable="false"
             android:title="@string/about"/>
     </group>
 

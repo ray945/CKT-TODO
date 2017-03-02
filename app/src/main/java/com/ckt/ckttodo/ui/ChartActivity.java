@@ -2,19 +2,17 @@ package com.ckt.ckttodo.ui;
 
 import android.databinding.DataBindingUtil;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.RadioButton;
 
 import android.transition.Explode;
 import android.transition.Transition;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.databinding.ActivityChartBinding;
+import java.util.ArrayList;
 
 /**
  * Created by zhiwei.li
@@ -22,15 +20,10 @@ import com.ckt.ckttodo.databinding.ActivityChartBinding;
 
 public class ChartActivity extends AppCompatActivity {
 
-    private String[] titles;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        titles = getResources().getStringArray(R.array.chart_title);
-        replaceFragment(ChartFragment.getInstance(titles[0]));
         setupWindowAnimations();
     }
 
@@ -50,66 +43,52 @@ public class ChartActivity extends AppCompatActivity {
 
 
     private void initView() {
-        ActivityChartBinding activityChartBinding = DataBindingUtil.setContentView(
+        ActivityChartBinding binding = DataBindingUtil.setContentView(
             ChartActivity.this, R.layout.activity_chart);
-        Toolbar toolbar = activityChartBinding.toolbar;
-        toolbar.setTitle(R.string.dataCount);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-
-    public void onRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-        switch (view.getId()) {
-            case R.id.week_btn:
-                if (checked) {
-                    replaceFragment(ChartFragment.getInstance(titles[0]));
-                }
-                break;
-            case R.id.month_btn:
-                if (checked) {
-                    replaceFragment(ChartFragment.getInstance(titles[1]));
-                }
-                break;
-            case R.id.quarter_btn:
-                if (checked) {
-                    replaceFragment(ChartFragment.getInstance(titles[2]));
-                }
-                break;
-            case R.id.year_btn:
-                if (checked) {
-                    replaceFragment(ChartFragment.getInstance(titles[3]));
-                }
-                break;
+        final String[] titles = getResources().getStringArray(R.array.chart_title);
+        final ArrayList<Fragment> fragments = new ArrayList<>();
+        for (String title : titles) {
+            fragments.add(ChartFragment.getInstance(title));
         }
+        ViewPager viewPager = binding.viewPager;
+        viewPager.setOffscreenPageLimit(4);
+        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override public Fragment getItem(int position) {
+                return fragments.get(position);
+            }
+
+
+            @Override public int getCount() {
+                return fragments.size();
+            }
+
+
+            @Override public CharSequence getPageTitle(int position) {
+                return titles[position];
+            }
+        });
+
+        binding.tabLayout.setupWithViewPager(viewPager);
     }
 
 
-    private void replaceFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-            .replace(R.id.chart_content, fragment)
-            .commit();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.data_count_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.click_me:
-
-                return true;
-            case android.R.id.home:
-                onBackPressed();
-                break;
-        }
-        return true;
-    }
+    // @Override
+    // public boolean onCreateOptionsMenu(Menu menu) {
+    //     getMenuInflater().inflate(R.menu.data_count_menu, menu);
+    //     return super.onCreateOptionsMenu(menu);
+    // }
+    //
+    //
+    // @Override
+    // public boolean onOptionsItemSelected(MenuItem item) {
+    //     switch (item.getItemId()) {
+    //         case R.id.click_me:
+    //
+    //             return true;
+    //         case android.R.id.home:
+    //             onBackPressed();
+    //             break;
+    //     }
+    //     return true;
+    // }
 }

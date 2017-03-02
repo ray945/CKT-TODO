@@ -42,8 +42,7 @@
         <activity
             android:name=".ui.ChartActivity"
             android:label="@string/dataCount"
-            android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:parentActivityName=".ui.MainActivity"/>
         <activity android:name=".ui.FinishedTaskActivity"/>
         <activity
             android:name=".ui.ClockAnimationActivity"

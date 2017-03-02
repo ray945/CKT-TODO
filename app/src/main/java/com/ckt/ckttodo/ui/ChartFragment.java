@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ckt.ckttodo.BR;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
@@ -22,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.Locale;
 
