@@ -29,8 +29,8 @@
                 android:id="@+id/text_task_list_plan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text="@{task.taskTitle}" />
+                android:text="@{task.taskTitle}"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/text_task_list_time_pre"
@@ -101,11 +101,14 @@
         <ImageButton
             android:id="@+id/image_task_status"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
             android:background="@android:color/transparent"
+            android:descendantFocusability="blocksDescendants"
+            android:minWidth="50dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
             android:src="@drawable/task_start_stop_selection" />
     </RelativeLayout>
 </layout>
