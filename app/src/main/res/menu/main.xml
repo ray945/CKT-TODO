@@ -15,9 +15,9 @@
         android:visible="false"
         app:showAsAction="always" />
     <item
-        android:id="@+id/menu_no"
-        android:icon="@drawable/ic_clear_white_48dp"
-        android:title="@string/no"
+        android:id="@+id/menu_delete"
+        android:icon="@drawable/dustbin"
+        android:title="@string/delete"
         android:visible="false"
         app:showAsAction="always" />
 

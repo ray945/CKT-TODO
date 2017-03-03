@@ -38,7 +38,7 @@
     <string name="task_not_empty_plan_time">请输入计划时间！</string>
     <string name="get_permission_fail">全部或部分必需权限不可用，可能导致部分功能无法使用！</string>
     <string name="get_permission_success">获取权限成功！</string>
-    <string name="no">取消</string>
+    <string name="delete">删除</string>
     <string name="task_detail">任务详情</string>
     <string name="stop_count_down_time">停止计时</string>
     <string name="tomato_time">番茄时钟</string>

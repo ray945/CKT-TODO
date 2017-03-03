@@ -43,11 +43,9 @@ import com.ckt.ckttodo.databinding.ActivityMainBinding;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.NotificationBroadcastReceiver;
 import com.ckt.ckttodo.util.PermissionUtil;
-import com.ckt.ckttodo.util.VoiceInputUtil;
 import com.ckt.ckttodo.widgt.VoiceInputDialog;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -372,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         mMenuItemSure = menu.findItem(R.id.menu_sure);
-        mMenuItemFalse = menu.findItem(R.id.menu_no);
+        mMenuItemFalse = menu.findItem(R.id.menu_delete);
         return true;
     }
 
@@ -384,16 +382,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_sure:
-                //删除选中项并结束事件
+                //将选中事件置为完成状态
+
+                mMenuItemFalse.setVisible(false);
+                mMenuItemSure.setVisible(false);
+                mTaskFragment.finishTaskAction();
+                break;
+            case R.id.menu_delete:
+                //删除选中项结束事件
                 mMenuItemFalse.setVisible(false);
                 mMenuItemSure.setVisible(false);
                 mTaskFragment.finishDeleteAction(true);
-                break;
-            case R.id.menu_no:
-                //不删除选中项结束事件
-                mMenuItemFalse.setVisible(false);
-                mMenuItemSure.setVisible(false);
-                mTaskFragment.finishDeleteAction(false);
                 break;
         }
 

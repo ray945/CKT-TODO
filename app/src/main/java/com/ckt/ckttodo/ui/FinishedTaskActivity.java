@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Slide;
 import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.transition.Visibility;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -86,22 +85,23 @@ public class FinishedTaskActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         mMenuItemSure = menu.findItem(R.id.menu_sure);
-        mMenuItemCancel = menu.findItem(R.id.menu_no);
+        mMenuItemCancel = menu.findItem(R.id.menu_delete);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_no:
+            case R.id.menu_delete:
                 mMenuItemSure.setVisible(false);
                 mMenuItemCancel.setVisible(false);
-                showMenuItem(false);
+//                showMenuItem(false);
+                deleteSelectDataAndNotifyDataChanged();
                 break;
             case R.id.menu_sure:
-                mMenuItemSure.setVisible(false);
-                mMenuItemCancel.setVisible(false);
-                deleteSelectDataAndNotifyDataChanged();
+//                mMenuItemSure.setVisible(false);
+//                mMenuItemCancel.setVisible(false);
+//                deleteSelectDataAndNotifyDataChanged();
                 break;
             case android.R.id.home:
                 onBackPressed();
@@ -253,7 +253,7 @@ public class FinishedTaskActivity extends AppCompatActivity {
      */
 
     private void showMenuItem(boolean isShow) {
-        mMenuItemSure.setVisible(isShow);
+//        mMenuItemSure.setVisible(isShow);
         mMenuItemCancel.setVisible(isShow);
         isShowCheckBox = isShow;
         mAdapter.notifyDataSetChanged();

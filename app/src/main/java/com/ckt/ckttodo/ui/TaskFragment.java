@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,14 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.databinding.FragmentTaskBinding;
 import com.ckt.ckttodo.databinding.TaskListItemBinding;
+import com.ckt.ckttodo.util.TranserverUtil;
 import com.ckt.ckttodo.widgt.TaskDividerItemDecoration;
 import com.ckt.ckttodo.widgt.TimeWatchDialog;
 
@@ -40,6 +43,7 @@ public class TaskFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private TaskRecyclerViewAdapter mAdapter;
     private RealmResults<EventTask> mTasks;
+    private List<EventTask> mShowTasks;
     private static boolean isShowCheckBox = false;
     private Map<Integer, Boolean> mItemsSelectStatus = new HashMap<>();
     private ShowMainMenuItem mShowMenuItem;
@@ -67,7 +71,7 @@ public class TaskFragment extends Fragment {
 
     private View init(LayoutInflater inflater) {
         mHelper = DatebaseHelper.getInstance(getContext());
-        mTasks = mHelper.findAll(EventTask.class);
+        screenTask();
         mFragmentTaskBinding = FragmentTaskBinding.inflate(inflater);
         mRecyclerView = mFragmentTaskBinding.recyclerTaskList;
         mAdapter = new TaskRecyclerViewAdapter();
@@ -78,8 +82,21 @@ public class TaskFragment extends Fragment {
         return mFragmentTaskBinding.getRoot();
     }
 
-    public void notifyData() {
+    private void screenTask() {
+        if (mShowTasks == null) {
+            mShowTasks = new ArrayList<>();
+        }
+        mShowTasks.clear();
         mTasks = mHelper.findAll(EventTask.class);
+        for (EventTask task : mTasks) {
+            if (task.getTaskStatus() != EventTask.DONE) {
+                mShowTasks.add(task);
+            }
+        }
+    }
+
+    public void notifyData() {
+        screenTask();
         mAdapter.notifyDataSetChanged();
     }
 
@@ -109,7 +126,7 @@ public class TaskFragment extends Fragment {
          */
 
         public void customDeleteNotifyDataSetChanged() {
-            mTasks = mHelper.findAll(EventTask.class);
+            screenTask();
             resetItemSelectStatus(mItemsSelectStatus);
             notifyDataSetChanged();
         }
@@ -117,7 +134,7 @@ public class TaskFragment extends Fragment {
 
         private void resetItemSelectStatus(Map<Integer, Boolean> map) {
             map.clear();
-            for (int i = 0; mTasks.size() > i; ++i) {
+            for (int i = 0; mShowTasks.size() > i; ++i) {
                 map.put(i, false);
             }
 
@@ -126,7 +143,7 @@ public class TaskFragment extends Fragment {
         @Override
         public void onBindViewHolder(TaskRecyclerViewHolder holder, int position) {
 
-            holder.setData(mTasks.get(position));
+            holder.setData(mShowTasks.get(position));
             holder.container.setTag(position);
             if (isShowCheckBox) {
                 holder.checkBox.setChecked(mItemsSelectStatus.get(position));
@@ -141,7 +158,7 @@ public class TaskFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return mTasks.size();
+            return mShowTasks.size();
         }
     }
 
@@ -266,7 +283,7 @@ public class TaskFragment extends Fragment {
             List<EventTask> tasks = new ArrayList<>();
             for (int position : mItemsSelectStatus.keySet()) {
                 if (mItemsSelectStatus.get(position)) {
-                    tasks.add(mTasks.get(position));
+                    tasks.add(mShowTasks.get(position));
                 }
             }
             for (EventTask task1 : tasks) {
@@ -276,6 +293,23 @@ public class TaskFragment extends Fragment {
         }
 
         mAdapter.customNotifyDataSetChanged();
+    }
+
+    public void finishTaskAction() {
+        isShowCheckBox = false;
+        List<EventTask> tasks = new ArrayList<>();
+        for (int position : mItemsSelectStatus.keySet()) {
+            if (mItemsSelectStatus.get(position)) {
+                tasks.add(mShowTasks.get(position));
+            }
+        }
+        EventTask upDateTask = new EventTask();
+        for (EventTask task1 : tasks) {
+            TranserverUtil.transEventTask(upDateTask, task1);
+            upDateTask.setTaskStatus(EventTask.DONE);
+            mHelper.update(upDateTask);
+        }
+        mAdapter.customDeleteNotifyDataSetChanged();
     }
 
 
