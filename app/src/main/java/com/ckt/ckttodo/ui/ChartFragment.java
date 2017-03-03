@@ -153,7 +153,7 @@ public class ChartFragment extends Fragment {
                             }
                         }
                         ChartManager.initCombinedChart(combinedChart, ChartManager.DAY_FLAG,
-                            dayWorkTimes, dayStudyTimes, dayLiveTimes, dayRestTimes);
+                            dayWorkTimes, dayStudyTimes, dayLiveTimes, dayRestTimes, kinds);
                         break;
                     case 1:
                         initPieChart(tasks, kinds, pieChart, dateFormatWeek, nowWeek, 1);
@@ -190,7 +190,7 @@ public class ChartFragment extends Fragment {
                             }
                         }
                         ChartManager.initCombinedChart(combinedChart, ChartManager.WEEK_FLAG,
-                            weekWorkTimes, weekStudyTimes, weekLiveTimes, weekRestTimes);
+                            weekWorkTimes, weekStudyTimes, weekLiveTimes, weekRestTimes, kinds);
                         break;
                     case 2:
                         initPieChart(tasks, kinds, pieChart, dateFormatMonth, nowMonth, 2);
@@ -225,7 +225,7 @@ public class ChartFragment extends Fragment {
                                         }
                                         ChartManager.initCombinedChart(combinedChart,
                                             ChartManager.MONTH_FLAG1, monthWorkTimes,
-                                            monthStudyTimes, monthLiveTimes, monthRestTimes);
+                                            monthStudyTimes, monthLiveTimes, monthRestTimes, kinds);
                                         break;
                                     case "Q2":
                                         switch (dateFormatMonth.format(taskStartTime)) {
@@ -247,7 +247,7 @@ public class ChartFragment extends Fragment {
                                         }
                                         ChartManager.initCombinedChart(combinedChart,
                                             ChartManager.MONTH_FLAG2, monthWorkTimes,
-                                            monthStudyTimes, monthLiveTimes, monthRestTimes);
+                                            monthStudyTimes, monthLiveTimes, monthRestTimes, kinds);
                                         break;
                                     case "Q3":
                                         switch (dateFormatMonth.format(taskStartTime)) {
@@ -269,7 +269,7 @@ public class ChartFragment extends Fragment {
                                         }
                                         ChartManager.initCombinedChart(combinedChart,
                                             ChartManager.MONTH_FLAG3, monthWorkTimes,
-                                            monthStudyTimes, monthLiveTimes, monthRestTimes);
+                                            monthStudyTimes, monthLiveTimes, monthRestTimes, kinds);
                                         break;
                                     case "Q4":
                                         switch (dateFormatMonth.format(taskStartTime)) {
@@ -291,7 +291,7 @@ public class ChartFragment extends Fragment {
                                         }
                                         ChartManager.initCombinedChart(combinedChart,
                                             ChartManager.MONTH_FLAG4, monthWorkTimes,
-                                            monthStudyTimes, monthLiveTimes, monthRestTimes);
+                                            monthStudyTimes, monthLiveTimes, monthRestTimes, kinds);
                                         break;
                                 }
                             }
@@ -335,7 +335,7 @@ public class ChartFragment extends Fragment {
                         }
                         ChartManager.initCombinedChart(combinedChart, ChartManager.QUARTER_FLAG,
                             quarterWorkTimes, quarterStudyTimes, quarterLiveTimes,
-                            quarterRestTimes);
+                            quarterRestTimes, kinds);
                         break;
                 }
 

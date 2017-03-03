@@ -50,6 +50,8 @@
     <string name="task_hour">小时</string>
     <string name="task_done">已用</string>
     <string name="task_history">历史任务</string>
+    <string name="import_success">导入成功</string>
+    <string name="import_failed">导入失败,请检查格式是否正确。</string>
     <array name="kind_list">
         <item>工作</item>
         <item>学习</item>

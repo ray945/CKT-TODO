@@ -2,12 +2,14 @@ package com.ckt.ckttodo.util;
 
 import android.graphics.Color;
 
+import com.ckt.ckttodo.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -26,6 +28,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhiwei.li
@@ -161,6 +164,7 @@ public class ChartManager {
      * @param centerLabel 周/月/季度/年
      */
     public static void initPieChart(PieChart pieChart, ArrayList<PieEntry> yValues, String centerLabel) {
+
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setExtraOffsets(5, 10, 5, 5);
@@ -175,18 +179,25 @@ public class ChartManager {
         pieChart.setTransparentCircleRadius(58f);
         pieChart.setRotationAngle(0);
 
-        PieDataSet dataSet = new PieDataSet(yValues, null);
+        ArrayList<PieEntry> yPieValues = new ArrayList<>();
+        for (PieEntry pieEntry : yValues) {
+            if (pieEntry.getValue() != 0f) {
+                yPieValues.add(pieEntry);
+            }
+        }
+
+        PieDataSet dataSet = new PieDataSet(yPieValues, null);
         dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(6f);
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        dataSet.setValueLinePart1OffsetPercentage(80.f);
-        dataSet.setValueLinePart1Length(0.2f);
-        dataSet.setValueLinePart2Length(0.4f);
-        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setSelectionShift(5f);
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        //dataSet.setValueLinePart1OffsetPercentage(80.f);
+        // dataSet.setValueLinePart1Length(0.2f);
+        // dataSet.setValueLinePart2Length(0.4f);
+        // dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 
         PieData pieData = new PieData(dataSet);
         pieData.setValueFormatter(new PercentFormatter());
-        pieData.setValueTextColor(Color.BLACK);
+        pieData.setValueTextColor(Color.WHITE);
         pieData.setValueTextSize(11f);
         pieChart.setData(pieData);
         //        pieChart.animateY(2000, Easing.EasingOption.EaseOutQuad);
@@ -199,6 +210,7 @@ public class ChartManager {
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         legend.setOrientation(Legend.LegendOrientation.VERTICAL);
         legend.setDrawInside(false);
+        legend.setForm(Legend.LegendForm.CIRCLE);
         legend.setEnabled(true);
     }
 
@@ -209,7 +221,7 @@ public class ChartManager {
     }
 
 
-    public static void initCombinedChart(CombinedChart chart, int FLAG, float[] workTimes, float[] studyTimes, float[] liveTimes, float[] restTimes) {
+    public static void initCombinedChart(CombinedChart chart, int FLAG, float[] workTimes, float[] studyTimes, float[] liveTimes, float[] restTimes, String[] kinds) {
 
         // draw bars behind lines
         chart.setDrawOrder(new CombinedChart.DrawOrder[] {
@@ -220,8 +232,23 @@ public class ChartManager {
         Legend l = chart.getLegend();
         l.setWordWrapEnabled(true);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        List<LegendEntry> legendEntries = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            LegendEntry legendEntry = new LegendEntry();
+            legendEntry.label = kinds[i];
+            if (i == 0){
+                legendEntry.formColor = COLOR_WORK;
+            }else if (i == 1){
+                legendEntry.formColor = COLOR_STUDY;
+            }else if (i == 2){
+                legendEntry.formColor = COLOR_LIVE;
+            }
+            legendEntry.form = Legend.LegendForm.SQUARE;
+            legendEntries.add(legendEntry);
+        }
+        l.setCustom(legendEntries);
         l.setDrawInside(false);
 
         YAxis leftAxis = chart.getAxisLeft();
@@ -241,47 +268,49 @@ public class ChartManager {
             case DAY_FLAG:
                 initCombinedXAxis(xAxis, mDays);
                 initCombinedData(xAxis, chart, DAY_FLAG, workTimes, studyTimes, liveTimes,
-                    restTimes);
+                    restTimes, kinds);
                 break;
             case WEEK_FLAG:
                 initCombinedXAxis(xAxis, mWeeks);
                 initCombinedData(xAxis, chart, WEEK_FLAG, workTimes, studyTimes, liveTimes,
-                    restTimes);
+                    restTimes, kinds);
                 break;
             case MONTH_FLAG1:
                 initCombinedXAxis(xAxis, mMonths1);
                 initCombinedData(xAxis, chart, 3, workTimes, studyTimes, liveTimes,
-                    restTimes);
+                    restTimes, kinds);
                 break;
             case MONTH_FLAG2:
                 initCombinedXAxis(xAxis, mMonths2);
                 initCombinedData(xAxis, chart, 3, workTimes, studyTimes, liveTimes,
-                    restTimes);
+                    restTimes, kinds);
                 break;
             case MONTH_FLAG3:
                 initCombinedXAxis(xAxis, mMonths3);
                 initCombinedData(xAxis, chart, 3, workTimes, studyTimes, liveTimes,
-                    restTimes);
+                    restTimes, kinds);
                 break;
             case MONTH_FLAG4:
                 initCombinedXAxis(xAxis, mMonths4);
                 initCombinedData(xAxis, chart, 3, workTimes, studyTimes, liveTimes,
-                    restTimes);
+                    restTimes, kinds);
                 break;
             case QUARTER_FLAG:
                 initCombinedXAxis(xAxis, mQuarters);
                 initCombinedData(xAxis, chart, QUARTER_FLAG, workTimes, studyTimes, liveTimes,
-                    restTimes);
+                    restTimes, kinds);
                 break;
         }
 
     }
 
 
-    private static void initCombinedData(XAxis xAxis, CombinedChart chart, int itemCount, float[] workTimes, float[] studyTimes, float[] liveTimes, float[] restTimes) {
+    private static void initCombinedData(XAxis xAxis, CombinedChart chart, int itemCount, float[] workTimes, float[] studyTimes, float[] liveTimes, float[] restTimes, String[] kinds) {
         CombinedData data = new CombinedData();
-        data.setData(generateLineData(itemCount, workTimes, studyTimes, liveTimes, restTimes));
-        data.setData(generateBarData(itemCount, workTimes, studyTimes, liveTimes, restTimes));
+        data.setData(
+            generateLineData(itemCount, workTimes, studyTimes, liveTimes, restTimes, kinds));
+        data.setData(
+            generateBarData(itemCount, workTimes, studyTimes, liveTimes, restTimes, kinds));
 
         xAxis.setLabelCount(itemCount - 1);
         xAxis.setAxisMaximum(data.getXMax() + 0.25f);
@@ -300,7 +329,7 @@ public class ChartManager {
     }
 
 
-    private static LineData generateLineData(int itemcount, float[] workTimes, float[] studyTimes, float[] liveTimes, float[] restTimes) {
+    private static LineData generateLineData(int itemcount, float[] workTimes, float[] studyTimes, float[] liveTimes, float[] restTimes, String[] kinds) {
 
         ArrayList<Entry> workEntries = new ArrayList<>();
         ArrayList<Entry> studyEntries = new ArrayList<>();
@@ -312,7 +341,7 @@ public class ChartManager {
             liveEntries.add(new Entry(index + 0.8f, liveTimes[index]));
         }
 
-        LineDataSet set1 = new LineDataSet(workEntries, "Work");
+        LineDataSet set1 = new LineDataSet(workEntries, kinds[0]);
         set1.setColor(COLOR_WORK);
         set1.setLineWidth(2f);
         set1.setCircleColor(COLOR_WORK);
@@ -323,7 +352,7 @@ public class ChartManager {
         set1.setValueTextSize(6f);
         set1.setValueTextColor(COLOR_WORK);
 
-        LineDataSet set2 = new LineDataSet(studyEntries, "Study");
+        LineDataSet set2 = new LineDataSet(studyEntries, kinds[1]);
         set2.setColor(COLOR_STUDY);
         set2.setLineWidth(2f);
         set2.setCircleColor(COLOR_STUDY);
@@ -334,7 +363,7 @@ public class ChartManager {
         set2.setValueTextSize(6f);
         set2.setValueTextColor(COLOR_STUDY);
 
-        LineDataSet set3 = new LineDataSet(liveEntries, "Live");
+        LineDataSet set3 = new LineDataSet(liveEntries, kinds[2]);
         set3.setColor(COLOR_LIVE);
         set3.setLineWidth(2f);
         set3.setCircleColor(COLOR_LIVE);
@@ -351,7 +380,7 @@ public class ChartManager {
     }
 
 
-    private static BarData generateBarData(int itemcount, float[] workTimes, float[] studyTimes, float[] liveTimes, float[] restTimes) {
+    private static BarData generateBarData(int itemcount, float[] workTimes, float[] studyTimes, float[] liveTimes, float[] restTimes, String[] kinds) {
         ArrayList<BarEntry> workEntries = new ArrayList<>();
         ArrayList<BarEntry> studyEntries = new ArrayList<>();
         ArrayList<BarEntry> liveEntries = new ArrayList<>();
@@ -362,21 +391,21 @@ public class ChartManager {
             liveEntries.add(new BarEntry(0, liveTimes[index]));
         }
 
-        BarDataSet set1 = new BarDataSet(workEntries, "Work");
+        BarDataSet set1 = new BarDataSet(workEntries, kinds[0]);
         set1.setColor(COLOR_WORK);
         set1.setValueTextColor(COLOR_WORK);
         set1.setValueTextSize(5f);
         set1.setDrawValues(false);
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
 
-        BarDataSet set2 = new BarDataSet(studyEntries, "Study");
+        BarDataSet set2 = new BarDataSet(studyEntries, kinds[1]);
         set2.setColor(COLOR_STUDY);
         set2.setDrawValues(false);
         set2.setValueTextColor(COLOR_STUDY);
         set2.setValueTextSize(5f);
         set2.setAxisDependency(YAxis.AxisDependency.LEFT);
 
-        BarDataSet set3 = new BarDataSet(liveEntries, "Live");
+        BarDataSet set3 = new BarDataSet(liveEntries, kinds[2]);
         set3.setColor(COLOR_LIVE);
         set3.setValueTextColor(COLOR_LIVE);
         set3.setValueTextSize(5f);
@@ -384,8 +413,8 @@ public class ChartManager {
         set3.setAxisDependency(YAxis.AxisDependency.LEFT);
 
         float groupSpace = 0.1f;
-        float barSpace = 0.03f; // x3 dataset
-        float barWidth = 0.27f; // x3 dataset
+        float barSpace = 0.1f; // x3 dataset
+        float barWidth = 0.20f; // x3 dataset
         // (0.27 + 0.03) * 3 + 0.1 = 1.00 -> interval per "group"
 
         BarData d = new BarData(set1, set2, set3);

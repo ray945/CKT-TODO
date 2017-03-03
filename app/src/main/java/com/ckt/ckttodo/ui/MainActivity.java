@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,13 +39,21 @@ import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.NotificationBroadcastReceiver;
 import com.ckt.ckttodo.util.PermissionUtil;
+import com.ckt.ckttodo.util.excelutil.EventTaskExcelBean;
+import com.ckt.ckttodo.util.excelutil.ExcelManager;
 import com.ckt.ckttodo.widgt.VoiceInputDialog;
 
+import droidninja.filepicker.FilePickerBuilder;
+import droidninja.filepicker.FilePickerConst;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ScreenOffBroadcast mScreenOffBroadcast;
     private static String[] PERMISSION_LIST = new String[]{Constants.RECORD_AUDIO, Constants.READ_PHONE_STATE, Constants.READ_EXTERNAL_STORAGE, Constants.WRITE_EXTERNAL_STORAGE};
     private VoiceInputDialog mDialog;
+    private ArrayList<String> docPaths;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -82,6 +92,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 boolean shouldUpdateData = data.getBooleanExtra(TaskDetailActivity.IS_TASK_DETAIL_MODIFY, false);
                 if (shouldUpdateData) {
                     mTaskFragment.notifyData();
+                }
+            }
+        }
+        if (requestCode == FilePickerConst.REQUEST_CODE_DOC){
+            if (resultCode == RESULT_OK && data!=null){
+                docPaths = new ArrayList<>();
+                docPaths.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS));
+                try {
+                    File file = new File(docPaths.get(0));
+                    InputStream inputStream = new FileInputStream(file);
+                    ExcelManager excelManager = new ExcelManager();
+                    List<EventTaskExcelBean> tasks = excelManager.fromExcel(inputStream, EventTaskExcelBean.class);
+                    for (EventTaskExcelBean task : tasks){
+                        EventTask eventTask = new EventTask();
+                        eventTask.setTaskId(UUID.randomUUID().toString());
+                        eventTask.setTaskTitle(task.getTaskTitle());
+                        eventTask.setTaskContent(task.getTaskContent());
+                        try {
+                            eventTask.setTaskType(Integer.parseInt(task.getTaskType()));
+                            eventTask.setTaskPriority(Integer.parseInt(task.getTaskPriority()));
+                            eventTask.setTaskPredictTime(Float.parseFloat(task.getTaskPredictTime()));
+                        }catch (NumberFormatException e){
+                            e.printStackTrace();
+                        }
+                        DatebaseHelper.getInstance(getApplicationContext()).insert(eventTask);
+                    }
+                    mTaskFragment.notifyData();
+                    showToast(getResources().getString(R.string.import_success));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    showToast(getResources().getString(R.string.import_failed));
                 }
             }
         }
@@ -233,6 +274,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 startActivityForResult(new Intent(MainActivity.this, NewTaskActivity.class), MAIN_TO_NEW_TASK_CODE);
+            }
+        });
+
+        mActivityMainBinding.appBarMain.addAttach.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                docPaths = new ArrayList<>();
+                FilePickerBuilder.getInstance()
+                    .setMaxCount(1)
+                    .setSelectedFiles(docPaths)
+                    .setActivityTheme(R.style.AppTheme)
+                    .pickDocument(MainActivity.this);
             }
         });
 

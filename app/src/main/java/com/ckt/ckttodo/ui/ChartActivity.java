@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.transition.Explode;
 import android.transition.Transition;
 
+import android.view.MenuItem;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.databinding.ActivityChartBinding;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class ChartActivity extends AppCompatActivity {
 
 
     private void initView() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActivityChartBinding binding = DataBindingUtil.setContentView(
             ChartActivity.this, R.layout.activity_chart);
         final String[] titles = getResources().getStringArray(R.array.chart_title);
@@ -79,16 +81,16 @@ public class ChartActivity extends AppCompatActivity {
     // }
     //
     //
-    // @Override
-    // public boolean onOptionsItemSelected(MenuItem item) {
-    //     switch (item.getItemId()) {
-    //         case R.id.click_me:
-    //
-    //             return true;
-    //         case android.R.id.home:
-    //             onBackPressed();
-    //             break;
-    //     }
-    //     return true;
-    // }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.click_me:
+
+                return true;
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return true;
+    }
 }

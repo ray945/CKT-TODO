@@ -18,13 +18,15 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+/*        //init Database logic.
         if (getSharedPreferences(MyApplication.INIT_DATA, MODE_PRIVATE).getBoolean(MyApplication.IS_FIRST, true)) {
             InitDataBase.initData(getApplicationContext());
             SharedPreferences.Editor editor = getSharedPreferences(MyApplication.INIT_DATA, MODE_PRIVATE).edit();
             editor.putBoolean(MyApplication.IS_FIRST, false);
             editor.apply();
 
-        }
+        }*/
     }
 
 }
