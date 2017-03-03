@@ -6,55 +6,56 @@
 
         <variable
             name="project"
-            type="com.ckt.ckttodo.database.Project" />
+            type="com.ckt.ckttodo.database.Project"/>
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/card_margin"
-        android:background="@color/background_grey"
-        android:orientation="vertical"
-        android:padding="10dp">
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_margin="@dimen/card_margin"
+                  android:background="@color/background_grey"
+                  android:orientation="vertical"
+                  android:padding="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp">
 
             <TextView
-                android:id="@+id/tv_plan_name"
+                android:id="@+id/tv_project_name"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:padding="5dp"
                 android:text="@{project.projectTitle}"
                 android:textColor="@color/textColor"
                 android:textSize="20sp"
-                />
+            />
 
             <TextView
-                android:id="@+id/tv_plan_progress"
+                android:id="@+id/tv_project_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignBaseline="@+id/tv_plan_name"
+                android:layout_alignBaseline="@+id/tv_project_name"
                 android:layout_alignParentEnd="true"
                 android:gravity="center_vertical"
-                android:textColor="@color/textColor"
                 android:paddingRight="15dp"
-                android:text="@{project.accomplishProgress}" />
+                android:text="@{project.accomplishProgress}"
+                android:textColor="@color/textColor"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignBaseline="@+id/tv_plan_name"
-                android:layout_alignBottom="@+id/tv_plan_name"
-                android:layout_toStartOf="@+id/tv_plan_progress"
+                android:layout_alignBaseline="@+id/tv_project_name"
+                android:layout_alignBottom="@+id/tv_project_name"
+                android:layout_toStartOf="@+id/tv_project_progress"
                 android:gravity="center_vertical"
                 android:paddingEnd="8dp"
-                android:textColor="@color/textColor"
-                android:text="@string/accomplishProgress" />
+                android:text="@string/accomplishProgress"
+                android:textColor="@color/textColor"/>
 
 
         </RelativeLayout>
@@ -66,7 +67,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
             android:background="@android:color/white"
-            android:scrollbars="none" />
+            android:scrollbars="none"/>
 
         <ImageButton
             android:id="@+id/btn_addPlan"
@@ -76,7 +77,7 @@
             android:background="@color/background_grey"
             android:contentDescription="@string/new_plan"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_add_black_48dp" />
+            android:src="@drawable/ic_add_black_48dp"/>
 
     </LinearLayout>
 </layout>

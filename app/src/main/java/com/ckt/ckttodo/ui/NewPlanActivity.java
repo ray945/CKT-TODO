@@ -24,6 +24,7 @@ import com.ckt.ckttodo.widgt.TaskDateDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -41,7 +42,12 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
     private long planStartTime;
     private long planEndTime;
     private int flag = 1;
-    private static final String PROJECT_ID = "projectId";
+    public static final String PROJECT_ID = "projectId";
+    public static final String TAG = "tag";
+    public static final String PLAN_ID = "planId";
+    private String tag;
+    private String planId;
+    private Plan plan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +100,25 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void show() {
-        if (mActivityNewPlanBinding.etPlanTitle.getText().toString().trim().equals("") && mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
+        if ("2".equals(tag)) {
+            if (mActivityNewPlanBinding.etPlanTitle.getText().toString().trim().equals(plan.getPlanName()) && mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals(plan.getPlanContent()) && planStartTime == plan.getStartTime() && planEndTime == plan.getEndTime()) {
+                onBackPressed();
+            } else {
+                new AlertDialog.Builder(this).setTitle("是否保存？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("是", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        savePlan();
+                    }
+                }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onBackPressed();
+                    }
+                }).show();
+            }
+        } else if (mActivityNewPlanBinding.etPlanTitle.getText().toString().trim().equals("") && mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
             onBackPressed();
         } else {
             new AlertDialog.Builder(this).setTitle("是否保存？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("是", new DialogInterface.OnClickListener() {
@@ -111,6 +135,7 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                 }
             }).show();
         }
+
     }
 
     private void savePlan() {
@@ -124,18 +149,33 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void execute(Realm realm) {
                         Project sProject = DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().where(Project.class).equalTo(PROJECT_ID, mProjectId).findFirst();
-                        Plan plan = new Plan();
-                        plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
-                        plan.setPlanName(mActivityNewPlanBinding.etPlanTitle.getText().toString().trim());
-                        plan.setPlanId(UUID.randomUUID().toString());
-                        plan.setCreateTime(System.currentTimeMillis());
-                        plan.setStartTime(planStartTime);
-                        plan.setEndTime(planEndTime);
-                        plan.setProjectId(mProjectId);
-                        sProject.getPlans().add(plan);
+                        if("2".equals(tag)){
+                            plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
+                            plan.setPlanName(mActivityNewPlanBinding.etPlanTitle.getText().toString().trim());
+                            plan.setStartTime(planStartTime);
+                            plan.setEndTime(planEndTime);
+                            Date date = new Date();
+                            sProject.setLastUpdateTime(date.getTime());
+                            realm.copyToRealmOrUpdate(sProject);
+                        }else {
+                            Plan plan = new Plan();
+                            plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
+                            plan.setPlanName(mActivityNewPlanBinding.etPlanTitle.getText().toString().trim());
+                            plan.setPlanId(UUID.randomUUID().toString());
+                            plan.setCreateTime(System.currentTimeMillis());
+                            plan.setStartTime(planStartTime);
+                            plan.setEndTime(planEndTime);
+                            plan.setProjectId(mProjectId);
+                            sProject.getPlans().add(plan);
+                        }
+                        
                     }
                 });
-                Toast.makeText(this, "新建成功", Toast.LENGTH_SHORT).show();
+                if("2".equals(tag)){
+                    Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(this, "新建成功", Toast.LENGTH_SHORT).show();
+                }
                 onBackPressed();
             }
         }
@@ -158,10 +198,25 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
     public void getData() {
         Intent intent = getIntent();
         mProjectId = intent.getStringExtra(PROJECT_ID);
-        planStartTime = System.currentTimeMillis();
-        planEndTime = planStartTime;
-        mActivityNewPlanBinding.tvPlanStartTime.setText(mDateFormat.format(planStartTime));
+        tag = intent.getStringExtra(TAG);
+        if ("2".equals(tag)) {
+            planId = intent.getStringExtra(PLAN_ID);
+            DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    plan = DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().where(Plan.class).equalTo(PLAN_ID, planId).findFirst();
+                }
+            });
+            mActivityNewPlanBinding.etPlanTitle.setText(plan.getPlanName());
+            mActivityNewPlanBinding.etPlanDescription.setText(plan.getPlanContent());
+            planStartTime = plan.getStartTime();
+            planEndTime = plan.getEndTime();
+        } else {
+            planStartTime = System.currentTimeMillis();
+            planEndTime = planStartTime;
+        }
         mActivityNewPlanBinding.tvPlanEndTime.setText(mDateFormat.format(planEndTime));
+        mActivityNewPlanBinding.tvPlanStartTime.setText(mDateFormat.format(planStartTime));
         mTaskDateDialog = new TaskDateDialog(this, new TaskDateDialog.ClickedSureListener() {
             @Override
             public void onClickedSureListener(Calendar cal) {

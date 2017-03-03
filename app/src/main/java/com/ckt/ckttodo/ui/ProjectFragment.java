@@ -1,7 +1,8 @@
 package com.ckt.ckttodo.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -39,10 +40,25 @@ public class ProjectFragment extends Fragment {
 
         mProjectList = DatebaseHelper.getInstance(getContext()).findAll(Project.class);
         mAdapter = new ProjectListAdapter(getContext(), mProjectList);
-        mAdapter.setOnItemClickListener(new ProjectListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, View view) {
+        mAdapter.setOnItemLongClickListener(new ProjectListAdapter.OnItemLongClickListener() {
 
+            @Override
+            public void onItemLongClick(final int position, View view) {
+                new AlertDialog.Builder(getContext()).setTitle("确认删除吗？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 点击“确认”后的操作 
+                        DatebaseHelper.getInstance(getContext()).delete(mProjectList.get(position));
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }).setNegativeButton("返回", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 点击“返回”后的操作,这里不设置没有任何操作 
+                    }
+                }).show();
             }
         });
         initRecyclerView(rvProjects, mAdapter, getContext());

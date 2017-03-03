@@ -1,6 +1,8 @@
 package com.ckt.ckttodo.util;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,7 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
@@ -22,6 +27,9 @@ import com.ckt.ckttodo.ui.ProjectFragment;
 import com.headerfooter.songhang.library.SmartRecyclerAdapter;
 
 import java.text.NumberFormat;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -31,7 +39,7 @@ import io.realm.RealmResults;
  * Created by zhiwei.li
  */
 
-public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> implements View.OnClickListener {
+public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> implements View.OnLongClickListener {
 
     private RealmResults<Project> projectList;
     private Context context;
@@ -48,21 +56,72 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemProjectBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_project, parent, false);
-        binding.btnAddPlan.setOnClickListener(this);
+        binding.btnAddPlan.setOnLongClickListener(this);
         return new ViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.itemView.setTag(position);
-        Project project = projectList.get(position);
+        final Project project = projectList.get(position);
 
         final RealmList<Plan> plans = project.getPlans();
         final String projectId = project.getProjectId();
 
         calculateProgress(plans, projectId);
         initNewPlanButton(holder.binding.btnAddPlan, projectId);
-
+        holder.binding.tvProjectName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View editTextView = layoutInflater.inflate(R.layout.dialog_edittext, null);
+                final EditText editText = (EditText) editTextView.findViewById(R.id.new_task_name);
+                editText.setFocusable(true);
+                editText.setFocusableInTouchMode(true);
+                editText.requestFocus();
+                editText.setText(project.getProjectTitle());
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputManager = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputManager.showSoftInput(editText, 0);
+                    }
+                }, 200);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(R.string.new_project).setView(editTextView).setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        final String projectName = editText.getText().toString().trim();
+                        if (!projectName.equals(project.getProjectTitle())) {
+                            for (Project project : DatebaseHelper.getInstance(context).findAll(Project.class)) {
+                                if (projectName.equals(project.getProjectTitle())) {
+                                    showToast(context.getResources().getString(R.string.project_exist));
+                                    return;
+                                }
+                            }
+                        } else {
+                            return;
+                        }
+                        if (!projectName.equals("")) {
+                            DatebaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    project.setProjectTitle(projectName);
+                                    Date date = new Date();
+                                    project.setLastUpdateTime(date.getTime());
+                                    realm.copyToRealmOrUpdate(project);
+                                    showToast("修改成功");
+                                    ProjectListAdapter.this.notifyDataSetChanged();
+                                }
+                            });
+                        } else {
+                            showToast(context.getResources().getString(R.string.plan_not_null));
+                        }
+                    }
+                }).setNegativeButton(R.string.cancel, null);
+                builder.create().show();
+            }
+        });
         final RecyclerView rvPlans = holder.binding.rvPlans;
         if (plans.size() <= 3) {
             PlanListAdapter adapter = new PlanListAdapter(context, plans);
@@ -70,7 +129,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                 @Override
                 public void onItemClick(int position, View view) {
                     Intent intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("planId",plans.get(position).getPlanId());
+                    intent.putExtra("planId", plans.get(position).getPlanId());
                     context.startActivity(intent);
                 }
             });
@@ -93,7 +152,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                 }
             });
             mSmartRecyclerAdapter.setFooterView(footerButton);
-            threeAdapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener(){
+            threeAdapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(int position, View view) {
@@ -107,26 +166,33 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         holder.bind(project);
 
     }
-    public void flash(){
-        if(mSmartRecyclerAdapter!=null){
+
+    private void showToast(String text) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public void flash() {
+        if (mSmartRecyclerAdapter != null) {
             mSmartRecyclerAdapter.notifyDataSetChanged();
         }
     }
-    private OnItemClickListener onItemClickListener;
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
+    private OnItemLongClickListener onItemLongClickListener;
 
-    public static interface OnItemClickListener {
-        void onItemClick(int position, View view);
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
     }
 
     @Override
-    public void onClick(View v) {
-        if (onItemClickListener != null) {
-            onItemClickListener.onItemClick((Integer) v.getTag(), v);
+    public boolean onLongClick(View v) {
+        if (onItemLongClickListener != null) {
+            onItemLongClickListener.onItemLongClick((Integer) v.getTag(), v);
         }
+        return false;
+    }
+
+    public static interface OnItemLongClickListener {
+        void onItemLongClick(int position, View view);
     }
 
     private void calculateProgress(RealmList<Plan> plans, final String projectId) {
@@ -204,7 +270,8 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, NewPlanActivity.class);
-                intent.putExtra("projectId", projectId);
+                intent.putExtra(NewPlanActivity.PROJECT_ID, projectId);
+                intent.putExtra(NewPlanActivity.TAG, "1");
                 context.startActivity(intent);
             }
         });
