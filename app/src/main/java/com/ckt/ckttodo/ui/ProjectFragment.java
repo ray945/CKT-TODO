@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -37,13 +39,13 @@ public class ProjectFragment extends Fragment {
 
         FragmentProjectBinding binding = FragmentProjectBinding.inflate(inflater);
         RecyclerView rvProjects = binding.rvProject;
-
-        mProjectList = DatebaseHelper.getInstance(getContext()).findAll(Project.class);
-        mAdapter = new ProjectListAdapter(getContext(), mProjectList);
-        mAdapter.setOnItemLongClickListener(new ProjectListAdapter.OnItemLongClickListener() {
+        rvProjects.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), rvProjects, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+            }
 
             @Override
-            public void onItemLongClick(final int position, View view) {
+            public void onItemLongClick(View view, final int position) {
                 new AlertDialog.Builder(getContext()).setTitle("确认删除吗？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -60,7 +62,9 @@ public class ProjectFragment extends Fragment {
                     }
                 }).show();
             }
-        });
+        }));
+        mProjectList = DatebaseHelper.getInstance(getContext()).findAll(Project.class);
+        mAdapter = new ProjectListAdapter(getContext(), mProjectList);
         initRecyclerView(rvProjects, mAdapter, getContext());
         return binding.getRoot();
     }
@@ -77,5 +81,57 @@ public class ProjectFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    public static class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
+
+        public interface OnItemClickListener {
+            void onItemClick(View view, int position);
+
+            void onItemLongClick(View view, int position);
+        }
+
+        private OnItemClickListener mListener;
+
+        private GestureDetector mGestureDetector;
+
+        public RecyclerItemClickListener(Context context, final RecyclerView recyclerView, OnItemClickListener listener) {
+            mListener = listener;
+
+            mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
+
+                    if (childView != null && mListener != null) {
+                        mListener.onItemLongClick(childView, recyclerView.getChildAdapterPosition(childView));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
+            View childView = view.findChildViewUnder(e.getX(), e.getY());
+
+            if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
+                mListener.onItemClick(childView, view.getChildAdapterPosition(childView));
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
     }
 }

@@ -39,7 +39,7 @@ import io.realm.RealmResults;
  * Created by zhiwei.li
  */
 
-public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> implements View.OnLongClickListener {
+public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {
 
     private RealmResults<Project> projectList;
     private Context context;
@@ -56,7 +56,6 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemProjectBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_project, parent, false);
-        binding.btnAddPlan.setOnLongClickListener(this);
         return new ViewHolder(binding);
     }
 
@@ -175,24 +174,6 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         if (mSmartRecyclerAdapter != null) {
             mSmartRecyclerAdapter.notifyDataSetChanged();
         }
-    }
-
-    private OnItemLongClickListener onItemLongClickListener;
-
-    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
-        this.onItemLongClickListener = onItemLongClickListener;
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        if (onItemLongClickListener != null) {
-            onItemLongClickListener.onItemLongClick((Integer) v.getTag(), v);
-        }
-        return false;
-    }
-
-    public static interface OnItemLongClickListener {
-        void onItemLongClick(int position, View view);
     }
 
     private void calculateProgress(RealmList<Plan> plans, final String projectId) {
