@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout>
+
     <data>
+
         <variable
             name="task"
-            type="com.ckt.ckttodo.database.EventTask"/>
-        <import type="com.ckt.ckttodo.util.TranserverUtil"/>
+            type="com.ckt.ckttodo.database.EventTask" />
+
+        <import type="com.ckt.ckttodo.util.TranserverUtil" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -44,8 +47,8 @@
             android:id="@+id/task_list_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -61,15 +64,15 @@
                     android:paddingRight="@dimen/activity_horizontal_margin">
 
                     <EditText
-                        android:text="@{task.taskTitle}"
                         android:id="@+id/new_edit_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:background="@null"
                         android:hint="@string/tasks"
-
                         android:inputType="text"
+
+                        android:text="@{task.taskTitle}"
                         android:textSize="16sp" />
                 </FrameLayout>
 
@@ -81,10 +84,10 @@
                     android:background="@color/color_d3d3d3" />
 
                 <FrameLayout
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="15dp"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin">
 
@@ -94,8 +97,8 @@
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:hint="@string/what_to_do"
-                        android:text="@{task.taskContent}"
                         android:maxLines="5"
+                        android:text="@{task.taskContent}"
                         android:textSize="16sp" />
                 </FrameLayout>
 
@@ -110,8 +113,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin">
 
@@ -137,8 +140,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin">
 
@@ -204,8 +207,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/ripple_bg"
                     android:clickable="true"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingBottom="15dp"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -219,15 +222,16 @@
 
 
                     <EditText
-                        android:text="@{String.valueOf(task.taskPredictTime)}"
                         android:id="@+id/new_edit_plan_time"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
+                        android:digits=".0123456789"
                         android:gravity="center_vertical"
                         android:hint="@string/start_num"
                         android:inputType="number"
-                        android:paddingLeft="@dimen/task_input_list_padding" />
+                        android:paddingLeft="@dimen/task_input_list_padding"
+                        android:text="@{String.valueOf(task.taskPredictTime)}" />
 
                 </LinearLayout>
 
@@ -240,8 +244,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin">
 
@@ -282,7 +286,6 @@
 
 
                     <EditText
-                        android:text="@{task.plan.planName}"
                         android:id="@+id/new_text_show_plan"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -290,6 +293,7 @@
                         android:gravity="center_vertical"
                         android:hint="@string/plan"
                         android:paddingLeft="@dimen/task_input_list_padding"
+                        android:text="@{task.plan.planName}"
                         android:textSize="16sp" />
 
                 </LinearLayout>
