@@ -46,7 +46,7 @@ public class ProjectFragment extends Fragment {
 
             @Override
             public void onItemLongClick(View view, final int position) {
-                new AlertDialog.Builder(getContext()).setTitle("确认删除吗？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(getContext()).setMessage("确认删除吗？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
