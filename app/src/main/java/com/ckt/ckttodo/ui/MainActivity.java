@@ -42,6 +42,7 @@ import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
+import com.ckt.ckttodo.util.CircularAnimUtil;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.NotificationBroadcastReceiver;
 import com.ckt.ckttodo.util.PermissionUtil;
@@ -342,7 +343,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Log.e(TAG, "note click");
                         Intent intent = new Intent(MainActivity.this, NewNoteActivity.class);
                         intent.putExtra("noteTag", "2");
-                        transitionTo(intent);
+                        CircularAnimUtil.startActivity(MainActivity.this, intent, mActivityMainBinding.appBarMain.fab,
+                                R.color.colorPrimary);
                         break;
                 }
             }
