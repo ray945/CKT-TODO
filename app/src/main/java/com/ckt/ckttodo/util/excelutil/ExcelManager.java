@@ -14,14 +14,6 @@ import jxl.Sheet;
 import jxl.Workbook;
 
 /**
- * 目前支持的Excel格式(见共享库)：  \\10.120.10.100\ckt_cd_share\SmartPhone\team\Framework\UED\Docs\2017研究型项目\目标管理工具\支持导入的excel格式.xls
- *
- * 表名：任务表
- * 标题：String
- * 内容：String
- * 类别：int -> 1、2、3、4 分别对应工作、学习、生活、休息
- * 优先级:int -> 1、2、3、4 分别对应4种优先级
- * 预计花费时间：float
  *
  * Created by zhiwei.li on 2017/3/3.
  */
@@ -89,7 +81,6 @@ public class ExcelManager {
         Sheet sheet = workBook.getSheet(sheetName);
 
         int yNum = sheet.getRows();// 行数
-        Log.e("TAG", "yNum: " + yNum);
         // 只有标题或者什么都没有
         if (yNum <= 1) {
             return null;

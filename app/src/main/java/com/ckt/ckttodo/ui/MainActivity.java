@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
+import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
 import com.ckt.ckttodo.util.CircularAnimUtil;
@@ -50,18 +51,22 @@ import com.ckt.ckttodo.util.excelutil.EventTaskExcelBean;
 import com.ckt.ckttodo.util.excelutil.ExcelManager;
 import com.ckt.ckttodo.widgt.VoiceInputDialog;
 
-import droidninja.filepicker.FilePickerBuilder;
-import droidninja.filepicker.FilePickerConst;
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-
+import ru.bartwell.exfilepicker.ExFilePicker;
+import ru.bartwell.exfilepicker.data.ExFilePickerResult;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
         , TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int REQUEST_PERMISSIONS = 1;
     public final static int MAIN_TO_NEW_TASK_CODE = 100;
     public final static int MAIN_TO_TASK_DETAIL_CODE = 200;
+    private final static int EX_FILE_PICKER_RESULT = 1024;
     private ActivityMainBinding mActivityMainBinding;
     private MenuItem mMenuItemSure;
     private MenuItem mMenuItemFalse;
@@ -81,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ScreenOffBroadcast mScreenOffBroadcast;
     private static String[] PERMISSION_LIST = new String[]{Constants.RECORD_AUDIO, Constants.READ_PHONE_STATE, Constants.READ_EXTERNAL_STORAGE, Constants.WRITE_EXTERNAL_STORAGE};
     private VoiceInputDialog mDialog;
-    private ArrayList<String> docPaths;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -96,38 +101,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
-        if (requestCode == FilePickerConst.REQUEST_CODE_DOC){
-            if (resultCode == RESULT_OK && data!=null){
-                docPaths = new ArrayList<>();
-                docPaths.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS));
-                try {
-                    File file = new File(docPaths.get(0));
-                    InputStream inputStream = new FileInputStream(file);
-                    ExcelManager excelManager = new ExcelManager();
-                    List<EventTaskExcelBean> tasks = excelManager.fromExcel(inputStream, EventTaskExcelBean.class);
-                    for (EventTaskExcelBean task : tasks){
-                        EventTask eventTask = new EventTask();
-                        eventTask.setTaskId(UUID.randomUUID().toString());
-                        eventTask.setTaskTitle(task.getTaskTitle());
-                        eventTask.setTaskContent(task.getTaskContent());
-                        try {
-                            eventTask.setTaskType(Integer.parseInt(task.getTaskType()));
-                            eventTask.setTaskPriority(Integer.parseInt(task.getTaskPriority()));
-                            eventTask.setTaskPredictTime(Float.parseFloat(task.getTaskPredictTime()));
-                        }catch (NumberFormatException e){
-                            e.printStackTrace();
-                        }
-                        DatebaseHelper.getInstance(getApplicationContext()).insert(eventTask);
-                    }
-                    mTaskFragment.notifyData();
-                    showToast(getResources().getString(R.string.import_success));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    showToast(getResources().getString(R.string.import_failed));
-                }
+        if (requestCode == EX_FILE_PICKER_RESULT){
+            ExFilePickerResult result = ExFilePickerResult.getFromIntent(data);
+            if (result != null && result.getCount() > 0){
+                String docPath = result.getPath() + result.getNames().get(0);
+                withResultInsertDatabase(docPath);
             }
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -280,12 +262,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mActivityMainBinding.appBarMain.addAttach.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                docPaths = new ArrayList<>();
-                FilePickerBuilder.getInstance()
-                    .setMaxCount(1)
-                    .setSelectedFiles(docPaths)
-                    .setActivityTheme(R.style.AppTheme)
-                    .pickDocument(MainActivity.this);
+                ExFilePicker exFilePicker = new ExFilePicker();
+                exFilePicker.setChoiceType(ExFilePicker.ChoiceType.FILES);
+                exFilePicker.setShowOnlyExtensions("xls","xlsx");
+                exFilePicker.setCanChooseOnlyOneItem(true);
+                exFilePicker.start(MainActivity.this,EX_FILE_PICKER_RESULT);
             }
         });
 
@@ -524,5 +505,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(this, NewTaskActivity.class);
         intent.putExtra(NewTaskActivity.VOICE_INPUT, result);
         startActivityForResult(intent, MAIN_TO_NEW_TASK_CODE);
+    }
+
+
+    //解析来自Excel的数据
+    private void withResultInsertDatabase(String docPath){
+        try {
+            File file = new File(docPath);
+            InputStream inputStream = new FileInputStream(file);
+            ExcelManager excelManager = new ExcelManager();
+            List<EventTaskExcelBean> tasks = excelManager.fromExcel(inputStream, EventTaskExcelBean.class);
+            for (EventTaskExcelBean task : tasks){
+                EventTask eventTask = new EventTask();
+                eventTask.setTaskId(UUID.randomUUID().toString());
+                eventTask.setTaskTitle(task.getTaskTitle());
+                eventTask.setTaskContent(task.getTaskContent());
+                if (!task.getPlanName().equals("")){
+                    RealmResults<Plan> plans = DatebaseHelper.getInstance(getApplicationContext()).findAll(Plan.class);
+                    for (Plan plan : plans){
+                        if (task.getPlanName().equals(plan.getPlanName())){
+                            eventTask.setPlan(plan);
+                        }
+                    }
+                    //当数据库中没有该计划时。
+                    // if (eventTask.getPlan()==null){
+                    //     final Plan plan = new Plan();
+                    //     plan.setPlanId(UUID.randomUUID().toString());
+                    //     plan.setPlanName(task.getPlanName());
+                    //     eventTask.setPlan(plan);
+                    // }
+                }
+                eventTask.setTaskType(Integer.parseInt(task.getTaskType()));
+                eventTask.setTaskPriority(Integer.parseInt(task.getTaskPriority()));
+                eventTask.setTaskPredictTime(Float.parseFloat(task.getTaskPredictTime()));
+                eventTask.setTaskRemindTime(Long.parseLong(task.getTaskRemindTime())*60);
+
+                DatebaseHelper.getInstance(getApplicationContext()).insert(eventTask);
+            }
+            mTaskFragment.notifyData();
+            showToast(getResources().getString(R.string.import_success));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showToast(getResources().getString(R.string.import_failed));
+        }
     }
 }
