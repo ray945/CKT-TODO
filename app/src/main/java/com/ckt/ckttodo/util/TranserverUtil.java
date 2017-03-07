@@ -51,7 +51,7 @@ public class TranserverUtil {
     public static boolean isNumber(String str) {
 //        String reg = "^[0-9]+(.[0-9]+)?$";
         String reg = "-?[0-9]+.*[0-9]*";
-        return str.matches(reg) ? !Integer.valueOf(str.charAt(0)).equals(Integer.valueOf('0')) : false;
+        return str.matches(reg);
     }
 
     public static boolean isLegalNum(String str) {
