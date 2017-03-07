@@ -19,12 +19,14 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.databinding.ActivityTaskDetailBinding;
 import com.ckt.ckttodo.util.Constants;
+import com.ckt.ckttodo.util.TranserverUtil;
 
 import org.w3c.dom.Text;
 
@@ -142,6 +144,12 @@ public class TaskDetailActivity extends AppCompatActivity {
 
     private void finishActivity() {
         if (!TextUtils.isEmpty(mEditTextSpendTime.getText())) {
+
+            String planTime = mEditTextSpendTime.getText().toString();
+            if (!TranserverUtil.isLegalNum(planTime) || !TranserverUtil.isNumber(planTime)) {
+                Toast.makeText(this, getResources().getString(R.string.task_plan_time_illegality), Toast.LENGTH_SHORT).show();
+                return;
+            }
             String content = mEditTextSpendTime.getText().toString().replace(" ", "");
             Float update = Float.valueOf(content);
             if (update.compareTo(new Float(0)) > 0

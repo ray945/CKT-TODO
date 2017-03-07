@@ -47,4 +47,28 @@ public class TranserverUtil {
         newTask.setPlan(task.getPlan());
     }
 
+
+    public static boolean isNumber(String str) {
+//        String reg = "^[0-9]+(.[0-9]+)?$";
+        String reg = "-?[0-9]+.*[0-9]*";
+        return str.matches(reg) ? !Integer.valueOf(str.charAt(0)).equals(Integer.valueOf('0')) : false;
+    }
+
+    public static boolean isLegalNum(String str) {
+        int count = 0;
+        if (str.charAt(str.length() - 1) == '.') {
+            return false;
+        }
+
+        for (int i = 0; i < str.length(); ++i) {
+            if (str.charAt(i) == '.') {
+                ++count;
+            }
+        }
+        if (count > 1) {
+            return false;
+        }
+        return true;
+    }
+
 }

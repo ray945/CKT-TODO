@@ -29,6 +29,7 @@ import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.ActivityNewTaskBinding;
 import com.ckt.ckttodo.util.Constants;
+import com.ckt.ckttodo.util.TranserverUtil;
 import com.ckt.ckttodo.widgt.TaskDateDialog;
 import com.iflytek.cloud.thirdparty.V;
 
@@ -278,6 +279,17 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         }
         if (TextUtils.isEmpty(mEditViewPlanTime.getText())) {
             Toast.makeText(this, getResources().getString(R.string.task_not_empty_plan_time), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(mEditViewPlanTime.getText())) {
+            Toast.makeText(this, getResources().getString(R.string.task_not_empty_plan_time), Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+        String planTime = mEditViewPlanTime.getText().toString();
+        if (!TranserverUtil.isLegalNum(planTime) || !TranserverUtil.isNumber(mEditViewPlanTime.getText().toString())) {
+            Toast.makeText(this, getResources().getString(R.string.task_plan_time_illegality), Toast.LENGTH_SHORT).show();
             return;
         }
         if (Float.valueOf(mEditViewPlanTime.getText().toString()).compareTo(new Float(0)) <= 0) {
