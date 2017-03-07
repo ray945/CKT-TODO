@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MAIN_TO_NEW_TASK_CODE) {
+        if (resultCode == NewTaskActivity.NEW_TASK_SUCCESS_RESULT_CODE) {
             mTaskFragment.notifyData();
         } else if (resultCode == TaskDetailActivity.TASK_DETAIL_MAIN_RESULT_CODE) {
             if (data != null) {

@@ -92,6 +92,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             finishActivity();
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }

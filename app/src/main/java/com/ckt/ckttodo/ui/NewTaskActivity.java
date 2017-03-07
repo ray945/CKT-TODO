@@ -71,6 +71,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     public static final String PASS_TASK_ID = "task_id";
     public static final String VOICE_INPUT = "voice_input";
     public static final int MODIFY_TASK_RESULT_CODE = 40;
+    public static final int NEW_TASK_SUCCESS_RESULT_CODE = 50;
     private boolean isEditMode = false;
 
     DatebaseHelper mHelper;
@@ -331,10 +332,12 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             plan.getEventTasks().add(task);
             mHelper.getRealm().commitTransaction();
             Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
+            setResult(NEW_TASK_SUCCESS_RESULT_CODE);
             finish();
         }
         mHelper.insert(task);
         Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
+        setResult(NEW_TASK_SUCCESS_RESULT_CODE);
         finish();
     }
 
