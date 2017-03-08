@@ -24,8 +24,8 @@ class ProjectTaskListDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         //default drawHorizontalLine
-        int left = parent.getPaddingLeft() + 40;
-        int right = parent.getWidth() - parent.getPaddingRight();
+        int left = parent.getPaddingLeft() + 30;
+        int right = parent.getWidth() - 30;
         final int count = parent.getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = parent.getChildAt(i);
