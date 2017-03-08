@@ -151,8 +151,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="@{String.valueOf(task.taskPredictTime)}"
                 android:textColor="@color/colorSecondaryText"
+                android:text="@{TranserverUtil.filterZero(task.taskPredictTime)}"
                 android:textSize="14sp" />
 
             <View
@@ -185,8 +185,8 @@
                     android:digits=".0123456789"
                     android:gravity="center_vertical"
                     android:inputType="number"
-                    android:text="@{String.valueOf(task.taskRealSpendTime)}"
                     android:textColor="@color/colorSecondaryText"
+                    android:text="@{TranserverUtil.filterZero(task.taskRealSpendTime)}"
                     android:textSize="14sp" />
             </LinearLayout>
 

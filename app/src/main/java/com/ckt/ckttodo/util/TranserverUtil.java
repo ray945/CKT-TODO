@@ -71,4 +71,31 @@ public class TranserverUtil {
         return true;
     }
 
+
+    public static String filterZero(Float num) {
+        boolean isFloat = false;
+        if (num.compareTo(new Float(0)) == 0) {
+            return "0";
+        }
+        Integer zero = Integer.valueOf('0');
+        String tmp = String.valueOf(num);
+        int pointIndex = tmp.indexOf('.');
+        int len = tmp.length();
+        StringBuilder builder = new StringBuilder(tmp.substring(0, pointIndex));
+        Integer in;
+        char ch;
+        for (int i = pointIndex + 1; i < len; ++i) {
+            ch = tmp.charAt(i);
+            in = Integer.valueOf(ch);
+            if (in.compareTo(zero) != 0) {
+                builder.append(ch);
+                isFloat = true;
+            }
+        }
+        if (isFloat) {
+            builder.insert(pointIndex, '.');
+        }
+        return builder.toString();
+    }
+
 }

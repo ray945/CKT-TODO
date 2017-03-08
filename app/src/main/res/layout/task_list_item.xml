@@ -6,6 +6,7 @@
         <variable
             name="task"
             type="com.ckt.ckttodo.database.EventTask" />
+        <import type="com.ckt.ckttodo.util.TranserverUtil"/>
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -51,7 +52,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/text_task_list_time_pre"
                 android:textColor="@color/colorSecondaryText"
-                android:text="@{String.valueOf(task.taskPredictTime)}" />
+                android:text="@{TranserverUtil.filterZero(task.taskPredictTime)}" />
 
             <TextView
                 android:id="@+id/text_task_list_time_end"
@@ -82,7 +83,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@id/text_task_list_take_pre"
                 android:textColor="@color/colorSecondaryText"
-                android:text="@{String.valueOf(task.taskRealSpendTime)}" />
+                android:text="@{TranserverUtil.filterZero(task.taskRealSpendTime)}" />
 
             <TextView
                 android:layout_width="wrap_content"
