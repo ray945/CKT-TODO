@@ -304,6 +304,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         String taskID = UUID.randomUUID().toString();
         task.setTaskId(taskID);
         task.setTaskStatus(EventTask.NOT_START);
+        task.setTaskRealSpendTime(0);
         task.setTaskTitle(mTextViewTitle.getText().toString());
         task.setTaskContent(TextUtils.isEmpty(mTextViewContent.getText()) ? "" : mTextViewContent.getText().toString());
         task.setTaskType(mSpinnerTaskKinds.getSelectedItemPosition() + 1);
@@ -460,6 +461,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             mActivityNewTaskBinding.setTask(mTask);
             mActivityNewTaskBinding.executePendingBindings();
             mTextViewTitle.setText(content);
+            mEditViewPlanTime.setText("0");
         } else if (mTaskID != null) {
             mHelper = DatebaseHelper.getInstance(this);
             mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
@@ -474,6 +476,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             mTask.setTaskStartTime(System.currentTimeMillis());
             mActivityNewTaskBinding.setTask(mTask);
             mActivityNewTaskBinding.executePendingBindings();
+            mEditViewPlanTime.setText("0");
         }
 
 
