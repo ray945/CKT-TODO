@@ -16,9 +16,9 @@
                 android:layout_width="match_parent"
                 app:cardBackgroundColor="#f5f5f5"
                 android:layout_height="350dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp">
+                android:layout_marginEnd="@dimen/card_margin"
+                android:layout_marginStart="@dimen/card_margin"
+                android:layout_marginTop="@dimen/card_margin">
 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pie_chart"
@@ -32,9 +32,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:layout_marginBottom="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp">
+                android:layout_marginEnd="@dimen/card_margin"
+                android:layout_marginStart="@dimen/card_margin"
+                android:layout_marginTop="@dimen/card_margin">
 
                 <LinearLayout
                     android:layout_width="match_parent"

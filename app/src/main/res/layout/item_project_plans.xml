@@ -31,7 +31,7 @@
             android:maxLength="10"
             android:maxLines="1"
             android:text="@{plan.planName}"
-            android:textColor="@color/textColor"/>
+            android:textColor="@color/colorSecondaryText"/>
 
         <TextView
             android:id="@+id/tv_plan_time"
@@ -42,7 +42,7 @@
             android:ellipsize="end"
             android:gravity="end|center_vertical"
             android:maxLines="1"
-            android:textColor="@color/textColor"/>
+            android:textColor="@color/colorSecondaryText"/>
 
     </LinearLayout>
 </layout>
