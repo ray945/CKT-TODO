@@ -76,6 +76,10 @@ public class VoiceInputDialog extends Dialog implements VoiceView.OnRecordListen
 
     @Override
     public void onRecordFinish() {
+        if(mVoiceInput.isListening()){
+            mVoiceInput.stopListening();
+            dismiss();
+        }
     }
 
 

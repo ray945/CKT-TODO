@@ -489,11 +489,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if (keyCode == KeyEvent.KEYCODE_BACK && mMenuItemSure.isVisible()) {
-            mTaskFragment.finishDeleteAction(false);
-            mMenuItemSure.setVisible(false);
-            mMenuItemFalse.setVisible(false);
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK ) {
+            if (mMenuItemSure.isVisible()) {
+                mTaskFragment.finishDeleteAction(false);
+                mMenuItemSure.setVisible(false);
+                mMenuItemFalse.setVisible(false);
+                return true;
+            }else if(mDialog.isShowing()){
+                mDialog.onRecordFinish();
+            }
         }
 
         return super.onKeyDown(keyCode, event);
