@@ -37,6 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@{task.taskTitle}"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp"
                 />
 
@@ -45,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:text="@{task.taskContent}"
+                android:textColor="@color/colorSecondaryText"
                 android:textSize="14sp" />
 
             <TextView
@@ -52,11 +54,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/kind"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/detail_text_kinds"
-                android:textColor="@android:color/secondary_text_light"
+                android:textColor="@color/colorSecondaryText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -73,11 +76,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/task_levels"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/detail_text_level"
-                android:textColor="@android:color/secondary_text_light"
+                android:textColor="@color/colorSecondaryText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -94,6 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/schedule_dates"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp" />
 
             <TextView
@@ -101,7 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:textColor="@android:color/secondary_text_light"
+                android:textColor="@color/colorSecondaryText"
                 android:text="@{TranserverUtil.millsToDate(task.taskStartTime)}"
                 android:textSize="14sp" />
 
@@ -116,13 +121,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/remind"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/detail_text_remind"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/secondary_text_light"
+                android:textColor="@color/colorSecondaryText"
                 android:layout_marginTop="5dp"
                 android:textSize="14sp" />
 
@@ -137,6 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/spend_times"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp" />
 
             <TextView
@@ -145,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="@{String.valueOf(task.taskPredictTime)}"
-                android:textColor="@android:color/secondary_text_light"
+                android:textColor="@color/colorSecondaryText"
                 android:textSize="14sp" />
 
             <View
@@ -166,12 +173,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/take_time"
+                    android:textColor="@color/colorPrimaryText"
                     android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/detail_edit_send_time"
                     android:layout_width="match_parent"
-
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:background="@null"
@@ -179,6 +186,7 @@
                     android:gravity="center_vertical"
                     android:inputType="number"
                     android:text="@{String.valueOf(task.taskRealSpendTime)}"
+                    android:textColor="@color/colorSecondaryText"
                     android:textSize="14sp" />
             </LinearLayout>
 

@@ -29,7 +29,7 @@
             android:ellipsize="end"
             android:maxEms="8"
             android:text="@{note.noteTitle}"
-            android:textColor="#000"
+            android:textColor="@color/colorPrimaryText"
             android:textSize="16sp"
             android:maxLines="1" />
 
@@ -46,6 +46,7 @@
             android:ellipsize="end"
             android:lines="3"
             android:text="@{note.noteContent}"
+            android:textColor="@color/colorSecondaryText"
             android:lineSpacingMultiplier="1.5"
             android:textSize="14sp"/>
     </LinearLayout>

@@ -453,6 +453,9 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     public void getIntentData() {
 
         Intent intent = getIntent();
+        if (intent.getBooleanExtra("isEdit", false)) {
+            getSupportActionBar().setTitle(R.string.edit_task);
+        }
         String content = intent.getStringExtra(VOICE_INPUT);
         mTaskID = intent.getStringExtra(PASS_TASK_ID);
         if (content != null) {

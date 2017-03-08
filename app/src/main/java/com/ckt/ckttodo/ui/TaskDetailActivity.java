@@ -82,6 +82,7 @@ public class TaskDetailActivity extends AppCompatActivity {
             case R.id.menu_edit:
                 Intent intent = new Intent(this, NewTaskActivity.class);
                 intent.putExtra(NewTaskActivity.PASS_TASK_ID, mTask.getTaskId());
+                intent.putExtra("isEdit", true);
                 startActivityForResult(intent, TASK_DETAIL_TO_EDIT_TASK_REQUEST_CODE);
                 break;
         }

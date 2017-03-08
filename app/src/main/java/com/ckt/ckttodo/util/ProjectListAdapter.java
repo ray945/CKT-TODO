@@ -87,7 +87,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                         inputManager.showSoftInput(editText, 0);
                     }
                 }, 200);
-                AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(R.string.new_project).setView(editTextView).setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(R.string.edit_project).setView(editTextView).setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         final String projectName = editText.getText().toString().trim();

@@ -23,7 +23,7 @@
             android:maxLength="10"
             android:textSize="14sp"
             android:text="@{task.taskTitle}"
-            android:textColor="@color/textColor"/>
+            android:textColor="@color/colorSecondaryText"/>
 
         <View
             android:layout_width="match_parent"

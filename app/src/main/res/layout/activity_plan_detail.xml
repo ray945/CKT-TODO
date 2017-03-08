@@ -34,6 +34,7 @@
                 android:layout_marginBottom="15dp"
                 android:hint="@string/plan"
                 android:text="@{plan.planName}"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp"/>
 
             <TextView
@@ -44,6 +45,7 @@
                 android:hint="@string/planDescription"
                 android:maxLines="3"
                 android:text="@{plan.planContent}"
+                android:textColor="@color/colorSecondaryText"
                 android:textSize="14sp"/>
 
             <TextView
@@ -51,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:text="@string/planCycle"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp"/>
 
             <LinearLayout
@@ -87,6 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/containTask"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp"/>
 
             <android.support.v7.widget.RecyclerView

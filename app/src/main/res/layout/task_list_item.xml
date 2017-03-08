@@ -30,6 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{task.taskTitle}"
+                android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp" />
 
             <TextView
@@ -38,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_task_list_plan"
                 android:layout_marginTop="5dp"
+                android:textColor="@color/colorSecondaryText"
                 android:text="@string/task_plan_pre" />
 
 
@@ -48,6 +50,7 @@
                 android:layout_below="@id/text_task_list_plan"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/text_task_list_time_pre"
+                android:textColor="@color/colorSecondaryText"
                 android:text="@{String.valueOf(task.taskPredictTime)}" />
 
             <TextView
@@ -57,6 +60,7 @@
                 android:layout_below="@id/text_task_list_plan"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/text_task_list_plan_time"
+                android:textColor="@color/colorSecondaryText"
                 android:text="@string/task_hour" />
 
             <TextView
@@ -67,6 +71,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/text_task_list_time_end"
+                android:textColor="@color/colorSecondaryText"
                 android:text="@string/task_done" />
 
             <TextView
@@ -76,6 +81,7 @@
                 android:layout_below="@id/text_task_list_plan"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@id/text_task_list_take_pre"
+                android:textColor="@color/colorSecondaryText"
                 android:text="@{String.valueOf(task.taskRealSpendTime)}" />
 
             <TextView
@@ -84,6 +90,7 @@
                 android:layout_below="@+id/text_task_list_plan"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/text_task_list_take_time"
+                android:textColor="@color/colorSecondaryText"
                 android:text="@string/task_hour" />
 
         </RelativeLayout>
