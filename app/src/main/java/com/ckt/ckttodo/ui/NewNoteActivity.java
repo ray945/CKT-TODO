@@ -12,6 +12,7 @@ import android.transition.Transition;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -105,8 +106,8 @@ public class NewNoteActivity extends AppCompatActivity {
     }
 
     private void save() {
-        if (et_noteContent.getText().toString().trim().equals("") || et_noteTitle.getText().toString().trim().equals("")) {
-            Toast.makeText(NewNoteActivity.this, "不能为空哦!", Toast.LENGTH_SHORT).show();
+        if (et_noteContent.getText().toString().trim().equals("") && et_noteTitle.getText().toString().trim().equals("")) {
+            onBackPressed();
         } else if (mNoteTag.equals("1")) {
             updateNote();
         } else {
@@ -133,7 +134,7 @@ public class NewNoteActivity extends AppCompatActivity {
         if ((et_noteTitle.getText().toString().trim().equals("") && et_noteContent.getText().toString().trim().equals(""))) {
             onBackPressed();
         } else {
-            new AlertDialog.Builder(this).setTitle("是否保存？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("是", new DialogInterface.OnClickListener() {
+            new AlertDialog.Builder(this).setTitle("是否保存？").setPositiveButton("是", new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
