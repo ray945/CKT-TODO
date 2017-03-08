@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 public class CircularAnimUtil {
 
-    public static final long PERFECT_MILLS = 618;
+    public static final long PERFECT_MILLS = 418;
     public static final int MINI_RADIUS = 0;
 
     /**
@@ -141,7 +141,7 @@ public class CircularAnimUtil {
                         anim.start();
 
                     }
-                }, 500);
+                }, 1000);
 
 
             }
