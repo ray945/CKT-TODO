@@ -39,6 +39,7 @@ public class ProjectFragment extends Fragment {
 
         FragmentProjectBinding binding = FragmentProjectBinding.inflate(inflater);
         RecyclerView rvProjects = binding.rvProject;
+        mProjectList = DatebaseHelper.getInstance(getContext()).findAll(Project.class);
         rvProjects.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), rvProjects, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -51,6 +52,11 @@ public class ProjectFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // 点击“确认”后的操作 
+                        if (mProjectList.get(position).getPlans() != null) {
+                            for (int i = 0; i < mProjectList.get(position).getPlans().size(); i++) {
+                                DatebaseHelper.getInstance(getContext()).delete(mProjectList.get(position).getPlans().get(i));
+                            }
+                        }
                         DatebaseHelper.getInstance(getContext()).delete(mProjectList.get(position));
                         mAdapter.notifyDataSetChanged();
                     }
@@ -63,7 +69,6 @@ public class ProjectFragment extends Fragment {
                 }).show();
             }
         }));
-        mProjectList = DatebaseHelper.getInstance(getContext()).findAll(Project.class);
         mAdapter = new ProjectListAdapter(getContext(), mProjectList);
         initRecyclerView(rvProjects, mAdapter, getContext());
         return binding.getRoot();

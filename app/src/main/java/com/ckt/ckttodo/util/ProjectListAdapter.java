@@ -46,6 +46,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     private static final String TAG = "ZHIWEI";
     private SmartRecyclerAdapter mSmartRecyclerAdapter;
     private RealmList<Plan> mThreePlans;
+    private String mAccomplishProgress;
 
 
     public ProjectListAdapter(Context context, RealmResults<Project> projectList) {
@@ -185,12 +186,15 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         }
         float accomplishProgressTemp = finishPlan / plans.size();
         NumberFormat numberFormat = NumberFormat.getPercentInstance();
-        final String accomplishProgress = numberFormat.format(accomplishProgressTemp);
+        mAccomplishProgress = numberFormat.format(accomplishProgressTemp);
+        if (plans.size()==0) {
+            mAccomplishProgress = "0%";
+        }
         DatebaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 Project tempProject = DatebaseHelper.getInstance(context).getRealm().where(Project.class).equalTo(ProjectFragment.PROJECT_ID, projectId).findFirst();
-                tempProject.setAccomplishProgress(accomplishProgress);
+                tempProject.setAccomplishProgress(mAccomplishProgress);
             }
         });
     }

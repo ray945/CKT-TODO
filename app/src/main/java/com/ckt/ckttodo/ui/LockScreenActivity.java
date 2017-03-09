@@ -211,7 +211,7 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
         }
     }
 
-    public static class LockAdapter extends RecyclerView.Adapter<LockViewHolder> implements View.OnClickListener, View.OnLongClickListener {
+    public class LockAdapter extends RecyclerView.Adapter<LockViewHolder> {
         List<EventTask> eventTaskList;
         Context context;
 
@@ -223,14 +223,24 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
         @Override
         public LockViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             ItemLockBinding itemLockBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_lock, parent, false);
-            itemLockBinding.getRoot().setOnClickListener(this);
-            itemLockBinding.getRoot().setOnLongClickListener(this);
             return new LockViewHolder(itemLockBinding);
         }
 
         @Override
         public void onBindViewHolder(LockViewHolder holder, int position) {
             holder.itemView.setTag(position);
+            if (position == 0 && mUnFinishedTasks.size() == 1) {
+                holder.tv_up.setVisibility(View.INVISIBLE);
+                holder.tv_down.setVisibility(View.INVISIBLE);
+            } else {
+                if (position == 0) {
+                    holder.tv_up.setVisibility(View.INVISIBLE);
+                }
+                if (position + 1 == mUnFinishedTasks.size()) {
+                    holder.tv_down.setVisibility(View.INVISIBLE);
+                }
+
+            }
             holder.setData(eventTaskList.get(position));
         }
 
@@ -239,45 +249,13 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
             return (eventTaskList == null) ? 0 : (eventTaskList.size() > 5 ? 5 : eventTaskList.size());
         }
 
-        private OnItemClickListener onItemClickListener;
-        private OnItemLongClickListener onItemLongClickListener;
-
-        public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
-            this.onItemLongClickListener = onItemLongClickListener;
-        }
-
-        public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-            this.onItemClickListener = onItemClickListener;
-        }
-
-        public static interface OnItemClickListener {
-            void onItemClick(int position, View view);
-        }
-
-        public static interface OnItemLongClickListener {
-            void onItemLongClick(int position, View view);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (onItemClickListener != null) {
-                onItemClickListener.onItemClick((Integer) v.getTag(), v);
-            }
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            if (onItemLongClickListener != null) {
-                onItemLongClickListener.onItemLongClick((Integer) v.getTag(), v);
-            }
-            return false;
-        }
-
     }
 
-    static class LockViewHolder extends RecyclerView.ViewHolder {
+    class LockViewHolder extends RecyclerView.ViewHolder {
         public TextView tv_lockTitle;
         public TextView tv_lockTime;
+        public View tv_up;
+        public View tv_down;
         private ItemLockBinding itemLockBinding;
 
         public LockViewHolder(ItemLockBinding itemLockBinding) {
@@ -285,6 +263,8 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
             this.itemLockBinding = itemLockBinding;
             tv_lockTitle = itemLockBinding.tvLockTitle;
             tv_lockTime = itemLockBinding.tvLockTime;
+            tv_up = itemLockBinding.tvUp;
+            tv_down = itemLockBinding.tvDown;
         }
 
         public void setData(EventTask data) {

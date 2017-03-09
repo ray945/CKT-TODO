@@ -48,6 +48,7 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
     private String tag;
     private String planId;
     private Plan plan;
+    private boolean isEmpty = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,8 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
 
     private void show() {
         if ("2".equals(tag)) {
-            if (mActivityNewPlanBinding.etPlanTitle.getText().toString().trim().equals(plan.getPlanName()) && mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals(plan.getPlanContent()) && planStartTime == plan.getStartTime() && planEndTime == plan.getEndTime()) {
+            if (mActivityNewPlanBinding.etPlanTitle.getText().toString().trim().equals(plan.getPlanName()) &&
+                    isChangeContent() && planStartTime == plan.getStartTime() && planEndTime == plan.getEndTime()) {
                 onBackPressed();
             } else {
                 new AlertDialog.Builder(this).setTitle("是否保存？").setIcon(android.R.drawable.ic_dialog_info).setPositiveButton("是", new DialogInterface.OnClickListener() {
@@ -138,8 +140,22 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    private boolean isChangeContent() {
+        if (isEmpty) {
+            if (mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals(plan.getPlanContent())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void savePlan() {
-        if (mActivityNewPlanBinding.etPlanTitle.getText().toString().trim().equals("") || mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
+        if (mActivityNewPlanBinding.etPlanTitle.getText().toString().trim().equals("")) {
             Toast.makeText(NewPlanActivity.this, "不能为空哦!", Toast.LENGTH_SHORT).show();
         } else {
             if (planStartTime > planEndTime) {
@@ -149,17 +165,21 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void execute(Realm realm) {
                         Project sProject = DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().where(Project.class).equalTo(PROJECT_ID, mProjectId).findFirst();
-                        if("2".equals(tag)){
-                            plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
+                        if ("2".equals(tag)) {
+                            if (!mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
+                                plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
+                            }
                             plan.setPlanName(mActivityNewPlanBinding.etPlanTitle.getText().toString().trim());
                             plan.setStartTime(planStartTime);
                             plan.setEndTime(planEndTime);
                             Date date = new Date();
                             sProject.setLastUpdateTime(date.getTime());
                             realm.copyToRealmOrUpdate(sProject);
-                        }else {
+                        } else {
                             Plan plan = new Plan();
-                            plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
+                            if (!mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
+                                plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
+                            }
                             plan.setPlanName(mActivityNewPlanBinding.etPlanTitle.getText().toString().trim());
                             plan.setPlanId(UUID.randomUUID().toString());
                             plan.setCreateTime(System.currentTimeMillis());
@@ -168,12 +188,12 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                             plan.setProjectId(mProjectId);
                             sProject.getPlans().add(plan);
                         }
-                        
+
                     }
                 });
-                if("2".equals(tag)){
+                if ("2".equals(tag)) {
                     Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Toast.makeText(this, "新建成功", Toast.LENGTH_SHORT).show();
                 }
                 onBackPressed();
@@ -200,6 +220,7 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
         mProjectId = intent.getStringExtra(PROJECT_ID);
         tag = intent.getStringExtra(TAG);
         if ("2".equals(tag)) {
+            getSupportActionBar().setTitle("修改计划");
             planId = intent.getStringExtra(PLAN_ID);
             DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
                 @Override
@@ -208,7 +229,12 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                 }
             });
             mActivityNewPlanBinding.etPlanTitle.setText(plan.getPlanName());
-            mActivityNewPlanBinding.etPlanDescription.setText(plan.getPlanContent());
+            if (!mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
+                isEmpty = false;
+                plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
+            } else {
+                isEmpty = true;
+            }
             planStartTime = plan.getStartTime();
             planEndTime = plan.getEndTime();
         } else {
