@@ -232,7 +232,7 @@
                         android:hint="@string/start_num"
                         android:inputType="number"
                         android:paddingLeft="@dimen/task_input_list_padding"
-                        android:text="@{String.valueOf(task.taskPredictTime)}" />
+                        android:text="@{TranserverUtil.filterZero(task.taskPredictTime)}" />
 
                 </LinearLayout>
 

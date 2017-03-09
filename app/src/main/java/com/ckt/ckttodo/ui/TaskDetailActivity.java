@@ -41,6 +41,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     private TextView mTextViewLevels;
     private TextView mTextViewRemind;
     private EditText mEditTextSpendTime;
+    private TextView mTextViewContent;
     private DatebaseHelper mHelper;
     private EventTask mTask;
     private boolean isModify = false;
@@ -103,6 +104,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         mTextViewLevels = mActivityTaskDetailBinding.detailTextLevel;
         mTextViewRemind = mActivityTaskDetailBinding.detailTextRemind;
         mEditTextSpendTime = mActivityTaskDetailBinding.detailEditSendTime;
+        mTextViewContent = mActivityTaskDetailBinding.detailTextContent;
         setData();
     }
 
@@ -116,6 +118,10 @@ public class TaskDetailActivity extends AppCompatActivity {
             mTextViewKinds.setText(transKinds(mTask.getTaskType()));
             mTextViewLevels.setText(transLevel(mTask.getTaskPriority()));
             mTextViewRemind.setText(transRemind(mTask.getTaskRemindTime()));
+            if (mTask.getTaskContent() == null || mTask.getTaskContent().replace(" ", "").length() < 1) {
+                mTextViewContent.setVisibility(View.GONE);
+            }
+
         }
     }
 
@@ -212,7 +218,7 @@ public class TaskDetailActivity extends AppCompatActivity {
 
     @Override
     public void finish() {
-        if(isModify){
+        if (isModify) {
             Intent intent = new Intent();
             intent.putExtra(IS_TASK_DETAIL_MODIFY, isModify);
             setResult(TASK_DETAIL_MAIN_RESULT_CODE, intent);
