@@ -6,8 +6,8 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +31,6 @@ import com.ckt.ckttodo.databinding.ActivityNewTaskBinding;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.TranserverUtil;
 import com.ckt.ckttodo.widgt.TaskDateDialog;
-import com.iflytek.cloud.thirdparty.V;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -55,7 +54,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private TextView mTextViewScheduleTime;
     private EditText mEditViewPlanTime;
     private TextView mTextViewContent;
-    private TextView mTextViewTitle;
+    private EditText mEditViewTitle;
     private ArrayAdapter<String> mSpinnerTaskKindsAdapter;
     private ArrayAdapter<String> mSpinnerTaskLevelAdapter;
     private ArrayAdapter<String> mSpinnerTaskRemindAdapter;
@@ -155,7 +154,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         });
 
         mTextViewContent = mActivityNewTaskBinding.newEditConent;
-        mTextViewTitle = mActivityNewTaskBinding.newEditTitle;
+        mEditViewTitle = mActivityNewTaskBinding.newEditTitle;
 
 
     }
@@ -212,7 +211,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void checkAndUpdate() {
-        if (TextUtils.isEmpty(mTextViewTitle.getText())) {
+        if (TextUtils.isEmpty(mEditViewTitle.getText())) {
             Toast.makeText(this, getResources().getString(R.string.task_not_empty_content), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -229,7 +228,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         }
         EventTask task = new EventTask();
         task.setTaskId(mTaskID);
-        task.setTaskTitle(mTextViewTitle.getText().toString());
+        task.setTaskTitle(mEditViewTitle.getText().toString());
         task.setTaskContent(TextUtils.isEmpty(mTextViewContent.getText()) ? "" : mTextViewContent.getText().toString());
         task.setTaskType(mSpinnerTaskKinds.getSelectedItemPosition() + 1);
         task.setTaskPriority(mSpinnerTaskLevel.getSelectedItemPosition() + 1);
@@ -274,7 +273,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
      */
 
     private void checkAndCommit() {
-        if (TextUtils.isEmpty(mTextViewTitle.getText())) {
+        if (TextUtils.isEmpty(mEditViewTitle.getText())) {
             Toast.makeText(this, getResources().getString(R.string.task_not_empty_content), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -305,7 +304,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         task.setTaskId(taskID);
         task.setTaskStatus(EventTask.NOT_START);
         task.setTaskRealSpendTime(0);
-        task.setTaskTitle(mTextViewTitle.getText().toString());
+        task.setTaskTitle(mEditViewTitle.getText().toString());
         task.setTaskContent(TextUtils.isEmpty(mTextViewContent.getText()) ? "" : mTextViewContent.getText().toString());
         task.setTaskType(mSpinnerTaskKinds.getSelectedItemPosition() + 1);
         task.setTaskPriority(mSpinnerTaskLevel.getSelectedItemPosition() + 1);
@@ -463,7 +462,9 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             mTask.setTaskStartTime(System.currentTimeMillis());
             mActivityNewTaskBinding.setTask(mTask);
             mActivityNewTaskBinding.executePendingBindings();
-            mTextViewTitle.setText(content);
+            mEditViewTitle.setText(content);
+            Editable editable = mEditViewTitle.getText();
+            mEditViewTitle.setSelection(editable.length());
             mEditViewPlanTime.setText("0");
         } else if (mTaskID != null) {
             mHelper = DatebaseHelper.getInstance(this);
