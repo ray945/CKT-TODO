@@ -38,7 +38,7 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'com.songhang:smart-headerfooter-recyclerview:1.0.1'
     compile 'com.getbase:floatingactionbutton:1.10.1'
-    compile 'ru.bartwell:exfilepicker:2.1'
+    compile 'com.vincent.filepicker:MultiTypeFilePicker:1.0.0'
     compile group: 'net.sourceforge.jexcelapi', name: 'jxl', version: '2.6.12'
     testCompile 'junit:junit:4.12'
 }

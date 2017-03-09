@@ -51,22 +51,21 @@ import com.ckt.ckttodo.util.excelutil.EventTaskExcelBean;
 import com.ckt.ckttodo.util.excelutil.ExcelManager;
 import com.ckt.ckttodo.widgt.VoiceInputDialog;
 
-import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmQuery;
+import com.vincent.filepicker.Constant;
+import com.vincent.filepicker.activity.NormalFilePickActivity;
+import com.vincent.filepicker.filter.entity.NormalFile;
+
 import io.realm.RealmResults;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import ru.bartwell.exfilepicker.ExFilePicker;
-import ru.bartwell.exfilepicker.data.ExFilePickerResult;
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
         , TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int REQUEST_PERMISSIONS = 1;
     public final static int MAIN_TO_NEW_TASK_CODE = 100;
     public final static int MAIN_TO_TASK_DETAIL_CODE = 200;
-    private final static int EX_FILE_PICKER_RESULT = 1024;
     private ActivityMainBinding mActivityMainBinding;
     private MenuItem mMenuItemSure;
     private MenuItem mMenuItemFalse;
@@ -101,11 +99,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
-        if (requestCode == EX_FILE_PICKER_RESULT){
-            ExFilePickerResult result = ExFilePickerResult.getFromIntent(data);
-            if (result != null && result.getCount() > 0){
-                String docPath = result.getPath() + result.getNames().get(0);
-                withResultInsertDatabase(docPath);
+        if (requestCode == Constant.REQUEST_CODE_PICK_FILE){
+            if (resultCode ==RESULT_OK){
+                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                withResultInsertDatabase(list.get(0).getPath());
             }
         }
     }
@@ -262,11 +259,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mActivityMainBinding.appBarMain.addAttach.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                ExFilePicker exFilePicker = new ExFilePicker();
-                exFilePicker.setChoiceType(ExFilePicker.ChoiceType.FILES);
-                exFilePicker.setShowOnlyExtensions("xls","xlsx");
-                exFilePicker.setCanChooseOnlyOneItem(true);
-                exFilePicker.start(MainActivity.this,EX_FILE_PICKER_RESULT);
+                Intent intent = new Intent(MainActivity.this, NormalFilePickActivity.class);
+                intent.putExtra(Constant.MAX_NUMBER,1);
+                intent.putExtra(NormalFilePickActivity.SUFFIX,new String[]{"xlsx","xls"});
+                startActivityForResult(intent,Constant.REQUEST_CODE_PICK_FILE);
             }
         });
 
