@@ -68,7 +68,8 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback, VoiceInputDialog.VoiceInputFinishedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback, 
+        VoiceInputDialog.VoiceInputFinishedListener,ProjectFragment.NotifyTask{
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
     public static final String SHARE_PREFERENCES_NAME = "com.ckt.ckttodo";
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
+    
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSIONS) {
@@ -549,5 +550,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
             showToast(getResources().getString(R.string.import_failed));
         }
+    }
+
+    @Override
+    public void notifyTask() {
+        mTaskFragment.notifyData();
     }
 }
