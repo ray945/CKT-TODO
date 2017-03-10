@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.FragmentProjectBinding;
@@ -57,11 +58,21 @@ public class ProjectFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         // 点击“确认”后的操作 
                         List<Plan> plans = new ArrayList<Plan>();
+                        List<EventTask> tasks = new ArrayList<EventTask>();
                         for (Plan plan:mProjectList.get(position).getPlans()){
                             plans.add(plan);
                         }
                         if (plans != null) {
                             for (int i = 0; i < plans.size(); i++) {
+                                tasks.clear();
+                                if(plans.get(i).getEventTasks()!=null){
+                                    for (int j = 0; j < plans.get(i).getEventTasks().size(); j++) {
+                                        tasks.add(plans.get(i).getEventTasks().get(j));
+                                    }
+                                    for(EventTask task:tasks){
+                                        DatebaseHelper.getInstance(getContext()).delete(task);
+                                    }
+                                }
                                 DatebaseHelper.getInstance(getContext()).delete(plans.get(i));
                             }
                             mAdapter.flash();

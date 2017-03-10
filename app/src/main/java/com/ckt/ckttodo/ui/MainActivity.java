@@ -56,6 +56,7 @@ import com.vincent.filepicker.activity.NormalFilePickActivity;
 import com.vincent.filepicker.filter.entity.NormalFile;
 
 import io.realm.RealmResults;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -67,9 +68,7 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
-        , TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback
-        , VoiceInputDialog.VoiceInputFinishedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback, VoiceInputDialog.VoiceInputFinishedListener {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
     public static final String SHARE_PREFERENCES_NAME = "com.ckt.ckttodo";
@@ -99,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
-        if (requestCode == Constant.REQUEST_CODE_PICK_FILE){
-            if (resultCode ==RESULT_OK){
+        if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
+            if (resultCode == RESULT_OK) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
                 withResultInsertDatabase(list.get(0).getPath());
             }
@@ -240,14 +239,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActivityMainBinding.appBarMain.addVoid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                SharedPreferences preferences = MainActivity.this.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
-//                boolean isFirstTime = preferences.getBoolean(IS_FIRST_CHECK_PERMISSION, true);
-//                if (isFirstTime) {
-//                    getTheVoiceInput();
-//                    preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
-//                } else {
+                //                SharedPreferences preferences = MainActivity.this.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
+                //                boolean isFirstTime = preferences.getBoolean(IS_FIRST_CHECK_PERMISSION, true);
+                //                if (isFirstTime) {
+                //                    getTheVoiceInput();
+                //                    preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
+                //                } else {
                 mDialog.show();
-//                }
+                //                }
             }
         });
         mActivityMainBinding.appBarMain.addText.setOnClickListener(new View.OnClickListener() {
@@ -258,11 +257,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         mActivityMainBinding.appBarMain.addAttach.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, NormalFilePickActivity.class);
-                intent.putExtra(Constant.MAX_NUMBER,1);
-                intent.putExtra(NormalFilePickActivity.SUFFIX,new String[]{"xlsx","xls"});
-                startActivityForResult(intent,Constant.REQUEST_CODE_PICK_FILE);
+                intent.putExtra(Constant.MAX_NUMBER, 1);
+                intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls"});
+                startActivityForResult(intent, Constant.REQUEST_CODE_PICK_FILE);
             }
         });
 
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 switch (viewPager.getCurrentItem()) {
                     case 0:
-//                        getTheVoiceInput();
+                        //                        getTheVoiceInput();
                         break;
                     case 1:
                         Log.e(TAG, "project click");
@@ -320,8 +320,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Log.e(TAG, "note click");
                         Intent intent = new Intent(MainActivity.this, NewNoteActivity.class);
                         intent.putExtra("noteTag", "2");
-                        CircularAnimUtil.startActivity(MainActivity.this, intent, mActivityMainBinding.appBarMain.fab,
-                                R.color.colorPrimary);
+                        CircularAnimUtil.startActivity(MainActivity.this, intent, mActivityMainBinding.appBarMain.fab, R.color.colorPrimary);
                         break;
                 }
             }
@@ -440,12 +439,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.nav_task:
 
                 break;
             case R.id.nav_file:
                 transitionTo(new Intent(this, FinishedTaskActivity.class));
+                break;
+            case R.id.nav_timer:
                 break;
             case R.id.nav_count:
                 transitionTo(new Intent(this, ChartActivity.class));
@@ -485,13 +486,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if (keyCode == KeyEvent.KEYCODE_BACK ) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (mMenuItemSure.isVisible()) {
                 mTaskFragment.finishDeleteAction(false);
                 mMenuItemSure.setVisible(false);
                 mMenuItemFalse.setVisible(false);
                 return true;
-            }else if(mDialog.isShowing()){
+            } else if (mDialog.isShowing()) {
                 mDialog.onRecordFinish();
             }
         }
@@ -509,21 +510,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     //解析来自Excel的数据
-    private void withResultInsertDatabase(String docPath){
+    private void withResultInsertDatabase(String docPath) {
         try {
             File file = new File(docPath);
             InputStream inputStream = new FileInputStream(file);
             ExcelManager excelManager = new ExcelManager();
             List<EventTaskExcelBean> tasks = excelManager.fromExcel(inputStream, EventTaskExcelBean.class);
-            for (EventTaskExcelBean task : tasks){
+            for (EventTaskExcelBean task : tasks) {
                 EventTask eventTask = new EventTask();
                 eventTask.setTaskId(UUID.randomUUID().toString());
                 eventTask.setTaskTitle(task.getTaskTitle());
                 eventTask.setTaskContent(task.getTaskContent());
-                if (!task.getPlanName().equals("")){
+                if (!task.getPlanName().equals("")) {
                     RealmResults<Plan> plans = DatebaseHelper.getInstance(getApplicationContext()).findAll(Plan.class);
-                    for (Plan plan : plans){
-                        if (task.getPlanName().equals(plan.getPlanName())){
+                    for (Plan plan : plans) {
+                        if (task.getPlanName().equals(plan.getPlanName())) {
                             eventTask.setPlan(plan);
                         }
                     }
@@ -538,7 +539,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 eventTask.setTaskType(Integer.parseInt(task.getTaskType()));
                 eventTask.setTaskPriority(Integer.parseInt(task.getTaskPriority()));
                 eventTask.setTaskPredictTime(Float.parseFloat(task.getTaskPredictTime()));
-                eventTask.setTaskRemindTime(Long.parseLong(task.getTaskRemindTime())*60);
+                eventTask.setTaskRemindTime(Long.parseLong(task.getTaskRemindTime()) * 60);
 
                 DatebaseHelper.getInstance(getApplicationContext()).insert(eventTask);
             }

@@ -13,6 +13,11 @@
             android:checkable="false"
             android:title="@string/file"/>
         <item
+            android:id="@+id/nav_timer"
+            android:icon="@drawable/ic_av_timer_black_48dp"
+            android:checkable="false"
+            android:title="@string/timer"/>
+        <item
             android:id="@+id/nav_count"
             android:icon="@mipmap/nav_count"
             android:checkable="false"
