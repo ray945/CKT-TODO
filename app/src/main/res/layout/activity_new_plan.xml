@@ -16,13 +16,13 @@
         <EditText
             android:id="@+id/et_planTitle"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
             android:gravity="center_vertical|start"
             android:hint="@string/plan"
-            android:maxLines="1"
-            android:padding="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="15dp"
             android:textColorHint="#848484"
             android:textSize="16sp"/>
 
@@ -30,10 +30,11 @@
         <EditText
             android:id="@+id/et_planDescription"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:gravity="start"
+            android:paddingTop="5dp"
+            android:paddingBottom="15dp"
             android:hint="@string/planDescription"
-            android:lineSpacingMultiplier="1.5"
             android:textColorHint="#848484"
             android:textSize="15sp"/>
 

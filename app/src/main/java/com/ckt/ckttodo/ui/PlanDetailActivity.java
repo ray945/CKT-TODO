@@ -53,7 +53,10 @@ public class PlanDetailActivity extends AppCompatActivity {
                 plan = DatebaseHelper.getInstance(PlanDetailActivity.this).getRealm().where(Plan.class).equalTo(PLAN_ID, planId).findFirst();
             }
         });
-        calculateProgress(plan.getEventTasks(),planId);
+        calculateProgress(plan.getEventTasks(), planId);
+        if (plan.getPlanContent().equals("")) {
+            mActivityPlanDetailBinding.tvPlanDescription.setVisibility(View.GONE);
+        }
         mActivityPlanDetailBinding.setPlan(plan);
         mTasklistAdapter = new TaskListAdapter(this, plan.getEventTasks());
         mTasklistAdapter.setOnItemClickListener(new NoteFragment.NoteAdapter.OnItemClickListener() {
@@ -68,29 +71,31 @@ public class PlanDetailActivity extends AppCompatActivity {
         mActivityPlanDetailBinding.rvTask.setLayoutManager(layoutManager);
         mActivityPlanDetailBinding.rvTask.setAdapter(mTasklistAdapter);
     }
-     private void calculateProgress(RealmList<EventTask> tasks, final String planId) {
-            float totalTaskTime = 0;
-            float doneTaskTime = 0;
-            for (EventTask task : tasks) {
-                totalTaskTime += task.getTaskPredictTime();
-                if (task.getTaskStatus() == EventTask.DONE) {
-                    doneTaskTime += task.getTaskPredictTime();
-                }
-    
+
+    private void calculateProgress(RealmList<EventTask> tasks, final String planId) {
+        float totalTaskTime = 0;
+        float doneTaskTime = 0;
+        for (EventTask task : tasks) {
+            totalTaskTime += task.getTaskPredictTime();
+            if (task.getTaskStatus() == EventTask.DONE) {
+                doneTaskTime += task.getTaskPredictTime();
             }
-            float accomplishProgressTemp = doneTaskTime / totalTaskTime;
-            NumberFormat numberFormat = NumberFormat.getPercentInstance();
-            mAccomplishProgress = numberFormat.format(accomplishProgressTemp);
-            if(tasks.size()==0){
-                mAccomplishProgress ="0%";
-            }
-            DatebaseHelper.getInstance(this).getRealm().executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    plan.setAccomplishProgress(mAccomplishProgress);
-                }
-            });
+
         }
+        float accomplishProgressTemp = doneTaskTime / totalTaskTime;
+        NumberFormat numberFormat = NumberFormat.getPercentInstance();
+        mAccomplishProgress = numberFormat.format(accomplishProgressTemp);
+        if (tasks.size() == 0) {
+            mAccomplishProgress = "0%";
+        }
+        DatebaseHelper.getInstance(this).getRealm().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                plan.setAccomplishProgress(mAccomplishProgress);
+            }
+        });
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

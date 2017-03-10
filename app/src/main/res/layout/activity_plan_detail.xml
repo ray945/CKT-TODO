@@ -28,7 +28,7 @@
             android:padding="23dp">
 
             <TextView
-                android:id="@+id/et_planTitle"
+                android:id="@+id/tv_planTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
@@ -38,7 +38,7 @@
                 android:textSize="16sp"/>
 
             <TextView
-                android:id="@+id/et_planDescription"
+                android:id="@+id/tv_planDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"

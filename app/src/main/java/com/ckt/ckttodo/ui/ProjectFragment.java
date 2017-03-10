@@ -24,6 +24,7 @@ import com.ckt.ckttodo.util.ProjectListAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -37,6 +38,8 @@ public class ProjectFragment extends Fragment {
     public static final String TASK_START_TIME = "taskStartTime";
     private RealmResults<Project> mProjectList;
     private ProjectListAdapter mAdapter;
+    private Plan currentPlan;
+    private List<EventTask> mTasks;
 
 
     @Override
@@ -58,23 +61,33 @@ public class ProjectFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         // 点击“确认”后的操作 
                         List<Plan> plans = new ArrayList<Plan>();
-                        List<EventTask> tasks = new ArrayList<EventTask>();
+                        mTasks = new ArrayList<EventTask>();
                         for (Plan plan : mProjectList.get(position).getPlans()) {
                             plans.add(plan);
                         }
                         if (plans != null) {
                             for (int i = 0; i < plans.size(); i++) {
-                                tasks.clear();
+                                currentPlan = plans.get(i);
+                                mTasks.clear();
                                 if (plans.get(i).getEventTasks() != null) {
                                     for (int j = 0; j < plans.get(i).getEventTasks().size(); j++) {
-                                        tasks.add(plans.get(i).getEventTasks().get(j));
+                                        mTasks.add(plans.get(i).getEventTasks().get(j));
                                     }
-                                    for (EventTask task : tasks) {
-                                        DatebaseHelper.getInstance(getContext()).delete(task);
-                                    }
+                                    DatebaseHelper.getInstance(getContext()).getRealm().executeTransaction(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            for (EventTask task : mTasks) {
+                                                task.setPlanId("");
+                                                realm.copyToRealmOrUpdate(task);
+//                                              DatebaseHelper.getInstance(getContext()).delete(task);
+                                            }
+                                            currentPlan.getEventTasks().clear();
+                                            realm.copyToRealmOrUpdate(currentPlan);
+                                        }
+                                    });
                                 }
                                 DatebaseHelper.getInstance(getContext()).delete(plans.get(i));
-                            }
+                            } 
                             mNotifyTask = (NotifyTask) getActivity();
                             mNotifyTask.notifyTask();
                             mAdapter.flash();

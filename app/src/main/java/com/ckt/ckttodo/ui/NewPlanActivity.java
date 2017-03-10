@@ -166,9 +166,7 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                     public void execute(Realm realm) {
                         Project sProject = DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().where(Project.class).equalTo(PROJECT_ID, mProjectId).findFirst();
                         if ("2".equals(tag)) {
-                            if (!mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
-                                plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
-                            }
+                            plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
                             plan.setPlanName(mActivityNewPlanBinding.etPlanTitle.getText().toString().trim());
                             plan.setStartTime(planStartTime);
                             plan.setEndTime(planEndTime);
@@ -229,9 +227,9 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                 }
             });
             mActivityNewPlanBinding.etPlanTitle.setText(plan.getPlanName());
-            if (!mActivityNewPlanBinding.etPlanDescription.getText().toString().trim().equals("")) {
+            if (!plan.getPlanContent().equals("")) {
                 isEmpty = false;
-                plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
+                mActivityNewPlanBinding.etPlanDescription.setText(plan.getPlanContent());
             } else {
                 isEmpty = true;
             }
