@@ -47,6 +47,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     private SmartRecyclerAdapter mSmartRecyclerAdapter;
     private RealmList<Plan> mThreePlans;
     private String mAccomplishProgress;
+    private PlanListAdapter mAdapter;
 
 
     public ProjectListAdapter(Context context, RealmResults<Project> projectList) {
@@ -124,8 +125,8 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         });
         final RecyclerView rvPlans = holder.binding.rvPlans;
         if (plans.size() <= 3) {
-            PlanListAdapter adapter = new PlanListAdapter(context, plans);
-            adapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener() {
+            mAdapter = new PlanListAdapter(context, plans);
+            mAdapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position, View view) {
                     Intent intent = new Intent(context, PlanDetailActivity.class);
@@ -133,7 +134,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                     context.startActivity(intent);
                 }
             });
-            rvPlans.setAdapter(adapter);
+            rvPlans.setAdapter(mAdapter);
         } else if (plans.size() >= 4) {
             mThreePlans = new RealmList<>();
             for (int i = 0; i < 3; i++) {
@@ -175,6 +176,9 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         if (mSmartRecyclerAdapter != null) {
             mSmartRecyclerAdapter.notifyDataSetChanged();
         }
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private void calculateProgress(RealmList<Plan> plans, final String projectId) {
@@ -187,7 +191,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         float accomplishProgressTemp = finishPlan / plans.size();
         NumberFormat numberFormat = NumberFormat.getPercentInstance();
         mAccomplishProgress = numberFormat.format(accomplishProgressTemp);
-        if (plans.size()==0) {
+        if (plans.size() == 0) {
             mAccomplishProgress = "0%";
         }
         DatebaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {

@@ -15,9 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.FragmentProjectBinding;
 import com.ckt.ckttodo.util.ProjectListAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.RealmResults;
 
@@ -52,10 +56,15 @@ public class ProjectFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // 点击“确认”后的操作 
-                        if (mProjectList.get(position).getPlans() != null) {
-                            for (int i = 0; i < mProjectList.get(position).getPlans().size(); i++) {
-                                DatebaseHelper.getInstance(getContext()).delete(mProjectList.get(position).getPlans().get(i));
+                        List<Plan> plans = new ArrayList<Plan>();
+                        for (Plan plan:mProjectList.get(position).getPlans()){
+                            plans.add(plan);
+                        }
+                        if (plans != null) {
+                            for (int i = 0; i < plans.size(); i++) {
+                                DatebaseHelper.getInstance(getContext()).delete(plans.get(i));
                             }
+                            mAdapter.flash();
                         }
                         DatebaseHelper.getInstance(getContext()).delete(mProjectList.get(position));
                         mAdapter.notifyDataSetChanged();
@@ -78,7 +87,6 @@ public class ProjectFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mAdapter.flash();
-        mAdapter.notifyDataSetChanged();
     }
 
     public static void initRecyclerView(RecyclerView recyclerView, RecyclerView.Adapter adapter, Context context) {
