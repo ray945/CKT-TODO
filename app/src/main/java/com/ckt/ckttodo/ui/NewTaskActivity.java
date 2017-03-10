@@ -46,9 +46,10 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private Spinner mSpinnerTaskKinds;
     private Spinner mSpinnerTaskLevel;
     private Spinner mSpinnerTaskRemind;
+    private Spinner mSpinnerTaskPlan;
     private AutoCompleteTextView mAutoCompleteTextViewTaskPlan;
-    private EditText mTextViewTaskPlan;
-    private LinearLayout mLinearLayoutInput;
+    //    private EditText mTextViewTaskPlan;
+//    private LinearLayout mLinearLayoutInput;
     private LinearLayout mLinearLayoutScheduleTime;
     private ScrollView mScrollViewTaskListContainer;
     private TextView mTextViewScheduleTime;
@@ -58,13 +59,15 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private ArrayAdapter<String> mSpinnerTaskKindsAdapter;
     private ArrayAdapter<String> mSpinnerTaskLevelAdapter;
     private ArrayAdapter<String> mSpinnerTaskRemindAdapter;
+    private ArrayAdapter<String> mSpinnerTaskPlanAdapter;
     private ActivityNewTaskBinding mActivityNewTaskBinding;
     private TaskDateDialog mTaskDateDialog;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
     private Calendar mCalendar = Calendar.getInstance();
     private Map<String, String> mPlanList = new HashMap<>();
-    private String[] mPlans;
+    private String[] mArrayPlans;
     private EventTask mTask;
+    private RealmResults<Plan> mPlans;
     public static final String GET_PLAN_ID_FROM_PROJECT = "planId";
     private static final String TASK_BELONG_NONE = "plan";
     public static final String PASS_TASK_ID = "task_id";
@@ -138,20 +141,26 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         mAutoCompleteTextViewTaskPlan.setThreshold(1);
 
 
-        mAutoCompleteTextViewTaskPlan.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mPlans));
-        mTextViewTaskPlan = mActivityNewTaskBinding.newTextShowPlan;
-        mLinearLayoutInput = mActivityNewTaskBinding.linearInputPlan;
-        mTextViewTaskPlan.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    mLinearLayoutInput.setVisibility(View.VISIBLE);
-                    mScrollViewTaskListContainer.setVisibility(View.INVISIBLE);
-                    mAutoCompleteTextViewTaskPlan.showDropDown();
-                }
+        mAutoCompleteTextViewTaskPlan.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArrayPlans));
+//        mTextViewTaskPlan = mActivityNewTaskBinding.newTextShowPlan;
 
-            }
-        });
+        mSpinnerTaskPlan = mActivityNewTaskBinding.newSpinnerShowPlan;
+        mSpinnerTaskPlanAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, mArrayPlans);
+        mSpinnerTaskPlan.setAdapter(mSpinnerTaskPlanAdapter);
+
+
+//        mLinearLayoutInput = mActivityNewTaskBinding.linearInputPlan;
+//        mTextViewTaskPlan.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    mLinearLayoutInput.setVisibility(View.VISIBLE);
+//                    mScrollViewTaskListContainer.setVisibility(View.INVISIBLE);
+//                    mAutoCompleteTextViewTaskPlan.showDropDown();
+//                }
+//
+//            }
+//        });
 
         mTextViewContent = mActivityNewTaskBinding.newEditConent;
         mEditViewTitle = mActivityNewTaskBinding.newEditTitle;
@@ -163,14 +172,16 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
      * get plan list form database
      */
     private void getPlanData() {
-        RealmResults<Plan> plans = mHelper.findAll(Plan.class);
+        mPlans = mHelper.findAll(Plan.class);
         Plan plan;
-        mPlans = new String[plans.size()];
-        for (int i = 0; i < plans.size(); ++i) {
-            plan = plans.get(i);
+        mArrayPlans = new String[mPlans.size() + 1];
+        int i = 0;
+        for (; i < mPlans.size(); ++i) {
+            plan = mPlans.get(i);
             mPlanList.put(plan.getPlanName(), plan.getPlanId());
-            mPlans[i] = plan.getPlanName();
+            mArrayPlans[i] = plan.getPlanName();
         }
+        mArrayPlans[i] = getResources().getString(R.string._default);
 
     }
 
@@ -185,22 +196,14 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_sure:
-                if (mLinearLayoutInput.getVisibility() == View.VISIBLE) {
-                    finishInputPlan();
+                if (isEditMode) {
+                    checkAndUpdate();
                 } else {
-                    if (isEditMode) {
-                        checkAndUpdate();
-                    } else {
-                        checkAndCommit();
-                    }
+                    checkAndCommit();
                 }
                 break;
             case android.R.id.home:
-                if (mLinearLayoutInput.getVisibility() == View.VISIBLE) {
-                    finishInputPlan();
-                } else {
-                    finish();
-                }
+                finish();
                 break;
 
 
@@ -240,28 +243,28 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         realm.beginTransaction();
         deleteTask.removeFromRealm();
         realm.commitTransaction();
-        if (TextUtils.isEmpty(mTextViewTaskPlan.getText()) || mTextViewTaskPlan.getText().toString().replace(" ", "").length() < 1) {
-            task.setPlanId(TASK_BELONG_NONE);
-        } else {
-            String planID;
-            String planName = mTextViewTaskPlan.getText().toString();
-            planName = planName.replace(" ", "");
-            if (mPlanList.containsKey(planName)) {
-                planID = mPlanList.get(planName);
-                task.setPlanId(planID);
-            } else {
-                // new plan
-                planID = makeNewPlan(planName);
-                task.setPlanId(planID);
-            }
+        String planID;
+        String planName = mArrayPlans[mSpinnerTaskPlan.getSelectedItemPosition()];
+        planName = planName.replace(" ", "");
+        if (mPlanList.containsKey(planName)) {
+            planID = mPlanList.get(planName);
+            task.setPlanId(planID);
             Plan plan = mHelper.getRealm().where(Plan.class).equalTo("planId", planID).findFirst();
             mHelper.getRealm().beginTransaction();
             task.setPlan(plan);
             plan.getEventTasks().add(task);
             mHelper.getRealm().commitTransaction();
             Toast.makeText(this, getResources().getString(R.string.task_modify_successful), Toast.LENGTH_SHORT).show();
+            setResult(MODIFY_TASK_RESULT_CODE);
             finish();
         }
+        // new plan
+        task.setPlanId(TASK_BELONG_NONE);
+        task.setPlan(null);
+//                planID = makeNewPlan(planName);
+//                task.setPlanId(planID);
+
+
         mHelper.insert(task);
         setResult(MODIFY_TASK_RESULT_CODE);
         Toast.makeText(this, getResources().getString(R.string.task_modify_successful), Toast.LENGTH_SHORT).show();
@@ -311,21 +314,12 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         task.setTaskStartTime(mCalendar.getTimeInMillis());
         task.setTaskPredictTime(Float.valueOf(mEditViewPlanTime.getText().toString()));
         task.setTaskRemindTime(getRemindTime(mSpinnerTaskRemind.getSelectedItemPosition()));
-        if (TextUtils.isEmpty(mTextViewTaskPlan.getText()) || mTextViewTaskPlan.getText().toString().replace(" ", "").length() < 1) {
-            task.setPlanId(TASK_BELONG_NONE);
-        } else {
-            String planID;
-            String planName = mTextViewTaskPlan.getText().toString();
-            planName = planName.replace(" ", "");
-            if (mPlanList.containsKey(planName)) {
-                planID = mPlanList.get(planName);
-                task.setPlanId(planID);
-            } else {
-                // new plan
-                planID = makeNewPlan(planName);
-                task.setPlanId(planID);
-            }
-
+        String planID;
+        String planName = mArrayPlans[mSpinnerTaskPlan.getSelectedItemPosition()];
+        planName = planName.replace(" ", "");
+        if (mPlanList.containsKey(planName)) {
+            planID = mPlanList.get(planName);
+            task.setPlanId(planID);
             Plan plan = mHelper.getRealm().where(Plan.class).equalTo("planId", planID).findFirst();
             mHelper.getRealm().beginTransaction();
             task.setPlan(plan);
@@ -335,6 +329,10 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             setResult(NEW_TASK_SUCCESS_RESULT_CODE);
             finish();
         }
+        // new plan
+//                planID = makeNewPlan(planName);
+//                task.setPlanId(planID);
+        task.setPlanId(TASK_BELONG_NONE);
         mHelper.insert(task);
         Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
         setResult(NEW_TASK_SUCCESS_RESULT_CODE);
@@ -381,6 +379,18 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         }
         return 0;
     }
+
+    private int transPlan(String planID) {
+
+        for (int i = 0; i < mPlans.size(); ++i) {
+            if (mPlans.get(i).getPlanId().equals(planID)) {
+                return i;
+            }
+        }
+
+        return mArrayPlans.length - 1;
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -429,21 +439,21 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private void finishInputPlan() {
-        if (!TextUtils.isEmpty(mAutoCompleteTextViewTaskPlan.getText())) {
-            mTextViewTaskPlan.setText(mAutoCompleteTextViewTaskPlan.getText().toString());
-        }
-        mLinearLayoutInput.setVisibility(View.GONE);
-        mScrollViewTaskListContainer.setVisibility(View.VISIBLE);
-    }
+//    private void finishInputPlan() {
+//        if (!TextUtils.isEmpty(mAutoCompleteTextViewTaskPlan.getText())) {
+//            mTextViewTaskPlan.setText(mAutoCompleteTextViewTaskPlan.getText().toString());
+//        }
+//        mLinearLayoutInput.setVisibility(View.GONE);
+//        mScrollViewTaskListContainer.setVisibility(View.VISIBLE);
+//    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mLinearLayoutInput.getVisibility() == View.VISIBLE) {
-                finishInputPlan();
-                return true;
-            }
+//            if (mLinearLayoutInput.getVisibility() == View.VISIBLE) {
+//                finishInputPlan();
+//                return true;
+//            }
 
         }
         return super.onKeyDown(keyCode, event);
@@ -465,13 +475,14 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             mEditViewTitle.setText(content);
             Editable editable = mEditViewTitle.getText();
             mEditViewTitle.setSelection(editable.length());
-            mEditViewPlanTime.setText("0");
+            mEditViewPlanTime.setText("");
         } else if (mTaskID != null) {
             mHelper = DatebaseHelper.getInstance(this);
             mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
             mSpinnerTaskKinds.setSelection(mTask.getTaskType() - 1);
             mSpinnerTaskLevel.setSelection(mTask.getTaskPriority() - 1);
             mSpinnerTaskRemind.setSelection(transRemind(mTask.getTaskRemindTime()));
+            mSpinnerTaskPlan.setSelection(transPlan(mTask.getPlanId()));
             mActivityNewTaskBinding.setTask(mTask);
             mActivityNewTaskBinding.executePendingBindings();
             isEditMode = true;
@@ -480,7 +491,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             mTask.setTaskStartTime(System.currentTimeMillis());
             mActivityNewTaskBinding.setTask(mTask);
             mActivityNewTaskBinding.executePendingBindings();
-            mEditViewPlanTime.setText("0");
+            mEditViewPlanTime.setText("");
         }
 
 

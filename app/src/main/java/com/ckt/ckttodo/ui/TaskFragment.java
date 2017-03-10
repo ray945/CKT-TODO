@@ -199,6 +199,8 @@ public class TaskFragment extends Fragment {
 
         public void setData(EventTask data) {
             this.mTask = data;
+            if (mTask.getPlan() != null)
+                Log.d("MOZRE", "setData: " + mTask.getPlan().getPlanName());
             mBinding.setTask(data);
             mBinding.executePendingBindings();
         }

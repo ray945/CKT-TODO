@@ -141,6 +141,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="about">关于</string>
+    <string name="_default">默认</string>
     <string name="tasks">任务</string>
     <string name="new_note">新建便签</string>
     <string name="alter_note">修改</string>

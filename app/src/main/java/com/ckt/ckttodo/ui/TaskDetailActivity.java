@@ -54,6 +54,11 @@ public class TaskDetailActivity extends AppCompatActivity {
             mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
             mActivityTaskDetailBinding.setTask(mTask);
             mActivityTaskDetailBinding.executePendingBindings();
+            if (mTask.getTaskContent() == null || mTask.getTaskContent().replace(" ", "").length() < 1) {
+                mTextViewContent.setVisibility(View.GONE);
+            } else {
+                mTextViewContent.setVisibility(View.VISIBLE);
+            }
             isModify = true;
         }
     }
@@ -120,6 +125,10 @@ public class TaskDetailActivity extends AppCompatActivity {
             mTextViewRemind.setText(transRemind(mTask.getTaskRemindTime()));
             if (mTask.getTaskContent() == null || mTask.getTaskContent().replace(" ", "").length() < 1) {
                 mTextViewContent.setVisibility(View.GONE);
+            }
+            Float zero = new Float(0f);
+            if (zero.compareTo(mTask.getTaskRealSpendTime()) == 0) {
+                mEditTextSpendTime.setText("");
             }
 
         }
