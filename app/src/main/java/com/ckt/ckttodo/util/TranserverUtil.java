@@ -1,6 +1,7 @@
 package com.ckt.ckttodo.util;
 
 import com.ckt.ckttodo.database.EventTask;
+import com.ckt.ckttodo.database.Plan;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -96,6 +97,13 @@ public class TranserverUtil {
             builder.insert(pointIndex, '.');
         }
         return builder.toString();
+    }
+
+    public static String filterPlanName(Plan plan) {
+        if (plan == null) {
+            return "无";
+        }
+        return plan.getPlanName();
     }
 
 }

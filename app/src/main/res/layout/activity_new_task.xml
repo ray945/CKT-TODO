@@ -234,6 +234,11 @@
                         android:paddingLeft="@dimen/task_input_list_padding"
                         android:text="@{TranserverUtil.filterZero(task.taskPredictTime)}" />
 
+                    <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="40dp"-->
+                    <!--android:text="@string/hour" />-->
                 </LinearLayout>
 
                 <View
@@ -291,15 +296,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <!--<EditText-->
-                        <!--android:id="@+id/new_text_show_plan"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:background="@null"-->
-                        <!--android:gravity="center_vertical"-->
-                        <!--android:hint="@string/plan"-->
-                        <!--android:paddingLeft="@dimen/task_input_list_padding"-->
-                        <!--android:text="@{task.plan.planName}"-->
-                        <!--android:textSize="16sp" />-->
+                    <!--android:id="@+id/new_text_show_plan"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@null"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:hint="@string/plan"-->
+                    <!--android:paddingLeft="@dimen/task_input_list_padding"-->
+                    <!--android:text="@{task.plan.planName}"-->
+                    <!--android:textSize="16sp" />-->
 
                 </LinearLayout>
 

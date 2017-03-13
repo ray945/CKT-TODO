@@ -492,6 +492,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             mActivityNewTaskBinding.setTask(mTask);
             mActivityNewTaskBinding.executePendingBindings();
             mEditViewPlanTime.setText("");
+            mSpinnerTaskPlan.setSelection(mArrayPlans.length - 1);
         }
 
 
