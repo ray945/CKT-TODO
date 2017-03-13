@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -47,6 +48,7 @@ import com.ckt.ckttodo.util.CircularAnimUtil;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.NotificationBroadcastReceiver;
 import com.ckt.ckttodo.util.PermissionUtil;
+import com.ckt.ckttodo.util.VoiceInputUtil;
 import com.ckt.ckttodo.util.excelutil.EventTaskExcelBean;
 import com.ckt.ckttodo.util.excelutil.ExcelManager;
 import com.ckt.ckttodo.widgt.VoiceInputDialog;
@@ -68,8 +70,8 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback, 
-        VoiceInputDialog.VoiceInputFinishedListener,ProjectFragment.NotifyTask{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback,
+        VoiceInputDialog.VoiceInputFinishedListener, ProjectFragment.NotifyTask {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
     public static final String SHARE_PREFERENCES_NAME = "com.ckt.ckttodo";
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ScreenOffBroadcast mScreenOffBroadcast;
     private static String[] PERMISSION_LIST = new String[]{Constants.RECORD_AUDIO, Constants.READ_PHONE_STATE, Constants.READ_EXTERNAL_STORAGE, Constants.WRITE_EXTERNAL_STORAGE};
     private VoiceInputDialog mDialog;
+    private ConnectivityManager mConnectivityManager;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSIONS) {
@@ -129,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         registerScreenOffBroadcast();
         mFragmentList = new ArrayList<>();
+        mConnectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         initUI();
         setupWindowAnimations();
         initNotification(this);
@@ -246,7 +250,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //                    getTheVoiceInput();
                 //                    preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
                 //                } else {
-                mDialog.show();
+                if (VoiceInputUtil.isNetAvaliable(mConnectivityManager)) {
+
+                    mDialog.show();
+                } else {
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.net_not_connected), Toast.LENGTH_SHORT).show();
+                }
+
                 //                }
             }
         });

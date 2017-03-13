@@ -2,6 +2,8 @@ package com.ckt.ckttodo.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -216,5 +218,21 @@ public class VoiceInputUtil {
         void onNoInput();
     }
 
+
+    public static boolean isNetAvaliable(ConnectivityManager manager) {
+        if (manager != null) {
+            NetworkInfo info = manager.getActiveNetworkInfo();
+            if (info != null && info.isConnected()) {
+
+                if (info.getState() == NetworkInfo.State.CONNECTED) {
+                    return true;
+                }
+
+            }
+
+
+        }
+        return false;
+    }
 
 }
