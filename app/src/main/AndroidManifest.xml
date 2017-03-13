@@ -2,15 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ckt.ckttodo">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".util.MyApplication"
@@ -22,46 +22,52 @@
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.NewTaskActivity"/>
+        <activity android:name=".ui.NewTaskActivity" />
         <activity
             android:name=".ui.LockScreenActivity"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:taskAffinity="com.ckt.ckttodo.lockscreen"
-            android:theme="@style/LockScreenTheme"/>
-        <activity android:name=".ui.NewNoteActivity"/>
-        <activity android:name=".ui.AboutActivity"/>
+            android:theme="@style/LockScreenTheme" />
+        <activity android:name=".ui.NewNoteActivity" />
+        <activity android:name=".ui.AboutActivity" />
         <activity
             android:name=".ui.ChartActivity"
-            android:label="@string/dataCount"/>
-        <activity android:name=".ui.FinishedTaskActivity"/>
+            android:label="@string/dataCount" />
+        <activity android:name=".ui.FinishedTaskActivity" />
         <activity
             android:name=".ui.ClockAnimationActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.VoiceActivity"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.VoiceActivity" />
 
         <receiver android:name=".util.NotificationBroadcastReceiver">
             <intent-filter>
-                <action android:name="com.ckt.ckttodo.alarm"/>
+                <action android:name="com.ckt.ckttodo.alarm" />
             </intent-filter>
         </receiver>
         <receiver android:name=".util.BootCompletedReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.TaskDetailActivity"/>
-        <activity android:name=".ui.NewPlanActivity"/>
-        <activity android:name=".ui.PlanDetailActivity"/>
+        <activity android:name=".ui.TaskDetailActivity" />
+        <activity android:name=".ui.NewPlanActivity" />
+        <activity android:name=".ui.PlanDetailActivity" />
+
+        <service
+            android:name=".service.PomodoCubeService"
+            android:singleUser="true"
+            android:exported="true"
+            android:process=":remote" />
 
     </application>
 
