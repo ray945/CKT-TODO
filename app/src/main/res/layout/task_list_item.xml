@@ -1,122 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
         <variable
             name="task"
             type="com.ckt.ckttodo.database.EventTask" />
-        <import type="com.ckt.ckttodo.util.TranserverUtil"/>
+
+        <import type="com.ckt.ckttodo.util.TranserverUtil" />
     </data>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/relative_container"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/ripple_bg"
-        android:clickable="true"
         android:descendantFocusability="blocksDescendants"
-        android:longClickable="true"
-        android:paddingBottom="10dp"
-        android:paddingLeft="20dp"
-        android:paddingTop="10dp">
+        android:orientation="horizontal">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true">
-
-            <TextView
-                android:id="@+id/text_task_list_plan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{task.taskTitle}"
-                android:textColor="@color/colorPrimaryText"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/text_task_list_time_pre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_task_list_plan"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/colorSecondaryText"
-                android:text="@string/task_plan_pre" />
-
-
-            <TextView
-                android:id="@+id/text_task_list_plan_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_task_list_plan"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/text_task_list_time_pre"
-                android:textColor="@color/colorSecondaryText"
-                android:text="@{TranserverUtil.filterZero(task.taskPredictTime)}" />
-
-            <TextView
-                android:id="@+id/text_task_list_time_end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_task_list_plan"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/text_task_list_plan_time"
-                android:textColor="@color/colorSecondaryText"
-                android:text="@string/task_hour" />
-
-            <TextView
-                android:id="@+id/text_task_list_take_pre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_task_list_plan"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/text_task_list_time_end"
-                android:textColor="@color/colorSecondaryText"
-                android:text="@string/task_done" />
-
-            <TextView
-                android:id="@+id/text_task_list_take_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_task_list_plan"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/text_task_list_take_pre"
-                android:textColor="@color/colorSecondaryText"
-                android:text="@{TranserverUtil.filterZero(task.taskRealSpendTime)}" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/text_task_list_plan"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/text_task_list_take_time"
-                android:textColor="@color/colorSecondaryText"
-                android:text="@string/task_hour" />
-
-        </RelativeLayout>
-
-
-        <CheckBox
-            android:id="@+id/check_task_select"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
+        <TextView
+            android:id="@+id/text_task_list_top"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/text_to_top_bg"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/to_top"
+            android:textColor="@color/textColorWhite"
+            android:textSize="14sp"
             android:visibility="gone" />
 
-        <ImageButton
-            android:id="@+id/image_task_status"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@android:color/transparent"
-            android:descendantFocusability="blocksDescendants"
-            android:minWidth="50dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:src="@drawable/task_start_stop_selection" />
-    </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ripple_bg"
+            android:clickable="true"
+            android:longClickable="true"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp">
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:id="@+id/text_task_list_plan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{task.taskTitle}"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/text_task_list_time_pre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_task_list_plan"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/task_plan_pre"
+                    android:textColor="@color/colorSecondaryText" />
+
+
+                <TextView
+                    android:id="@+id/text_task_list_plan_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_task_list_plan"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/text_task_list_time_pre"
+                    android:text="@{TranserverUtil.filterZero(task.taskPredictTime)}"
+                    android:textColor="@color/colorSecondaryText" />
+
+                <TextView
+                    android:id="@+id/text_task_list_time_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_task_list_plan"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/text_task_list_plan_time"
+                    android:text="@string/task_hour"
+                    android:textColor="@color/colorSecondaryText" />
+
+                <TextView
+                    android:id="@+id/text_task_list_take_pre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_task_list_plan"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/text_task_list_time_end"
+                    android:text="@string/task_done"
+                    android:textColor="@color/colorSecondaryText" />
+
+                <TextView
+                    android:id="@+id/text_task_list_take_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_task_list_plan"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@id/text_task_list_take_pre"
+                    android:text="@{TranserverUtil.filterZero(task.taskRealSpendTime)}"
+                    android:textColor="@color/colorSecondaryText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_task_list_plan"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/text_task_list_take_time"
+                    android:text="@string/task_hour"
+                    android:textColor="@color/colorSecondaryText" />
+
+            </RelativeLayout>
+
+
+            <CheckBox
+                android:id="@+id/check_task_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/image_task_status"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:descendantFocusability="blocksDescendants"
+                android:minWidth="50dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:src="@drawable/task_start_stop_selection" />
+        </RelativeLayout>
+    </LinearLayout>
 </layout>

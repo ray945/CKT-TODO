@@ -29,6 +29,7 @@ import com.ckt.ckttodo.widgt.TimeWatchDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,8 @@ public class TaskFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private TaskRecyclerViewAdapter mAdapter;
     private RealmResults<EventTask> mTasks;
-    private List<EventTask> mShowTasks;
+    private LinkedList<EventTask> mShowTasks;
+    private LinkedList<EventTask> mTopTasks = new LinkedList<>();
     private static boolean isShowCheckBox = false;
     private Map<Integer, Boolean> mItemsSelectStatus = new HashMap<>();
     private ShowMainMenuItem mShowMenuItem;
@@ -84,15 +86,44 @@ public class TaskFragment extends Fragment {
 
     private void screenTask() {
         if (mShowTasks == null) {
-            mShowTasks = new ArrayList<>();
+            mShowTasks = new LinkedList<>();
         }
         mShowTasks.clear();
         mTasks = mHelper.findAll(EventTask.class);
+        mTopTasks.clear();
+        int i = 0;
         for (EventTask task : mTasks) {
             if (task.getTaskStatus() != EventTask.DONE) {
-                mShowTasks.add(task);
+                if (task.getTopNumber() > 0) {
+                    mTopTasks.add(task);
+                    continue;
+                }
+                mShowTasks.addLast(task);
             }
         }
+        sortTop(mTopTasks);
+    }
+
+    private void sortTop(LinkedList<EventTask> list) {
+        if (list.size() == 0) {
+            return;
+        }
+        if (list.size() == 1) {
+            mShowTasks.addFirst(list.get(0));
+            return;
+        }
+        EventTask tmpTask;
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = i + 1; j < list.size(); ++j) {
+                if (list.get(j).getTopNumber() > list.get(i).getTopNumber()) {
+                    tmpTask = list.get(i);
+                    list.set(i, list.get(j));
+                    list.set(j, tmpTask);
+                }
+            }
+        }
+        mShowTasks.addAll(0, list);
+
     }
 
     public void notifyData() {
@@ -120,6 +151,7 @@ public class TaskFragment extends Fragment {
             resetItemSelectStatus(mItemsSelectStatus);
             notifyDataSetChanged();
         }
+
 
         /**
          * if delete data,show update mTasks data
@@ -149,8 +181,14 @@ public class TaskFragment extends Fragment {
                 holder.checkBox.setChecked(mItemsSelectStatus.get(position));
                 holder.checkBox.setVisibility(View.VISIBLE);
                 holder.imageButtonStatus.setVisibility(View.INVISIBLE);
+                holder.textViewToTop.setVisibility(View.VISIBLE);
+                if (mShowTasks.get(position).getTopNumber() > 0) {
+                    holder.textViewToTop.setText(getResources().getString(R.string.cancel_top));
+                }
+
             } else {
                 holder.checkBox.setVisibility(View.GONE);
+                holder.textViewToTop.setVisibility(View.GONE);
                 holder.imageButtonStatus.setVisibility(View.VISIBLE);
                 holder.checkBox.setChecked(false);
             }
@@ -173,6 +211,7 @@ public class TaskFragment extends Fragment {
         ImageButton imageButtonStatus;
         CheckBox checkBox;
         EventTask mTask;
+        TextView textViewToTop;
         private TaskListItemBinding mBinding;
 
         public TaskRecyclerViewHolder(TaskListItemBinding binding) {
@@ -184,9 +223,11 @@ public class TaskFragment extends Fragment {
             imageButtonStatus = binding.imageTaskStatus;
             checkBox = binding.checkTaskSelect;
             container = binding.relativeContainer;
+            textViewToTop = binding.textTaskListTop;
             container.setOnLongClickListener(this);
             container.setOnClickListener(this);
             imageButtonStatus.setOnClickListener(this);
+            textViewToTop.setOnClickListener(this);
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -199,8 +240,6 @@ public class TaskFragment extends Fragment {
 
         public void setData(EventTask data) {
             this.mTask = data;
-            if (mTask.getPlan() != null)
-                Log.d("MOZRE", "setData: " + mTask.getPlan().getPlanName());
             mBinding.setTask(data);
             mBinding.executePendingBindings();
         }
@@ -235,8 +274,13 @@ public class TaskFragment extends Fragment {
                 MainActivity activity = (MainActivity) getActivity();
                 activity.transitionTo(intent);
                /* showTomatoDialog();*/
-
-
+            } else if (v == textViewToTop) {
+                int position = (Integer) container.getTag();
+                if (mShowTasks.get(position).getTopNumber() > 0) {
+                    setTaskCancelTop(position);
+                } else {
+                    setTaskToTop(position);
+                }
             }
         }
 
@@ -262,6 +306,83 @@ public class TaskFragment extends Fragment {
         }
     }
 
+    private void setTaskCancelTop(int position) {
+
+        EventTask eventTask = copyTask(mShowTasks.get(position));
+        eventTask.setTopNumber(EventTask.TOP_NORMAL);
+        mHelper.update(eventTask);
+        mShowMenuItem.setShowMenuItem(false);
+        isShowCheckBox = false;
+        mAdapter.customDeleteNotifyDataSetChanged();
+
+    }
+
+
+    /**
+     * set task to top
+     *
+     * @param position
+     */
+    private void setTaskToTop(Integer position) {
+        List<EventTask> adjustList = null;
+        EventTask newTopTask = copyTask(mShowTasks.get(position));
+        newTopTask.setTopNumber(EventTask.TOP_THREE);
+        adjustList = adjustOrder(mShowTasks.get(position).getTopNumber());
+        adjustList.add(newTopTask);
+        for (int i = 0; i < adjustList.size(); ++i) {
+            mHelper.update(adjustList.get(i));
+        }
+        mShowMenuItem.setShowMenuItem(false);
+        isShowCheckBox = false;
+        mAdapter.customDeleteNotifyDataSetChanged();
+    }
+
+    private List<EventTask> adjustOrder(Integer topNumber) {
+        List<EventTask> tmpList = new ArrayList<>();
+        EventTask tmpTask;
+        EventTask resultTask = null;
+        for (int i = 0; i < mTopTasks.size(); ++i) {
+            tmpTask = mTopTasks.get(i);
+            if (tmpTask.getTopNumber() == topNumber) {
+                continue;
+            }
+            if (tmpTask.getTopNumber() > 0) {
+                resultTask = copyTask(tmpTask);
+                if (resultTask.getTopNumber() == EventTask.TOP_ONE) {
+                    resultTask.setTopNumber(EventTask.TOP_NORMAL);
+
+                } else {
+
+                    resultTask.setTopNumber(tmpTask.getTopNumber() - 1);
+                }
+                tmpList.add(resultTask);
+            }
+        }
+
+        return tmpList;
+    }
+
+
+    private EventTask copyTask(EventTask tmpTask) {
+        EventTask result = new EventTask();
+        result.setTaskId(tmpTask.getTaskId());
+        result.setPlan(tmpTask.getPlan());
+        result.setCreateUerId(tmpTask.getCreateUerId());
+        result.setTaskContent(tmpTask.getTaskContent());
+        result.setTaskPredictTime(tmpTask.getTaskPredictTime());
+        result.setTaskPriority(tmpTask.getTaskPriority());
+        result.setTaskStatus(tmpTask.getTaskStatus());
+        result.setTaskTitle(tmpTask.getTaskTitle());
+        result.setTaskRealSpendTime(tmpTask.getTaskRealSpendTime());
+        result.setTaskUpdateTime(tmpTask.getTaskUpdateTime());
+        result.setExecUserId(tmpTask.getExecUserId());
+        result.setPlanId(tmpTask.getPlanId());
+        result.setTaskRemindTime(tmpTask.getTaskRemindTime());
+        result.setTaskStartTime(tmpTask.getTaskStartTime());
+        result.setTaskType(tmpTask.getTaskType());
+        result.setTopNumber(tmpTask.getTopNumber());
+        return result;
+    }
 
     /**
      * control about the delete checkbox visible or not

@@ -46,6 +46,12 @@ public class EventTask extends RealmObject {
     public static final String TASK_STATUS = "taskStatus";
     public static final String TASK_ID = "taskId";
 
+    public static final int TOP_ONE = 1;
+    public static final int TOP_TWO = 2;
+    public static final int TOP_THREE = 3;
+    public static final int TOP_NORMAL = -1;
+
+
     //任务id
     @PrimaryKey
     private String taskId;
@@ -207,8 +213,6 @@ public class EventTask extends RealmObject {
     public void setPlanId(String planId) {
         this.planId = planId;
     }
-
-
 
 
 }

@@ -206,6 +206,7 @@ public class TaskDetailActivity extends AppCompatActivity {
                         task.setPlanId(mTask.getPlanId());
                         task.setTaskRemindTime(mTask.getTaskRemindTime());
                         task.setTaskStartTime(mTask.getTaskStartTime());
+                        task.setTopNumber(mTask.getTopNumber());
                         task.setTaskType(mTask.getTaskType());
                         mHelper.update(task);
                         dialog.dismiss();

@@ -143,6 +143,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="about">关于</string>
     <string name="_default">默认</string>
+    <string name="to_top">置顶</string>
+    <string name="cancel_top">取消置顶</string>
     <string name="pomodo_finish">完成一个番茄时钟</string>
     <string name="pomodo_belong">将时间指定到任务</string>
     <string name="pomodo_title">番茄时钟计时中</string>

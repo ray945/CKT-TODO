@@ -11,4 +11,7 @@
     <color name="textColor">#212121</color>
     <color name="LockTextColor">#ffffffff</color>
     <color name="background_grey">#E9E9E9</color>
+    <color name="background_red">#FF0000</color>
+    <color name="color_8B0000">#8B0000</color>
+    <color name="textColorWhite">#FFFFFF</color>
 </resources>
