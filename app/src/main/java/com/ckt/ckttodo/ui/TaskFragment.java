@@ -128,7 +128,7 @@ public class TaskFragment extends Fragment {
 
     public void notifyData() {
         screenTask();
-        mAdapter.notifyDataSetChanged();
+        mAdapter.customNotifyDataSetChanged();
     }
 
 

@@ -17,6 +17,8 @@ public class Constants {
 
     public static final long TWENTY_MIN_TO_SEC = 20 * 60;
 
+    public static final long HALF_MINUTE_MILES = 30000;
+
     //最大可转换时间为一年
     public static final long MAX_SEC = ONE_HOUR_TO_SEC * 24 * 365;
 

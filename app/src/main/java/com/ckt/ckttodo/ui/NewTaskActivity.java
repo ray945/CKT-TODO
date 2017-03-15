@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -218,6 +219,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             Toast.makeText(this, getResources().getString(R.string.task_not_empty_content), Toast.LENGTH_SHORT).show();
             return;
         }
+
         if (TextUtils.isEmpty(mEditViewPlanTime.getText())) {
             Toast.makeText(this, getResources().getString(R.string.task_not_empty_plan_time), Toast.LENGTH_SHORT).show();
             return;
@@ -231,6 +233,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         }
         EventTask task = new EventTask();
         task.setTaskId(mTaskID);
+        task.setTaskRealSpendTime(mTask.getTaskRealSpendTime());
         task.setTaskTitle(mEditViewTitle.getText().toString());
         task.setTaskContent(TextUtils.isEmpty(mTextViewContent.getText()) ? "" : mTextViewContent.getText().toString());
         task.setTaskType(mSpinnerTaskKinds.getSelectedItemPosition() + 1);
@@ -282,6 +285,10 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         }
         if (TextUtils.isEmpty(mEditViewPlanTime.getText())) {
             Toast.makeText(this, getResources().getString(R.string.task_not_empty_plan_time), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (mCalendar.getTimeInMillis() + Constants.HALF_MINUTE_MILES < System.currentTimeMillis()) {
+            Toast.makeText(this, getResources().getString(R.string.time_err), Toast.LENGTH_SHORT).show();
             return;
         }
 
