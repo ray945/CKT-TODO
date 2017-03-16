@@ -33,6 +33,7 @@ public class PomodoCubeNotificationUtil {
     private TimerTask mTimerTask;
     private Notification mNotification;
     private int seconds;
+    private boolean mStop = false;
 
 
     public PomodoCubeNotificationUtil(Context context) {
@@ -54,6 +55,9 @@ public class PomodoCubeNotificationUtil {
         }
     };
 
+    public void setStop(boolean stop) {
+        this.mStop = stop;
+    }
 
     private void initTask() {
         mTimer = new Timer();
@@ -88,19 +92,29 @@ public class PomodoCubeNotificationUtil {
 
             @Override
             public void run() {
-
-                builder.setContentText(formatTime(countSeconds));
-                mNotification = builder.build();
-                mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-                if (countSeconds == 0) {
-                    builder.setContentText(mContext.getResources().getString(R.string.pomodo_belong))
-                            .setContentTitle(mContext.getResources().getString(R.string.pomodo_finish));
+                if (!mStop) {
+                    builder.setContentText(formatTime(countSeconds));
                     mNotification = builder.build();
                     mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-                    cancel();
+                    if (countSeconds == 0) {
+                        builder.setContentText(mContext.getResources().getString(R.string.pomodo_belong))
+                                .setContentTitle(mContext.getResources().getString(R.string.pomodo_finish));
+                        mNotification = builder.build();
+                        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+                        cancel();
+                    }
+                    --countSeconds;
+
+
+                } else {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                --countSeconds;
             }
+
         };
 
     }
