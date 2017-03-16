@@ -23,7 +23,7 @@
         android:layout_below="@id/ctv"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="start"
+        android:text="@string/start"
         android:textSize="25sp"
         android:textColor="#FFFFFFFF"
         android:layout_centerHorizontal="true" />

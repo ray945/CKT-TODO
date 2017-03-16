@@ -38,11 +38,11 @@ public class ClockAnimationActivity extends Activity  implements CircleAlarmTime
             @Override
             public void onClick(View v) {
                 if (mTimer.getCurrentTime() == 0){
-                    Toast.makeText(ClockAnimationActivity.this,"please set time",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ClockAnimationActivity.this,getResources().getString(R.string.please_set_time),Toast.LENGTH_SHORT).show();
                 }else {
                     mTimer.startTimer();
                     startCount = true;
-                    tvStart.setText("lay down your phone");
+                    tvStart.setText(getResources().getString(R.string.keep_focused));
                 }
             }
         });
@@ -51,16 +51,16 @@ public class ClockAnimationActivity extends Activity  implements CircleAlarmTime
             @Override
             public void onClick(View v) {
                 if (startCount){
-                    new AlertDialog.Builder(ClockAnimationActivity.this).setMessage("是否选择后台计时？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    new AlertDialog.Builder(ClockAnimationActivity.this).setMessage(getResources().getString(R.string.Abandon_Pomo)).setPositiveButton(getResources().getString(R.string.sure), new DialogInterface.OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // 点击“确认”后的操作
-                            finish();
                             mTimer.setState(false);
-                            tvStart.setText("start");
+                            tvStart.setText(getResources().getString(R.string.start));
+                            finish();
                         }
-                    }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -112,16 +112,17 @@ public class ClockAnimationActivity extends Activity  implements CircleAlarmTime
 
     @Override
     public void onTimerOver() {
-        new AlertDialog.Builder(this).setMessage("任务完成").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        if (!ClockAnimationActivity.this.isFinishing()){
+            new AlertDialog.Builder(this).setMessage(getResources().getString(R.string.Pomo_Finish)).setPositiveButton(getResources().getString(R.string.sure), new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // 点击“确认”后的操作
-                mTimer.setCurrentTime(0);
-                tvStart.setText("start");
-                finish();
-            }
-        }).show();
-        tvStart.setText("start");
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // 点击“确认”后的操作
+                    mTimer.setCurrentTime(0);
+                    tvStart.setText(getResources().getString(R.string.start));
+                    finish();
+                }
+            }).show();
+        }
     }
 }

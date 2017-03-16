@@ -174,4 +174,9 @@
     <string name="containTask">包含任务</string>
     <string name="planDetail">计划详情</string>
 
+    <string name="start">开始</string>
+    <string name="Abandon_Pomo">是否取消该番茄?</string>
+    <string name="Pomo_Finish">番茄完成</string>
+    <string name="keep_focused">请保持专注</string>
+    <string name="please_set_time">请先设置时间</string>
 </resources>
