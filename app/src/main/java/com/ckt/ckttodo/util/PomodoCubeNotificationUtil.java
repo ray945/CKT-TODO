@@ -72,10 +72,6 @@ public class PomodoCubeNotificationUtil {
                 .setOngoing(true);
         mNotification = builder.build();
         mNotification.flags = Notification.FLAG_ONGOING_EVENT;
-        Intent intentService = new Intent(mContext, PomodoCubeService.class);
-        mContext.bindService(intentService, connection, Context.BIND_AUTO_CREATE);
-        mContext.startService(intentService);
-
     }
 
 
@@ -116,6 +112,10 @@ public class PomodoCubeNotificationUtil {
             }
 
         };
+
+        Intent intentService = new Intent(mContext, PomodoCubeService.class);
+        mContext.bindService(intentService, connection, Context.BIND_AUTO_CREATE);
+        mContext.startService(intentService);
 
     }
 
