@@ -105,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
             if (resultCode == RESULT_OK) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                if (list.size() == 0){
+                    return;
+                }
                 withResultInsertDatabase(list.get(0).getPath());
             }
         }
