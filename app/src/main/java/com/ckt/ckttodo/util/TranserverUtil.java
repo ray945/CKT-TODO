@@ -106,4 +106,30 @@ public class TranserverUtil {
         return plan.getPlanName();
     }
 
+
+
+    public static String formatTime(int thisTime) {
+        int min, hour, sec;
+        StringBuilder build = new StringBuilder();
+        hour = thisTime / (60 * 60);
+        min = (thisTime - hour * 60 * 60) / 60;
+        sec = (thisTime - hour * 60 * 60 - min * 60);
+        if (hour > 0) {
+            build = formatText(build, hour);
+        }
+        build = formatText(build, min);
+        build = formatText(build, sec);
+        build.deleteCharAt(build.length() - 1);
+        return build.toString();
+    }
+
+    private static StringBuilder formatText(StringBuilder build, long t) {
+        if (t < 10) {
+            build.append("0").append(t).append(":");
+        } else {
+            build.append(t).append(":");
+        }
+
+        return build;
+    }
 }

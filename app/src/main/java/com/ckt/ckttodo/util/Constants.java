@@ -36,11 +36,12 @@ public class Constants {
 
     public static final int AHEAD_SCHEDULE_TIME_TEM_MIN = 0;
 
-    public static final int AHEAD_SCHEDULE_TIME_THENTY_MIN = 1 ;
+    public static final int AHEAD_SCHEDULE_TIME_THENTY_MIN = 1;
 
-    public static final int AHEAD_SCHEDULE_TIME_HALF_HOUR = 2 ;
+    public static final int AHEAD_SCHEDULE_TIME_HALF_HOUR = 2;
 
-    public static final int AHEAD_SCHEDULE_TIME_ONE_HOUR = 3 ;
+    public static final int AHEAD_SCHEDULE_TIME_ONE_HOUR = 3;
 
+    public static final String SHARE_NAME_CKT = "com.ckt.ckttodo";
 
 }

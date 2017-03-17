@@ -13,18 +13,21 @@ import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.util.PomodoCubeNotificationUtil;
 import com.ckt.ckttodo.widgt.CircleAlarmTimerView;
 
 /**
  * Created by ckt on 2/20/17.
  */
 
-public class ClockAnimationActivity extends Activity  implements CircleAlarmTimerView.CircleTimerListener{
+public class ClockAnimationActivity extends Activity implements CircleAlarmTimerView.CircleTimerListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private CircleAlarmTimerView mTimer;
     private TextView tvStart;
     private boolean startCount;
+    private PomodoCubeNotificationUtil mPomodo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +37,14 @@ public class ClockAnimationActivity extends Activity  implements CircleAlarmTime
         mTimer.setCircleTimerListener(this);
         tvStart = (TextView) findViewById(R.id.start_tv);
         mTimer.setCurrentTime(0);
+        mPomodo = new PomodoCubeNotificationUtil(this);
         tvStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mTimer.getCurrentTime() == 0){
-                    Toast.makeText(ClockAnimationActivity.this,getResources().getString(R.string.please_set_time),Toast.LENGTH_SHORT).show();
-                }else {
+                if (mTimer.getCurrentTime() == 0) {
+                    Toast.makeText(ClockAnimationActivity.this, getResources().getString(R.string.please_set_time), Toast.LENGTH_SHORT).show();
+                } else {
+                    mPomodo.startPomodoCubeNotification(mTimer.getCurrentTime());
                     mTimer.startTimer();
                     startCount = true;
                     tvStart.setText(getResources().getString(R.string.keep_focused));
@@ -50,7 +55,7 @@ public class ClockAnimationActivity extends Activity  implements CircleAlarmTime
         mTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (startCount){
+                if (startCount) {
                     new AlertDialog.Builder(ClockAnimationActivity.this).setMessage(getResources().getString(R.string.Abandon_Pomo)).setPositiveButton(getResources().getString(R.string.sure), new DialogInterface.OnClickListener() {
 
                         @Override
@@ -86,7 +91,6 @@ public class ClockAnimationActivity extends Activity  implements CircleAlarmTime
     }
 
 
-
     @Override
     public void onTimerStop() {
 
@@ -112,7 +116,7 @@ public class ClockAnimationActivity extends Activity  implements CircleAlarmTime
 
     @Override
     public void onTimerOver() {
-        if (!ClockAnimationActivity.this.isFinishing()){
+        if (!ClockAnimationActivity.this.isFinishing()) {
             new AlertDialog.Builder(this).setMessage(getResources().getString(R.string.Pomo_Finish)).setPositiveButton(getResources().getString(R.string.sure), new DialogInterface.OnClickListener() {
 
                 @Override
@@ -124,5 +128,13 @@ public class ClockAnimationActivity extends Activity  implements CircleAlarmTime
                 }
             }).show();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        if (mTimer.getCurrentTime() > 0) {
+            mPomodo.startPomodoCubeNotification(mTimer.getCurrentTime());
+        }
+        super.onStop();
     }
 }

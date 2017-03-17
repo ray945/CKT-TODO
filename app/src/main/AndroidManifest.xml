@@ -65,8 +65,9 @@
 
         <service
             android:name=".service.PomodoCubeService"
-            android:singleUser="true"
             android:exported="true"
+            android:singleUser="true"
+            android:enabled="true"
             android:process=":remote" />
 
     </application>
