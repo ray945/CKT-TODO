@@ -66,7 +66,7 @@ public class VoiceView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mMaxRadius = Math.min(w, h) / 2;
+        mMaxRadius = Math.min(w, h) / 6;
     }
 
     @Override
@@ -140,7 +140,7 @@ public class VoiceView extends View {
         invalidate();
     }
 
-    @Override
+/*    @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()){
             case MotionEvent.ACTION_DOWN:
@@ -153,7 +153,7 @@ public class VoiceView extends View {
             default:
                 return super.onTouchEvent(event);
         }
-    }
+    }*/
 
     public void setOnRecordListener(OnRecordListener onRecordListener) {
         mOnRecordListener = onRecordListener;

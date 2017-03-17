@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initUI() {
-        mDialog = new VoiceInputDialog(this, R.style.VoiceInputDialog, this);
+        mDialog = new VoiceInputDialog(this,this);
         mActivityMainBinding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
         Toolbar toolbar = mActivityMainBinding.appBarMain.toolbar;
         toolbar.setTitle(R.string.app_name);
