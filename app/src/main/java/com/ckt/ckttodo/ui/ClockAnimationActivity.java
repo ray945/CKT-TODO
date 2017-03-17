@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.transition.Explode;
 import android.transition.Transition;
 import android.util.Log;
@@ -11,10 +12,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ckt.ckttodo.IPomodoAidlInterface;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.service.PomodoCubeService;
 import com.ckt.ckttodo.util.PomodoCubeNotificationUtil;
 import com.ckt.ckttodo.widgt.CircleAlarmTimerView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by ckt on 2/20/17.
@@ -31,6 +38,7 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         setContentView(R.layout.activity_clockanimation);
         setupWindowAnimations();
         mTimer = (CircleAlarmTimerView) findViewById(R.id.ctv);
@@ -44,8 +52,8 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
                 if (mTimer.getCurrentTime() == 0) {
                     Toast.makeText(ClockAnimationActivity.this, getResources().getString(R.string.please_set_time), Toast.LENGTH_SHORT).show();
                 } else {
-                    mPomodo.startPomodoCubeNotification(mTimer.getCurrentTime());
                     mTimer.startTimer();
+                    mPomodo.startPomodoCubeNotification(mTimer.getCurrentTime());
                     startCount = true;
                     tvStart.setText(getResources().getString(R.string.keep_focused));
                 }
@@ -61,6 +69,8 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // 点击“确认”后的操作
+                            Log.d("MOZRE", "onClick: Post");
+                            EventBus.getDefault().post(false);
                             mTimer.setState(false);
                             tvStart.setText(getResources().getString(R.string.start));
                             finish();
@@ -75,6 +85,15 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
                 }
             }
         });
+
+//          TODO
+//        PomodoCubeService.MyBinder binder = (PomodoCubeService.MyBinder) getIntent().getSerializableExtra(PomodoCubeService.PASS_BINDER);
+//        if (binder != null) {
+//            Toast.makeText(this, "BIDDDD++++++++++++++++++++++++" + binder.getTime(), Toast.LENGTH_SHORT).show();
+//
+//        }
+
+
     }
 
 
@@ -90,6 +109,12 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
         return enterTransition;
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
     @Override
     public void onTimerStop() {
@@ -130,11 +155,8 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
         }
     }
 
-    @Override
-    protected void onStop() {
-        if (mTimer.getCurrentTime() > 0) {
-            mPomodo.startPomodoCubeNotification(mTimer.getCurrentTime());
-        }
-        super.onStop();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onServiceFrom(String str) {
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
 }

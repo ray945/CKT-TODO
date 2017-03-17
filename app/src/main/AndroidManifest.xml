@@ -68,8 +68,8 @@
             android:exported="true"
             android:singleUser="true"
             android:enabled="true"
-            android:process=":remote" />
-
+            />
+        <!--android:process=":remote"-->
     </application>
 
 </manifest>

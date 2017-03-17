@@ -4,24 +4,25 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.databinding.repacked.google.common.eventbus.EventBus;
+import android.os.Binder;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.EventTask;
+import com.ckt.ckttodo.IPomodoAidlInterface;
 import com.ckt.ckttodo.ui.ClockAnimationActivity;
 import com.ckt.ckttodo.util.Constants;
-import com.ckt.ckttodo.util.PomodoCubeNotificationUtil;
 import com.ckt.ckttodo.util.TranserverUtil;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.Serializable;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,6 +40,7 @@ public class PomodoCubeService extends Service {
     private static final int NOTIFICATION_ID = 1220;
     private static final int POMODO_CUBE_TO_ACTIVITY_REQUEST_CODE = 30;
     public static final String PASS_SECONDS = "Pass_seconds";
+    public static final String PASS_BINDER = "pass_binder";
     private NotificationManager mNotificationManager;
     private Timer mTimer;
     private NotificationCompat.Builder builder;
@@ -46,12 +48,14 @@ public class PomodoCubeService extends Service {
     private Notification mNotification;
     private SharedPreferences mSharedPreferences;
     private int seconds;
-    private boolean mStop = false;
+    private MyBinder mMyBinder;
+
+
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("MOZRE", "onCreate: ");
+        EventBus.getDefault().register(this);
         initTask();
     }
 
@@ -59,34 +63,36 @@ public class PomodoCubeService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         if (intent != null) {
-            Log.d("MOZRE", "onStartCommand: " + intent);
             seconds = intent.getIntExtra(PASS_SECONDS, 0);
         } else {
-            Log.d("MOZRE", "onStartCommand: Share");
             seconds = mSharedPreferences.getInt(PASS_SECONDS, 0);
         }
-        Log.d("MOZRE", "onStartCommand: " + seconds);
         startPomodoCubeNotification(seconds);
+//        EventBus.getDefault().post("AAAAAAAAAAAAAAAAAAAAAAAAA");
         return super.onStartCommand(intent, flags, startId);
     }
 
+
     @Override
     public void onDestroy() {
-        Log.d("MOZRE", "onDestroy: " + seconds);
         super.onDestroy();
+        EventBus.getDefault().register(this);
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+
+        return mMyBinder;
     }
 
     private void initTask() {
+        mMyBinder = new MyBinder();
         mTimer = new Timer();
-        mSharedPreferences = getBaseContext().getSharedPreferences(Constants.SHARE_NAME_CKT,MODE_PRIVATE);
+        mSharedPreferences = getBaseContext().getSharedPreferences(Constants.SHARE_NAME_CKT, MODE_PRIVATE);
         mNotificationManager = (NotificationManager) getBaseContext().getSystemService(NOTIFICATION_SERVICE);
         Intent intent = new Intent(getBaseContext(), ClockAnimationActivity.class);
+        intent.putExtra(PASS_BINDER,mMyBinder);
         PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), POMODO_CUBE_TO_ACTIVITY_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder = new NotificationCompat.Builder(getBaseContext());
         builder.setContentIntent(pendingIntent)
@@ -113,29 +119,19 @@ public class PomodoCubeService extends Service {
             @Override
             public void run() {
 
-//                Log.d("MOZRE", "run: ");
-                if (!mStop) {
-                    Log.d("MOZRE", "run: start");
-                    builder.setContentText(TranserverUtil.formatTime(countSeconds));
+                builder.setContentText(TranserverUtil.formatTime(countSeconds));
+                mNotification = builder.build();
+                mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+                if (countSeconds == 0) {
+                    builder.setContentText(POMODO_BELONG)
+                            .setContentTitle(POMODO_FINISH);
                     mNotification = builder.build();
                     mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-                    if (countSeconds == 0) {
-                        builder.setContentText(POMODO_BELONG)
-                                .setContentTitle(POMODO_FINISH);
-                        mNotification = builder.build();
-                        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-                        cancel();
-                    }
-                    --countSeconds;
-                    mSharedPreferences.edit().putInt(PASS_SECONDS, countSeconds).commit();
-
-                } else {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    cancel();
                 }
+                --countSeconds;
+                mSharedPreferences.edit().putInt(PASS_SECONDS, countSeconds).commit();
+
             }
 
         };
@@ -143,9 +139,24 @@ public class PomodoCubeService extends Service {
 
     }
 
-//    @Subscribe
-//    private void setStop(boolean stop) {
-//        mStop = stop;
-//    }
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void setStop(boolean flag) {
+        Log.d("MOZRE", "setStop: ");
+        if (!flag)
+            mTimer.cancel();
+    }
+
+
+    public class MyBinder extends Binder implements Serializable{
+
+
+        public int getTime(){
+            return seconds;
+        }
+
+        public MyBinder() {
+            super();
+        }
+    }
 
 }
