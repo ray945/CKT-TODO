@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.transition.Explode;
 import android.transition.Transition;
 import android.util.Log;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.service.PomodoCubeService;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.PomodoCubeNotificationUtil;
@@ -91,7 +89,7 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
             }
         });
 
-        PomodoCubeService.MyBinder binder = (PomodoCubeService.MyBinder) getIntent().getSerializableExtra(PomodoCubeService.PASS_BINDER);
+        PomodoCubeService.PomodoBinder binder = (PomodoCubeService.PomodoBinder) getIntent().getSerializableExtra(PomodoCubeService.PASS_BINDER);
         if (binder != null) {
             mTimer.setCurrentTime(binder.getTime());
             mTimer.setmCurrentRadian(binder.getRadian());

@@ -4,11 +4,12 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class PomodoCubeService extends Service {
     private static final String POMODO_BELONG = "将时间指定到任务";
     private static final String POMODO_FINISH = "完成一个番茄时钟";
 
+    private static final String GET_POMODO_RUN_TIME_ACTION = "com.ckt.ckttodo.get_pomodo_run_time_action";
     private static final int NOTIFICATION_ID = 1220;
     private static final int POMODO_CUBE_TO_ACTIVITY_REQUEST_CODE = 30;
     public static final String PASS_SECONDS = "Pass_seconds";
@@ -50,7 +52,7 @@ public class PomodoCubeService extends Service {
     private SharedPreferences mSharedPreferences;
     private int seconds;
     private float radians;
-    private MyBinder mMyBinder;
+    private PomodoBinder mPomodoBinder;
 
 
 
@@ -87,16 +89,16 @@ public class PomodoCubeService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
 
-        return mMyBinder;
+        return mPomodoBinder;
     }
 
     private void initTask() {
-        mMyBinder = new MyBinder();
+        mPomodoBinder = new PomodoBinder();
         mTimer = new Timer();
         mSharedPreferences = getBaseContext().getSharedPreferences(Constants.SHARE_NAME_CKT, MODE_PRIVATE);
         mNotificationManager = (NotificationManager) getBaseContext().getSystemService(NOTIFICATION_SERVICE);
         Intent intent = new Intent(getBaseContext(), ClockAnimationActivity.class);
-        intent.putExtra(PASS_BINDER,mMyBinder);
+        intent.putExtra(PASS_BINDER, mPomodoBinder);
         PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), POMODO_CUBE_TO_ACTIVITY_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder = new NotificationCompat.Builder(getBaseContext());
         builder.setContentIntent(pendingIntent)
@@ -156,7 +158,7 @@ public class PomodoCubeService extends Service {
     }
 
 
-    public class MyBinder extends Binder implements Serializable{
+    public class PomodoBinder extends Binder implements Serializable{
 
 
         public int getTime(){
@@ -167,8 +169,17 @@ public class PomodoCubeService extends Service {
             return radians;
         }
 
-        public MyBinder() {
+        public PomodoBinder() {
             super();
+        }
+    }
+
+    public class PomodoBroadcastReceiver extends BroadcastReceiver{
+
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+//            EventBus.getDefault().post();
         }
     }
 
