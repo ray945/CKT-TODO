@@ -3,6 +3,7 @@ package com.ckt.ckttodo.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.transition.Explode;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
+import com.ckt.ckttodo.database.ActTime;
 import com.ckt.ckttodo.service.PomodoCubeService;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.PomodoCubeNotificationUtil;
@@ -35,6 +37,11 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
     private PomodoCubeNotificationUtil mPomodo;
     private SharedPreferences mSharedPreferences;
     public static final String TOTAL_TIME = "TOTAL_TIME";
+    private static final String GET_POMODO_RUN_TIME_ACTION = "com.ckt.ckttodo.get_pomodo_run_time_action";
+    public static final String SERVICE_IS_RUNNING = "service_is_running";
+    private boolean isServiceRunning;
+    private int serviceTimes;
+    private PomodoCubeService.PomodoBinder binder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +49,14 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
         EventBus.getDefault().register(this);
         setContentView(R.layout.activity_clockanimation);
         setupWindowAnimations();
-        mSharedPreferences = getBaseContext().getSharedPreferences(Constants.SHARE_NAME_CKT, MODE_PRIVATE);
-        mTimer = (CircleAlarmTimerView) findViewById(R.id.ctv);
-        mTimer.setCircleTimerListener(this);
-        tvStart = (TextView) findViewById(R.id.start_tv);
-        mTimer.setCurrentTime(0);
+        initUi();
         mPomodo = new PomodoCubeNotificationUtil(this);
+        binder = (PomodoCubeService.PomodoBinder) getIntent().getSerializableExtra(PomodoCubeService.PASS_BINDER);
+        ClockAnimationActivity.this.sendBroadcast(new Intent().setAction(GET_POMODO_RUN_TIME_ACTION));
+        mSharedPreferences = getBaseContext().getSharedPreferences(Constants.SHARE_NAME_CKT, MODE_PRIVATE);
+        isServiceRunning = mSharedPreferences.getBoolean(SERVICE_IS_RUNNING, false);
+        mTimer.setCircleTimerListener(this);
+        mTimer.setCurrentTime(0);
         tvStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +72,7 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
             }
         });
 
+        //时钟点击事件
         mTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,9 +81,9 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            // 点击“确认”后的操作
-                            Log.d("MOZRE", "onClick: Post");
+                            // 点击“确认”后的操作,放弃番茄，关闭service
                             EventBus.getDefault().post(false);
+                            stopService(new Intent(ClockAnimationActivity.this,PomodoCubeService.class));
                             mTimer.setState(false);
                             tvStart.setText(getResources().getString(R.string.start));
                             finish();
@@ -89,16 +99,11 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
             }
         });
 
-        PomodoCubeService.PomodoBinder binder = (PomodoCubeService.PomodoBinder) getIntent().getSerializableExtra(PomodoCubeService.PASS_BINDER);
-        if (binder != null) {
-            mTimer.setCurrentTime(binder.getTime());
-            mTimer.setmCurrentRadian(binder.getRadian());
-            mTimer.setRecordTime(mSharedPreferences.getInt(TOTAL_TIME,0));
-            mTimer.startTimer();
-            tvStart.setText(getResources().getString(R.string.keep_focused));
-        }
+    }
 
-
+    private void initUi(){
+        tvStart = (TextView) findViewById(R.id.start_tv);
+        mTimer = (CircleAlarmTimerView) findViewById(R.id.ctv);
     }
 
 
@@ -161,7 +166,31 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onServiceFrom(String str) {
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+    public void getTime(ActTime actTime) {
+        this.serviceTimes = actTime.getSeconds();
+        if (isServiceRunning){
+            //点击通知栏进来，且时间小于0
+            if (serviceTimes <= 0) {
+                mTimer.setCurrentTime(0);
+                mTimer.setmCurrentRadian((float) (2 * Math.PI));
+                tvStart.setText(getResources().getString(R.string.start));
+            }else if (binder != null) {
+                //点击通知栏进来，且时间大于0
+                Log.d(TAG, "getTime: time is:" + binder.getTime());
+                mTimer.setCurrentTime(binder.getTime());
+                mTimer.setmCurrentRadian(binder.getRadian());
+                mTimer.setRecordTime(mSharedPreferences.getInt(TOTAL_TIME,0));
+                mTimer.startTimer();
+                tvStart.setText(getResources().getString(R.string.keep_focused));
+            } else if (serviceTimes > 0) {
+                //点击侧边栏番茄时钟直接进来
+                mTimer.setCurrentTime(serviceTimes);
+                mTimer.setmCurrentRadian(actTime.getRadians());
+                mTimer.setRecordTime(mSharedPreferences.getInt(TOTAL_TIME,0));
+                mTimer.startTimer();
+                tvStart.setText(getResources().getString(R.string.keep_focused));
+            }
+
+        }
     }
 }

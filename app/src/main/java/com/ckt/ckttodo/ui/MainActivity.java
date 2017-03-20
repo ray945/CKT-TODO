@@ -461,6 +461,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transitionTo(new Intent(this, FinishedTaskActivity.class));
                 break;
             case R.id.nav_timer:
+                transitionTo(new Intent(this,ClockAnimationActivity.class));
                 break;
             case R.id.nav_count:
                 transitionTo(new Intent(this, ChartActivity.class));

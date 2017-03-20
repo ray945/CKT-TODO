@@ -21,8 +21,6 @@ import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.TranserverUtil;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.Serializable;
 import java.util.Timer;
@@ -63,7 +61,6 @@ public class PomodoCubeService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        EventBus.getDefault().register(this);
         initTask();
     }
 
@@ -87,7 +84,8 @@ public class PomodoCubeService extends Service {
         super.onDestroy();
         mSharedPreferences.edit().putBoolean(IS_FIRST_INIT,true).apply();
         mSharedPreferences.edit().putBoolean(SERVICE_IS_RUNNING,false).apply();
-        EventBus.getDefault().register(this);
+        mTimer.cancel();
+        mNotificationManager.cancel(NOTIFICATION_ID);
     }
 
     @Nullable

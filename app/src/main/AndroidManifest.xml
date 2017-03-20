@@ -45,6 +45,7 @@
         <activity android:name=".ui.FinishedTaskActivity" />
         <activity
             android:name=".ui.ClockAnimationActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.VoiceActivity" />
 
@@ -69,12 +70,6 @@
             android:singleUser="true"
             android:enabled="true"
             />
-        <!--android:process=":remote"-->
-        <!--<receiver android:name=".service.PomodoCubeService$PomodoBroadcastReceiver">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.ckt.ckttodo.get_pomodo_run_time_action"/>-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
     </application>
 
 </manifest>
