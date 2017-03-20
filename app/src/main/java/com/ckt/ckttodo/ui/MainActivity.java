@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -137,7 +138,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mFragmentList = new ArrayList<>();
         mConnectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         initUI();
-        setupWindowAnimations();
+        if (Build.VERSION.SDK_INT >= 21) {
+            setupWindowAnimations();
+        }
         initNotification(this);
         initPermission();
     }

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.transition.Explode;
 import android.transition.Transition;
@@ -48,7 +49,9 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         setContentView(R.layout.activity_clockanimation);
-        setupWindowAnimations();
+        if (Build.VERSION.SDK_INT >= 21){
+            setupWindowAnimations();
+        }
         initUi();
         mPomodo = new PomodoCubeNotificationUtil(this);
         binder = (PomodoCubeService.PomodoBinder) getIntent().getSerializableExtra(PomodoCubeService.PASS_BINDER);

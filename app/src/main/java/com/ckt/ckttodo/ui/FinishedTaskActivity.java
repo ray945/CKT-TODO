@@ -1,6 +1,7 @@
 package com.ckt.ckttodo.ui;
 
 import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,7 +56,9 @@ public class FinishedTaskActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupWindowAnimations();
+        if (Build.VERSION.SDK_INT >= 21){
+            setupWindowAnimations();
+        }
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setTitle(getResources().getString(R.string.task_history));

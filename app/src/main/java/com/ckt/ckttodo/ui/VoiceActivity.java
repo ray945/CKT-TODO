@@ -1,6 +1,7 @@
 package com.ckt.ckttodo.ui;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
@@ -32,7 +33,9 @@ public class VoiceActivity extends AppCompatActivity implements VoiceView.OnReco
         mVoiceInput = new VoiceInputUtil(this);
         mVoiceInput.setOnVoiceChangeListener(this);
         mVoiceView.startRecording();
-        setupWindowAnimations();
+        if (Build.VERSION.SDK_INT >= 21){
+            setupWindowAnimations();
+        }
     }
 
     private void setupWindowAnimations() {

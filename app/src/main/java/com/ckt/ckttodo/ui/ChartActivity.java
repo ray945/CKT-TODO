@@ -1,6 +1,7 @@
 package com.ckt.ckttodo.ui;
 
 import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -25,7 +26,9 @@ public class ChartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        setupWindowAnimations();
+        if (Build.VERSION.SDK_INT >= 21){
+            setupWindowAnimations();
+        }
     }
 
 
