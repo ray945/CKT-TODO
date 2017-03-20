@@ -50,4 +50,11 @@
     <style name="dialog" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/textColorWhite</item>
+        <item name="android:textColorPrimary">#CCCCCC</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
 </resources>

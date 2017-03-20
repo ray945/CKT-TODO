@@ -467,10 +467,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transitionTo(new Intent(this, ChartActivity.class));
                 break;
             case R.id.nav_team:
-
+                transitionTo(new Intent(this,LoginActivity.class));
                 break;
             case R.id.nav_settings:
-
                 break;
             case R.id.nav_about:
                 transitionTo(new Intent(this, AboutActivity.class));

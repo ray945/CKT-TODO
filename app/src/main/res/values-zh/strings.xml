@@ -145,5 +145,22 @@
     <string name="author">made by CK-Telecom</string>
     <string name="version">v0.1 Beta</string>
     <string name="sliding">>>>滑动解锁>>></string>
-    
+    <string name="login_email">邮箱</string>
+    <string name="login_password">密码</string>
+    <string name="new_account_sign_up">新用户注册</string>
+    <string name="please_input_email">请输入一个有效的电子邮件地址</string>
+    <string name="please_input_password">请输入密码</string>
+    <string name="login_failed">登陆失败</string>
+    <string name="landing">正在登陆</string>
+    <string name="existing_account">已有账号? 去登陆</string>
+    <string name="create_account">创建账户</string>
+    <string name="re_enter_password">再输一次密码</string>
+    <string name="mobile_number">手机号码</string>
+    <string name="name">姓名</string>
+    <string name="enter_valid_mobile_number">请输入有效的手机号码</string>
+    <string name="password_do_not_match">密码不匹配</string>
+    <string name="at_least_3_characters">至少三个字符</string>
+    <string name="signup_failed">注册失败</string>
+    <string name="registering">正在注册</string>
+
 </resources>
