@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
@@ -14,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.ckt.ckttodo.database.ActTime;
 import com.ckt.ckttodo.ui.ClockAnimationActivity;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.TranserverUtil;
@@ -44,6 +46,8 @@ public class PomodoCubeService extends Service {
     public static final String PASS_RADIAN = "Pass_radian";
     public static final String PASS_BINDER = "pass_binder";
     public static final String TOTAL_TIME = "TOTAL_TIME";
+    public static final String IS_FIRST_INIT = "is_first_init";
+    public static final String SERVICE_IS_RUNNING = "service_is_running";
     private NotificationManager mNotificationManager;
     private Timer mTimer;
     private NotificationCompat.Builder builder;
@@ -53,7 +57,7 @@ public class PomodoCubeService extends Service {
     private int seconds;
     private float radians;
     private PomodoBinder mPomodoBinder;
-
+    private PomodoBroadcastReceiver mReceiver;
 
 
     @Override
@@ -73,7 +77,7 @@ public class PomodoCubeService extends Service {
             seconds = mSharedPreferences.getInt(PASS_SECONDS, 0);
             radians = mSharedPreferences.getFloat(PASS_RADIAN, 0);
         }
-        startPomodoCubeNotification(seconds,radians);
+        startPomodoCubeNotification(seconds, radians);
 //        EventBus.getDefault().post("AAAAAAAAAAAAAAAAAAAAAAAAA");
         return super.onStartCommand(intent, flags, startId);
     }
@@ -82,6 +86,8 @@ public class PomodoCubeService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mSharedPreferences.edit().putBoolean(IS_FIRST_INIT,false).apply();
+        mSharedPreferences.edit().putBoolean(SERVICE_IS_RUNNING,false).apply();
         EventBus.getDefault().register(this);
     }
 
@@ -93,9 +99,17 @@ public class PomodoCubeService extends Service {
     }
 
     private void initTask() {
+        mSharedPreferences = getBaseContext().getSharedPreferences(Constants.SHARE_NAME_CKT, MODE_PRIVATE);
+        if (mSharedPreferences.getBoolean(IS_FIRST_INIT, false)) {
+            mSharedPreferences.edit().putBoolean(IS_FIRST_INIT, true).apply();
+            mSharedPreferences.edit().putBoolean(SERVICE_IS_RUNNING, true).apply();
+            mReceiver = new PomodoBroadcastReceiver();
+            registerReceiver(mReceiver, new IntentFilter(GET_POMODO_RUN_TIME_ACTION));
+        }
+
+
         mPomodoBinder = new PomodoBinder();
         mTimer = new Timer();
-        mSharedPreferences = getBaseContext().getSharedPreferences(Constants.SHARE_NAME_CKT, MODE_PRIVATE);
         mNotificationManager = (NotificationManager) getBaseContext().getSystemService(NOTIFICATION_SERVICE);
         Intent intent = new Intent(getBaseContext(), ClockAnimationActivity.class);
         intent.putExtra(PASS_BINDER, mPomodoBinder);
@@ -112,7 +126,7 @@ public class PomodoCubeService extends Service {
 //        mNotification.flags = Notification.FLAG_ONGOING_EVENT;
     }
 
-    public void startPomodoCubeNotification(final Integer second,final Float radian) {
+    public void startPomodoCubeNotification(final Integer second, final Float radian) {
 
         if (second <= 0) {
             return;
@@ -137,11 +151,11 @@ public class PomodoCubeService extends Service {
                     cancel();
                 }
                 --countSeconds;
-                countRadian -= (2 * Math.PI) / mSharedPreferences.getInt(TOTAL_TIME,0);
+                countRadian -= (2 * Math.PI) / mSharedPreferences.getInt(TOTAL_TIME, 0);
                 seconds = countSeconds;
                 radians = countRadian;
-                mSharedPreferences.edit().putInt(PASS_SECONDS, countSeconds).commit();
-                mSharedPreferences.edit().putFloat(PASS_RADIAN, countRadian).commit();
+                mSharedPreferences.edit().putInt(PASS_SECONDS, countSeconds).apply();
+                mSharedPreferences.edit().putFloat(PASS_RADIAN, countRadian).apply();
 
             }
 
@@ -158,14 +172,14 @@ public class PomodoCubeService extends Service {
     }
 
 
-    public class PomodoBinder extends Binder implements Serializable{
+    public class PomodoBinder extends Binder implements Serializable {
 
 
-        public int getTime(){
+        public int getTime() {
             return seconds;
         }
 
-        public float getRadian(){
+        public float getRadian() {
             return radians;
         }
 
@@ -174,12 +188,15 @@ public class PomodoCubeService extends Service {
         }
     }
 
-    public class PomodoBroadcastReceiver extends BroadcastReceiver{
+    public class PomodoBroadcastReceiver extends BroadcastReceiver {
 
+
+        public PomodoBroadcastReceiver() {
+        }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-//            EventBus.getDefault().post();
+            EventBus.getDefault().post(new ActTime(seconds, radians));
         }
     }
 
