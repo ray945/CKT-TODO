@@ -3,6 +3,7 @@ package com.ckt.ckttodo.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.transition.Explode;
@@ -12,10 +13,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ckt.ckttodo.IPomodoAidlInterface;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.service.PomodoCubeService;
+import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.PomodoCubeNotificationUtil;
 import com.ckt.ckttodo.widgt.CircleAlarmTimerView;
 
@@ -34,6 +35,8 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
     private TextView tvStart;
     private boolean startCount;
     private PomodoCubeNotificationUtil mPomodo;
+    private SharedPreferences mSharedPreferences;
+    public static final String TOTAL_TIME = "TOTAL_TIME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
         EventBus.getDefault().register(this);
         setContentView(R.layout.activity_clockanimation);
         setupWindowAnimations();
+        mSharedPreferences = getBaseContext().getSharedPreferences(Constants.SHARE_NAME_CKT, MODE_PRIVATE);
         mTimer = (CircleAlarmTimerView) findViewById(R.id.ctv);
         mTimer.setCircleTimerListener(this);
         tvStart = (TextView) findViewById(R.id.start_tv);
@@ -53,7 +57,8 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
                     Toast.makeText(ClockAnimationActivity.this, getResources().getString(R.string.please_set_time), Toast.LENGTH_SHORT).show();
                 } else {
                     mTimer.startTimer();
-                    mPomodo.startPomodoCubeNotification(mTimer.getCurrentTime());
+                    mSharedPreferences.edit().putInt(TOTAL_TIME, mTimer.getCurrentTime()).commit();
+                    mPomodo.startPomodoCubeNotification(mTimer.getCurrentTime(),mTimer.getmCurrentRadian());
                     startCount = true;
                     tvStart.setText(getResources().getString(R.string.keep_focused));
                 }
@@ -86,12 +91,14 @@ public class ClockAnimationActivity extends Activity implements CircleAlarmTimer
             }
         });
 
-//          TODO
-//        PomodoCubeService.MyBinder binder = (PomodoCubeService.MyBinder) getIntent().getSerializableExtra(PomodoCubeService.PASS_BINDER);
-//        if (binder != null) {
-//            Toast.makeText(this, "BIDDDD++++++++++++++++++++++++" + binder.getTime(), Toast.LENGTH_SHORT).show();
-//
-//        }
+        PomodoCubeService.MyBinder binder = (PomodoCubeService.MyBinder) getIntent().getSerializableExtra(PomodoCubeService.PASS_BINDER);
+        if (binder != null) {
+            mTimer.setCurrentTime(binder.getTime());
+            mTimer.setmCurrentRadian(binder.getRadian());
+            mTimer.setRecordTime(mSharedPreferences.getInt(TOTAL_TIME,0));
+            mTimer.startTimer();
+            tvStart.setText(getResources().getString(R.string.keep_focused));
+        }
 
 
     }

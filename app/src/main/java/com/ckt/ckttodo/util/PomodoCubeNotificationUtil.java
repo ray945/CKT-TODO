@@ -19,11 +19,12 @@ public class PomodoCubeNotificationUtil {
     }
 
 
-    public void startPomodoCubeNotification(int seconds) {
+    public void startPomodoCubeNotification(int seconds,float radian) {
 
 
         Intent intentService = new Intent(mContext, PomodoCubeService.class);
         intentService.putExtra(PomodoCubeService.PASS_SECONDS, seconds);
+        intentService.putExtra(PomodoCubeService.PASS_RADIAN, radian);
         mContext.startService(intentService);
 
     }

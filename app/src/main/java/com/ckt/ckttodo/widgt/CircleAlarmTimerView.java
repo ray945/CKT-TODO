@@ -70,6 +70,15 @@ public class CircleAlarmTimerView extends View {
     private float mCx;
     private float mCy;
     private float mRadius;
+
+    public float getmCurrentRadian() {
+        return mCurrentRadian;
+    }
+
+    public void setmCurrentRadian(float mCurrentRadian) {
+        this.mCurrentRadian = mCurrentRadian;
+    }
+
     private float mCurrentRadian;
     private int mCurrentTime; // seconds
     private int mRecordTime;
