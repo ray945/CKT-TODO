@@ -78,7 +78,6 @@ public class PomodoCubeService extends Service {
             radians = mSharedPreferences.getFloat(PASS_RADIAN, 0);
         }
         startPomodoCubeNotification(seconds, radians);
-//        EventBus.getDefault().post("AAAAAAAAAAAAAAAAAAAAAAAAA");
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -86,7 +85,7 @@ public class PomodoCubeService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mSharedPreferences.edit().putBoolean(IS_FIRST_INIT,false).apply();
+        mSharedPreferences.edit().putBoolean(IS_FIRST_INIT,true).apply();
         mSharedPreferences.edit().putBoolean(SERVICE_IS_RUNNING,false).apply();
         EventBus.getDefault().register(this);
     }
@@ -100,13 +99,12 @@ public class PomodoCubeService extends Service {
 
     private void initTask() {
         mSharedPreferences = getBaseContext().getSharedPreferences(Constants.SHARE_NAME_CKT, MODE_PRIVATE);
-        if (mSharedPreferences.getBoolean(IS_FIRST_INIT, false)) {
-            mSharedPreferences.edit().putBoolean(IS_FIRST_INIT, true).apply();
+        if (mSharedPreferences.getBoolean(IS_FIRST_INIT, true)) {
+            mSharedPreferences.edit().putBoolean(IS_FIRST_INIT, false).apply();
             mSharedPreferences.edit().putBoolean(SERVICE_IS_RUNNING, true).apply();
-            mReceiver = new PomodoBroadcastReceiver();
-            registerReceiver(mReceiver, new IntentFilter(GET_POMODO_RUN_TIME_ACTION));
         }
-
+        mReceiver = new PomodoBroadcastReceiver();
+        registerReceiver(mReceiver, new IntentFilter(GET_POMODO_RUN_TIME_ACTION));
 
         mPomodoBinder = new PomodoBinder();
         mTimer = new Timer();
@@ -162,13 +160,6 @@ public class PomodoCubeService extends Service {
         };
         mTimer.schedule(mTimerTask, 0, 1000);
 
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void setStop(boolean flag) {
-        Log.d("MOZRE", "setStop: ");
-        if (!flag)
-            mTimer.cancel();
     }
 
 
