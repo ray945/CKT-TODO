@@ -239,7 +239,9 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
                 if (position + 1 == mUnFinishedTasks.size()) {
                     holder.tv_down.setVisibility(View.INVISIBLE);
                 }
-
+                if(mUnFinishedTasks.size()>5 && position==4){
+                    holder.tv_down.setVisibility(View.INVISIBLE);
+                }
             }
             holder.setData(eventTaskList.get(position));
         }
