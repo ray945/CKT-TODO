@@ -61,6 +61,7 @@
             android:id="@+id/link_sign_up"
             android:layout_width="match_parent"
             android:padding="10dp"
+            android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:textSize="16sp"

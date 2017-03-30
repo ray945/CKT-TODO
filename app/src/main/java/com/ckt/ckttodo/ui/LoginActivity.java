@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,9 +14,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.ckt.ckttodo.R;
+import com.ckt.ckttodo.util.GitHubService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
- *
  * Created by zhiwei.li on 2017/3/17.
  */
 
@@ -26,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginBtn;
 
     private static final int REQUEST_SIGNUP = 1;
+
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,18 +51,18 @@ public class LoginActivity extends AppCompatActivity {
 
         signUpLink.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this,SignUpActivity.class);
-                startActivityForResult(intent,REQUEST_SIGNUP);
+                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                startActivityForResult(intent, REQUEST_SIGNUP);
                 finish();
-                overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
     }
 
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP){
-            if (resultCode == RESULT_OK){
+        if (requestCode == REQUEST_SIGNUP) {
+            if (resultCode == RESULT_OK) {
 
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
@@ -86,8 +93,26 @@ public class LoginActivity extends AppCompatActivity {
             @Override public void run() {
                 onLoginSuccess();
                 progressDialog.dismiss();
+
+                // network test
+                Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://api.github.com/")
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .build();
+
+                GitHubService service = retrofit.create(GitHubService.class);
+                service.listRepos("octocat").enqueue(new Callback<String>() {
+                    @Override public void onResponse(Call<String> call, Response<String> response) {
+                        Log.e("Network", response.body());
+                    }
+
+
+                    @Override public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
             }
-        },3000);
+        }, 3000);
 
     }
 

@@ -105,6 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:padding="10dp"
+            android:textColor="@color/colorPrimary"
             android:text="@string/existing_account"
             android:gravity="center"
             android:textSize="16sp"/>

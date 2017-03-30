@@ -83,78 +83,6 @@ public class ChartManager {
 
 
     /**
-     * 计划进度和实际进度展示
-     *
-     * @param xValues x坐标为 周/月/季度/年 y坐标为时间
-     * @param lineName1 计划进度
-     * @param lineName2 实际进度
-     */
-    public static void initDoubleLineChart(LineChart mLineChart, final String[] xValues,
-                                           String lineName1, ArrayList<Entry> yValue1,
-                                           String lineName2, ArrayList<Entry> yValue2) {
-        float lineWidth = 4;
-        //设置是否支持触控缩放操作
-        mLineChart.setTouchEnabled(false);
-        mLineChart.setScaleEnabled(false);
-
-        //设置描述文字
-        mLineChart.setDescription(null);
-
-        //设置X轴样式
-        XAxis xAxis = mLineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setAxisLineWidth(lineWidth);
-        xAxis.setAxisLineColor(ColorTemplate.getHoloBlue());
-        xAxis.setDrawGridLines(false);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return xValues[(int) value];
-            }
-        });
-
-        //设置左边Y轴样式
-        YAxis yAxisLeft = mLineChart.getAxisLeft();
-        yAxisLeft.setAxisLineWidth(lineWidth);
-        yAxisLeft.setAxisLineColor(ColorTemplate.getHoloBlue());
-        yAxisLeft.setAxisMinimum(0f);
-        yAxisLeft.setDrawGridLines(false);
-        yAxisLeft.setEnabled(false);
-
-        //设置右边Y轴样式
-        YAxis yAxisRight = mLineChart.getAxisRight();
-        yAxisRight.setEnabled(false);
-
-        LineDataSet dataSet1 = new LineDataSet(yValue1, lineName1);
-        lineDataSetInit(dataSet1, ColorTemplate.getHoloBlue());
-        LineDataSet dataSet2 = new LineDataSet(yValue2, lineName2);
-        lineDataSetInit(dataSet2, Color.RED);
-
-        //构建一个类型为LineDataSet的ArrayList 用来存放所有y的LineDataSet,他是构建最终加入LineChart数据集所需要的参数
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(dataSet1);
-        dataSets.add(dataSet2);
-
-        //构建一个LineData  将dataSets放入
-        LineData lineData = new LineData(dataSets);
-        mLineChart.setData(lineData);
-
-        //设置动画效果
-        //        mLineChart.animateXY(2000, 2000);
-        mLineChart.invalidate();
-    }
-
-
-    private static void lineDataSetInit(LineDataSet dataSet, int color) {
-        dataSet.setColor(color);
-        dataSet.setCircleColor(color);
-        dataSet.setValueTextColor(color);
-        dataSet.setLineWidth(2);
-        dataSet.setDrawValues(true);
-    }
-
-
-    /**
      * 周 展示 当天的时间分配情况
      * 月 展示 本周的时间分配情况
      * 季度 展示 本月的时间分配情况
@@ -215,12 +143,6 @@ public class ChartManager {
     }
 
 
-    public static void initBarChart(BarChart barChart) {
-        barChart.setDrawBarShadow(false);
-        barChart.setDrawValueAboveBar(true);
-    }
-
-
     public static void initCombinedChart(CombinedChart chart, int FLAG, float[] workTimes, float[] studyTimes, float[] liveTimes, float[] restTimes, String[] kinds) {
 
         // draw bars behind lines
@@ -238,11 +160,11 @@ public class ChartManager {
         for (int i = 0; i < 3; i++) {
             LegendEntry legendEntry = new LegendEntry();
             legendEntry.label = kinds[i];
-            if (i == 0){
+            if (i == 0) {
                 legendEntry.formColor = COLOR_WORK;
-            }else if (i == 1){
+            } else if (i == 1) {
                 legendEntry.formColor = COLOR_STUDY;
-            }else if (i == 2){
+            } else if (i == 2) {
                 legendEntry.formColor = COLOR_LIVE;
             }
             legendEntry.form = Legend.LegendForm.SQUARE;
