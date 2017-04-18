@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +14,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.ckt.ckttodo.R;
+import com.ckt.ckttodo.util.NetworkService;
 import org.w3c.dom.Text;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by zhiwei.li on 2017/3/20.
@@ -89,6 +96,27 @@ public class SignUpActivity extends AppCompatActivity {
             @Override public void run() {
                 onSignUpSuccess();
                 progressDialog.dismiss();
+
+                Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://10.120.3.191:8080/")
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .build();
+
+                NetworkService service = retrofit.create(NetworkService.class);
+                service.register("test_name","test_pwd","test@email.com","6","6").enqueue(new Callback<String>() {
+                    @Override public void onResponse(Call<String> call, Response<String> response) {
+                        Log.e("Network",response.body());
+                        if ("true".equals(response.body())){
+                            Toast.makeText(SignUpActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+
+                    @Override public void onFailure(Call<String> call, Throwable t) {
+
+                    }
+                });
+
             }
         },3000);
     }
@@ -124,7 +152,7 @@ public class SignUpActivity extends AppCompatActivity {
         String passwordText = et_password.getText().toString().trim();
         String reEnterPasswordText = et_reEnterPassword.getText().toString().trim();
 
-        if (nameText.isEmpty() || nameText.length() < 3) {
+        if (nameText.isEmpty() || nameText.length() < 2) {
             et_name.setError(getString(R.string.at_least_3_characters));
             valid = false;
         } else {

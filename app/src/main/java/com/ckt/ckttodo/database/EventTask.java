@@ -86,6 +86,8 @@ public class EventTask extends RealmObject {
 
     private Plan plan;
 
+    private UserInfo userInfo;
+
     public int getTopNumber() {
         return topNumber;
     }
@@ -214,5 +216,11 @@ public class EventTask extends RealmObject {
         this.planId = planId;
     }
 
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
 
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
 }

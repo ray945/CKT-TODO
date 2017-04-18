@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.util.GitHubService;
+import com.ckt.ckttodo.util.NetworkService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,6 +22,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
+ *
  * Created by zhiwei.li on 2017/3/17.
  */
 
@@ -96,14 +97,17 @@ public class LoginActivity extends AppCompatActivity {
 
                 // network test
                 Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://api.github.com/")
+                    .baseUrl("http://10.120.3.191:8080/")
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .build();
 
-                GitHubService service = retrofit.create(GitHubService.class);
-                service.listRepos("octocat").enqueue(new Callback<String>() {
+                NetworkService service = retrofit.create(NetworkService.class);
+                service.login("1","1").enqueue(new Callback<String>() {
                     @Override public void onResponse(Call<String> call, Response<String> response) {
                         Log.e("Network", response.body());
+                        if ("true".equals(response.body())){
+                            Toast.makeText(LoginActivity.this,"登陆成功",Toast.LENGTH_SHORT).show();
+                        }
                     }
 
 

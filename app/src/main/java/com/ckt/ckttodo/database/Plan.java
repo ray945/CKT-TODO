@@ -30,7 +30,7 @@ public class Plan extends RealmObject {
     //计划描述
     private String planContent;
     //计划创建人id
-    private String userId;
+    private UserInfo userInfo;
     //计划创建时间
     private long createTime;
     //计划最新更新时间
@@ -102,14 +102,6 @@ public class Plan extends RealmObject {
         this.planName = planName;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public long getCreateTime() {
         return createTime;
     }
@@ -164,5 +156,13 @@ public class Plan extends RealmObject {
 
     public void setEventTasks(RealmList<EventTask> eventTasks) {
         this.eventTasks = eventTasks;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

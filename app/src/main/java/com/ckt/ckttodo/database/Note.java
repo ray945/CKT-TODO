@@ -21,7 +21,7 @@ public class Note extends RealmObject implements Serializable {
     //便签更新时间
     private long noteUpdateTime;
     //便签创建人
-    private String userId;
+    private UserInfo userInfo;
 
     public String getNoteId() {
         return noteId;
@@ -63,11 +63,11 @@ public class Note extends RealmObject implements Serializable {
         this.noteUpdateTime = noteUpdateTime;
     }
 
-    public String getUserId() {
-        return userId;
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

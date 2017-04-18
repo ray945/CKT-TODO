@@ -35,7 +35,6 @@ public class InitDataBase {
             project.setProjectTitle(context.getResources().getString(R.string.init_project_name));
             project.setProjectSummary(
                 context.getResources().getString(R.string.init_project_summary));
-            project.setUserId(NOT_USER_ID);
             project.setCreateTime(time);
             project.setEndTime(time);
             project.setLastUpdateTime(time);
@@ -60,7 +59,6 @@ public class InitDataBase {
                                 context.getResources().getString(R.string.init_plan_name));
                             plan.setPlanContent(
                                 context.getResources().getString(R.string.init_plan_content));
-                            plan.setUserId(NOT_USER_ID);
                             plan.setCreateTime(time);
                             plan.setStartTime(time);
                             plan.setEndTime(time);
@@ -181,7 +179,6 @@ public class InitDataBase {
         note.setNoteContent(context.getResources().getString(R.string.init_note_content));
         note.setNoteCreateTime(time);
         note.setNoteUpdateTime(time);
-        note.setUserId(NOT_USER_ID);
         DatebaseHelper.getInstance(context).insert(note);
     }
 }

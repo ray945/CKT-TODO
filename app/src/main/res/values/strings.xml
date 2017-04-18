@@ -194,7 +194,7 @@
     <string name="name">姓名</string>
     <string name="enter_valid_mobile_number">请输入有效的手机号码</string>
     <string name="password_do_not_match">密码不匹配</string>
-    <string name="at_least_3_characters">至少三个字符</string>
+    <string name="at_least_3_characters">至少两个个字符</string>
     <string name="signup_failed">注册失败</string>
     <string name="registering">正在注册</string>
 </resources>
