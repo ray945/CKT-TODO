@@ -197,4 +197,6 @@
     <string name="at_least_3_characters">至少两个个字符</string>
     <string name="signup_failed">注册失败</string>
     <string name="registering">正在注册</string>
+    <string name="please_input_message">请输入内容</string>
+    <string name="create">创建</string>
 </resources>
