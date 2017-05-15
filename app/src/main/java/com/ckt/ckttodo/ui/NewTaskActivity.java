@@ -48,7 +48,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     private Spinner mSpinnerTaskLevel;
     private Spinner mSpinnerTaskRemind;
     private Spinner mSpinnerTaskPlan;
-    private AutoCompleteTextView mAutoCompleteTextViewTaskPlan;
+//    private AutoCompleteTextView mAutoCompleteTextViewTaskPlan;
     //    private EditText mTextViewTaskPlan;
 //    private LinearLayout mLinearLayoutInput;
     private LinearLayout mLinearLayoutScheduleTime;
@@ -137,12 +137,12 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-        mAutoCompleteTextViewTaskPlan = mActivityNewTaskBinding.newTextPlan;
-        mAutoCompleteTextViewTaskPlan.setDropDownHeight(700);
-        mAutoCompleteTextViewTaskPlan.setThreshold(1);
+//        mAutoCompleteTextViewTaskPlan = mActivityNewTaskBinding.newTextPlan;
+//        mAutoCompleteTextViewTaskPlan.setDropDownHeight(700);
+//        mAutoCompleteTextViewTaskPlan.setThreshold(1);
 
 
-        mAutoCompleteTextViewTaskPlan.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArrayPlans));
+//        mAutoCompleteTextViewTaskPlan.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArrayPlans));
 //        mTextViewTaskPlan = mActivityNewTaskBinding.newTextShowPlan;
 
         mSpinnerTaskPlan = mActivityNewTaskBinding.newSpinnerShowPlan;

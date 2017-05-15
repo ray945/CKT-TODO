@@ -63,7 +63,13 @@
         <activity android:name=".ui.TaskDetailActivity" />
         <activity android:name=".ui.NewPlanActivity" />
         <activity android:name=".ui.PlanDetailActivity" />
-        <activity android:name=".ui.LoginActivity" android:label="@string/login"/>
+        <activity android:name=".ui.LoginActivity" android:label="@string/login">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
         <activity android:name=".ui.SignUpActivity" android:label="@string/new_account_sign_up"/>
 
         <service

@@ -19,29 +19,29 @@
         android:background="@android:color/white"
         tools:context="com.ckt.ckttodo.ui.NewTaskActivity">
 
-        <LinearLayout
-            android:id="@+id/linear_input_plan"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:orientation="vertical"
-            android:visibility="gone">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/linear_input_plan"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@android:color/white"-->
+            <!--android:orientation="vertical"-->
+            <!--android:visibility="gone">-->
 
-            <AutoCompleteTextView
-                android:id="@+id/new_text_plan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_marginTop="1dp"
-                android:background="@drawable/edit_text_input_bg"
-                android:hint="@string/plan"
-                android:paddingBottom="10dp"
-                android:paddingEnd="5dp"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
-                android:textSize="18sp" />
-        </LinearLayout>
+            <!--<AutoCompleteTextView-->
+                <!--android:id="@+id/new_text_plan"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="1dp"-->
+                <!--android:layout_marginRight="1dp"-->
+                <!--android:layout_marginTop="1dp"-->
+                <!--android:background="@drawable/edit_text_input_bg"-->
+                <!--android:hint="@string/plan"-->
+                <!--android:paddingBottom="10dp"-->
+                <!--android:paddingEnd="5dp"-->
+                <!--android:paddingStart="10dp"-->
+                <!--android:paddingTop="10dp"-->
+                <!--android:textSize="18sp" />-->
+        <!--</LinearLayout>-->
 
         <ScrollView
             android:id="@+id/task_list_container"
@@ -169,7 +169,6 @@
                     android:id="@+id/new_linear_schedule_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ripple_bg"
                     android:clickable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -206,7 +205,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ripple_bg"
                     android:clickable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
