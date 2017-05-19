@@ -1,70 +1,79 @@
 package com.ckt.ckttodo.database;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class UserInfo extends RealmObject{
 
-    private String userName;
-    private String userId;
-    private String userIcon;
-    private String userEmail;
-    private String phone;
-    private long createTime;
-    private int role;
+    @PrimaryKey
+    private Integer mem_id;
 
-    public String getUserName() {
-        return userName;
+    private String mem_name;
+
+    private String mem_password;
+
+    private String mem_phone_num;
+
+    private Integer mem_level;
+
+    private String mem_email;
+
+    private String mem_icon;
+
+
+    public Integer getMem_id() {
+        return mem_id;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setMem_id(Integer mem_id) {
+        this.mem_id = mem_id;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getMem_name() {
+        return mem_name;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setMem_name(String mem_name) {
+        this.mem_name = mem_name;
     }
 
-    public String getUserIcon() {
-        return userIcon;
+    public String getMem_password() {
+        return mem_password;
     }
 
-    public void setUserIcon(String userIcon) {
-        this.userIcon = userIcon;
+    public void setMem_password(String mem_password) {
+        this.mem_password = mem_password;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public String getMem_phone_num() {
+        return mem_phone_num;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setMem_phone_num(String mem_phone_num) {
+        this.mem_phone_num = mem_phone_num;
     }
 
-    public String getPhone() {
-        return phone;
+    public Integer getMem_level() {
+        return mem_level;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setMem_level(Integer mem_level) {
+        this.mem_level = mem_level;
     }
 
-    public long getCreateTime() {
-        return createTime;
+    public String getMem_email() {
+        return mem_email;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
+    public void setMem_email(String mem_email) {
+        this.mem_email = mem_email;
     }
 
-    public int getRole() {
-        return role;
+    public String getMem_icon() {
+        return mem_icon;
     }
 
-    public void setRole(int role) {
-        this.role = role;
+    public void setMem_icon(String mem_icon) {
+        this.mem_icon = mem_icon;
     }
 }

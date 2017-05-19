@@ -44,5 +44,6 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.8.0'
     compile 'io.reactivex:rxandroid:1.2.0'
     compile 'io.reactivex:rxjava:1.1.5'
+    compile 'com.alibaba:fastjson:1.1.57.android'
     testCompile 'junit:junit:4.12'
 }
