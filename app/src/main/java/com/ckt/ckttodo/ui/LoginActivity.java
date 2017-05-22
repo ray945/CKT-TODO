@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        loginStatus();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -76,6 +77,14 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
         });
     }
 
+    private void loginStatus() {
+        User user = new User(this);
+        if (user.getmIsLogin()) {
+            onLoginSuccess();
+        }
+
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -101,6 +110,7 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
                 R.style.AppTheme_Dark_Dialog);
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage(getString(R.string.landing));
+        mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.show();
 
         String emailText = et_account.getText().toString().trim();
@@ -132,8 +142,6 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
 
 
     private void onLoginSuccess() {
-        loginBtn.setEnabled(true);
-        mProgressDialog.dismiss();
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
@@ -184,6 +192,8 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
                 String data = json.getString(BeanConstant.DATA);
                 UserInfo info = JSON.parseObject(data, UserInfo.class);
                 User user = new User(this, info);
+                user.setmToken(json.getString(BeanConstant.TOKEN));
+                mProgressDialog.dismiss();
                 onLoginSuccess();
                 break;
 
@@ -198,8 +208,8 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
 
     @Override
     public void replyNetworkErr() {
-
-        Toast.makeText(this, "Network Error!", Toast.LENGTH_SHORT).show();
+        mProgressDialog.dismiss();
+        Toast.makeText(this, getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
 
     }
 }

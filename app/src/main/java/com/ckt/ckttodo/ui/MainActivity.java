@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -47,6 +46,10 @@ import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
+import com.ckt.ckttodo.network.BeanConstant;
+import com.ckt.ckttodo.network.HTTPConstants;
+import com.ckt.ckttodo.network.HTTPHelper;
+import com.ckt.ckttodo.network.HTTPService;
 import com.ckt.ckttodo.util.CircularAnimUtil;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.NotificationBroadcastReceiver;
@@ -61,20 +64,23 @@ import com.vincent.filepicker.activity.NormalFilePickActivity;
 import com.vincent.filepicker.filter.entity.NormalFile;
 
 import io.realm.RealmResults;
+import okhttp3.Request;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback,
-        VoiceInputDialog.VoiceInputFinishedListener, ProjectFragment.NotifyTask {
+        VoiceInputDialog.VoiceInputFinishedListener, ProjectFragment.NotifyTask,BaseView {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
     public static final String SHARE_PREFERENCES_NAME = "com.ckt.ckttodo";
@@ -152,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         boolean isFirstTime = preferences.getBoolean(IS_FIRST_CHECK_PERMISSION, true);
         if (isFirstTime) {
             getTheVoiceInput();
-            preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
+            preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).apply();
         }
 
     }
@@ -186,9 +192,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         User user = new User(this);
         //侧滑栏 用户名相关展示
         TextView textViewUsername = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_userName);
-        textViewUsername.setText(user.getMem_name());
+        textViewUsername.setText(user.getmName());
         TextView textViewEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_userEmail);
-        textViewEmail.setText(user.getMem_email());
+        textViewEmail.setText(user.getmEmail());
         //TODO UserICON
 
 
@@ -490,13 +496,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transitionTo(new Intent(this, AboutActivity.class));
                 break;
             case R.id.nav_logout:
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
+                doLogout();
                 break;
         }
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void doLogout() {
+        User user = new User(this);
+        user.setmIsLogin(false);
+        startActivity(new Intent(this, LoginActivity.class));
+        Map<String,String> map = new HashMap<>();
+        map.put(BeanConstant.EMAIL,user.getmEmail());
+        map.put(BeanConstant.TOKEN,user.getmToken());
+        Request request = HTTPHelper.getGetRequest(map, HTTPConstants.PATH_LOGINOUT);
+        HTTPService.getHTTPService().doHTTPRequest(request,this);
+        finish();
+    }
+
+    @Override
+    public void replyRequestResult(String strJson) {
+        //登出没有回包
+    }
+
+    @Override
+    public void replyNetworkErr() {
+        Toast.makeText(this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
     }
 
     private void showToast(String text) {

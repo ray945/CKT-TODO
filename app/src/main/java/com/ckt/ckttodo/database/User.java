@@ -6,128 +6,151 @@ import android.content.SharedPreferences;
 import com.ckt.ckttodo.util.Constants;
 
 /**
- * Created by ckt on 5/18/17.
+ * Created by mozre on 5/18/17.
  */
 
 public class User {
 
 
-    private static final String MEM_ID = "mem_id";
-    private static final String MEM_NAME = "mem_name";
-    private static final String MEM_PASSWORD = "mem_password";
-    private static final String MEM_PHONE_NUM = "mem_phone_num";
-    private static final String MEM_LEVEL = "mem_level";
-    private static final String MEM_EMAIL = "mem_email";
-    private static final String MEM_ICON = "mem_icon";
+    public static final String MEM_STATUS = "mStatus";
 
-    private Integer mem_id;
+    private static final String MEM_ID = "mID";
+    private static final String MEM_NAME = "mName";
+    private static final String MEM_PHONE_NUM = "mPhoneNum";
+    private static final String MEM_LEVEL = "mLevel";
+    private static final String MEM_EMAIL = "mEmail";
+    private static final String MEM_ICON = "mIcon";
+    private static final String MEM_TOKEN = "mToken";
 
-    private String mem_name;
-
-
-    private String mem_phone_num;
-
-    private Integer mem_level;
-
-    private String mem_email;
-
-    private String mem_icon;
-
+    private Integer mID;
+    private String mName;
+    private String mPhoneNum;
+    private Integer mLevel;
+    private String mEmail;
+    private String mIcon;
+    private Boolean mIsLogin;
+    private String mToken;
     private SharedPreferences mSharedPreferences;
 
 
     public User(Context context) {
-        mSharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT,Context.MODE_PRIVATE);
+        mSharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
     }
 
     public User(Context context, UserInfo info) {
         mSharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
-        setMem_id(info.getMem_id());
-        setMem_email(info.getMem_email());
-        setMem_icon(info.getMem_icon());
-        setMem_level(info.getMem_level());
-        setMem_name(info.getMem_name());
-        setMem_phone_num(info.getMem_phone_num());
+        setmID(info.getMem_id());
+        setmEmail(info.getMem_email());
+        setmIcon(info.getMem_icon());
+        setmLevel(info.getMem_level());
+        setmName(info.getMem_name());
+        setmPhoneNum(info.getMem_phone_num());
+        setmIsLogin(true);
     }
 
-    public Integer getMem_id() {
-        if (this.mem_id == null) {
-            this.mem_id = mSharedPreferences.getInt(MEM_ID, 0);
+    public Integer getmID() {
+        if (this.mID == null) {
+            this.mID = mSharedPreferences.getInt(MEM_ID, 0);
         }
-        return mem_id;
+        return mID;
     }
 
-    public void setMem_id(Integer mem_id) {
-        if (mSharedPreferences.edit().putInt(MEM_ID, mem_id).commit()) {
-            this.mem_id = mem_id;
-        }
-    }
-
-    public String getMem_name() {
-        if (this.mem_name == null) {
-            this.mem_name = mSharedPreferences.getString(MEM_NAME, "");
-        }
-        return mem_name;
-
-    }
-
-    public void setMem_name(String mem_name) {
-        if (mSharedPreferences.edit().putString(MEM_NAME, mem_name).commit()) {
-            this.mem_name = mem_name;
+    public void setmID(Integer mID) {
+        if (mSharedPreferences.edit().putInt(MEM_ID, mID).commit()) {
+            this.mID = mID;
         }
     }
 
-    public String getMem_phone_num() {
-        if (this.mem_phone_num == null) {
-            this.mem_phone_num = mSharedPreferences.getString(MEM_PHONE_NUM, "");
+    public String getmName() {
+        if (this.mName == null) {
+            this.mName = mSharedPreferences.getString(MEM_NAME, "");
         }
-        return mem_phone_num;
-    }
-
-    public void setMem_phone_num(String mem_phone_num) {
-        if (mSharedPreferences.edit().putString(MEM_PHONE_NUM, mem_phone_num).commit()) {
-            this.mem_phone_num = mem_phone_num;
-        }
-    }
-
-    public Integer getMem_level() {
-        if (this.mem_level == null) {
-            this.mem_level = mSharedPreferences.getInt(MEM_LEVEL, 0);
-        }
-        return mem_level;
+        return mName;
 
     }
 
-    public void setMem_level(Integer mem_level) {
-        if (mSharedPreferences.edit().putInt(MEM_LEVEL, mem_level).commit()) {
-            this.mem_level = mem_level;
+    public void setmName(String mName) {
+        if (mSharedPreferences.edit().putString(MEM_NAME, mName).commit()) {
+            this.mName = mName;
         }
     }
 
-    public String getMem_email() {
-        if (this.mem_email == null) {
-            this.mem_email = mSharedPreferences.getString(MEM_EMAIL, "");
+    public String getmPhoneNum() {
+        if (this.mPhoneNum == null) {
+            this.mPhoneNum = mSharedPreferences.getString(MEM_PHONE_NUM, "");
         }
-        return mem_email;
+        return mPhoneNum;
     }
 
-    public void setMem_email(String mem_email) {
-        if (mSharedPreferences.edit().putString(MEM_EMAIL, mem_email).commit()) {
-            this.mem_email = mem_email;
-        }
-    }
-
-    public String getMem_icon() {
-        if (this.mem_icon == null) {
-            this.mem_icon = mSharedPreferences.getString(MEM_ICON, "");
-        }
-        return mem_icon;
-    }
-
-    public void setMem_icon(String mem_icon) {
-        if (mSharedPreferences.edit().putString(MEM_ICON, mem_icon).commit()) {
-            this.mem_icon = mem_icon;
+    public void setmPhoneNum(String mPhoneNum) {
+        if (mSharedPreferences.edit().putString(MEM_PHONE_NUM, mPhoneNum).commit()) {
+            this.mPhoneNum = mPhoneNum;
         }
     }
 
+    public Integer getmLevel() {
+        if (this.mLevel == null) {
+            this.mLevel = mSharedPreferences.getInt(MEM_LEVEL, 0);
+        }
+        return mLevel;
+
+    }
+
+    public void setmLevel(Integer mLevel) {
+        if (mSharedPreferences.edit().putInt(MEM_LEVEL, mLevel).commit()) {
+            this.mLevel = mLevel;
+        }
+    }
+
+    public String getmEmail() {
+        if (this.mEmail == null) {
+            this.mEmail = mSharedPreferences.getString(MEM_EMAIL, "");
+        }
+        return mEmail;
+    }
+
+    public void setmEmail(String mEmail) {
+        if (mSharedPreferences.edit().putString(MEM_EMAIL, mEmail).commit()) {
+            this.mEmail = mEmail;
+        }
+    }
+
+    public String getmIcon() {
+        if (this.mIcon == null) {
+            this.mIcon = mSharedPreferences.getString(MEM_ICON, "");
+        }
+        return mIcon;
+    }
+
+    public void setmIcon(String mIcon) {
+        if (mSharedPreferences.edit().putString(MEM_ICON, mIcon).commit()) {
+            this.mIcon = mIcon;
+        }
+    }
+
+    public boolean getmIsLogin() {
+        if (this.mIsLogin == null) {
+            this.mIsLogin = mSharedPreferences.getBoolean(MEM_STATUS, false);
+        }
+        return mIsLogin;
+    }
+
+    public void setmIsLogin(boolean mIsLogin) {
+        if (mSharedPreferences.edit().putBoolean(MEM_STATUS, mIsLogin).commit()) {
+            this.mIsLogin = mIsLogin;
+        }
+    }
+
+    public String getmToken() {
+        if (mToken == null) {
+            this.mToken = mSharedPreferences.getString(MEM_TOKEN, "");
+        }
+        return mToken;
+    }
+
+    public void setmToken(String mToken) {
+        if (mSharedPreferences.edit().putString(MEM_TOKEN, mToken).commit()) {
+            this.mToken = mToken;
+        }
+    }
 }
