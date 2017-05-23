@@ -13,20 +13,36 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.util.NetworkService;
+
 import org.w3c.dom.Text;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import com.ckt.ckttodo.database.UserInfo;
+import com.ckt.ckttodo.network.BeanConstant;
+import com.ckt.ckttodo.network.HTTPConstants;
+import com.ckt.ckttodo.network.HTTPHelper;
+import com.ckt.ckttodo.network.HTTPService;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.Request;
+
 /**
  * Created by zhiwei.li on 2017/3/20.
  */
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity implements BaseView {
 
     private EditText et_name;
     private EditText et_email;
@@ -55,13 +71,15 @@ public class SignUpActivity extends AppCompatActivity {
         TextView loginLink = (TextView) findViewById(R.id.link_login);
 
         signUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 signUp();
             }
         });
 
         loginLink.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
                 Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -78,9 +96,8 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        signUpBtn.setEnabled(false);
         final ProgressDialog progressDialog = new ProgressDialog(SignUpActivity.this,
-            R.style.AppTheme_Dark_Dialog);
+                R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.registering));
         progressDialog.show();
@@ -91,50 +108,88 @@ public class SignUpActivity extends AppCompatActivity {
         String passwordText = et_password.getText().toString().trim();
         String reEnterPasswordText = et_reEnterPassword.getText().toString().trim();
 
+        UserInfo info = new UserInfo();
+        info.setMem_name(nameText);
+        info.setMem_email(emailText);
+        info.setMem_phone_num(mobileNumberText);
+        info.setMem_password(passwordText);
+        JSONObject object = new JSONObject();
+        object.put(BeanConstant.USER, info);
+        Map<String, String> map = new HashMap<>();
+        map.put(BeanConstant.DATA, object.toJSONString());
+        Request request = HTTPHelper.getPostRequest(map, HTTPConstants.PATH_SIGNUP);
+        HTTPService.getHTTPService().doHTTPRequest(request, this);
+
         // Authenticating
-        new android.os.Handler().postDelayed(new Runnable() {
-            @Override public void run() {
-                onSignUpSuccess();
-                progressDialog.dismiss();
-
-                Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://10.120.3.191:8080/")
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .build();
-
-                NetworkService service = retrofit.create(NetworkService.class);
-                service.register("test_name","test_pwd","test@email.com","6","6").enqueue(new Callback<String>() {
-                    @Override public void onResponse(Call<String> call, Response<String> response) {
-                        Log.e("Network",response.body());
-                        if ("true".equals(response.body())){
-                            Toast.makeText(SignUpActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-
-                    @Override public void onFailure(Call<String> call, Throwable t) {
-
-                    }
-                });
-
-            }
-        },3000);
+//        new android.os.Handler().postDelayed(new Runnable() {
+//            @Override public void run() {
+//                onSignUpSuccess();
+//                progressDialog.dismiss();
+//
+//                Retrofit retrofit = new Retrofit.Builder()
+//                    .baseUrl("http://10.120.3.191:8080/")
+//                    .addConverterFactory(ScalarsConverterFactory.create())
+//                    .build();
+//
+//                NetworkService service = retrofit.create(NetworkService.class);
+//                service.register("test_name","test_pwd","test@email.com","6","6").enqueue(new Callback<String>() {
+//                    @Override public void onResponse(Call<String> call, Response<String> response) {
+//                        Log.e("Network",response.body());
+//                        if ("true".equals(response.body())){
+//                            Toast.makeText(SignUpActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//
+//
+//                    @Override public void onFailure(Call<String> call, Throwable t) {
+//
+//                    }
+//                });
+//
+//            }
+//        },3000);
     }
 
+
+    @Override
+    public void replyRequestResult(String strJson) {
+        JSONObject json = JSON.parseObject(strJson);
+        switch (json.getInteger(BeanConstant.RESULT_CODE)) {
+
+            case BeanConstant.SUCCESS_RESULT_CODE:
+                Toast.makeText(this, getString(R.string.signup_success), Toast.LENGTH_SHORT).show();
+                finish();
+                break;
+            case BeanConstant.SIGNUP_EMAIL_EXSIT_RESULT_CODE:
+                Toast.makeText(this, getString(R.string.signup_email_exist), Toast.LENGTH_SHORT).show();
+                break;
+            case BeanConstant.SIGNUP_PASS_DATA_ERRO_RESULT_CODE:
+                //TODO 系统错误
+
+                 break;
+
+        }
+    }
+
+    @Override
+    public void replyNetworkErr() {
+        Toast.makeText(this, getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+    }
 
     private void onSignUpFailed() {
         Toast.makeText(getBaseContext(), getString(R.string.signup_failed), Toast.LENGTH_SHORT)
-            .show();
+                .show();
         signUpBtn.setEnabled(true);
     }
 
-    private void onSignUpSuccess(){
+    private void onSignUpSuccess() {
         signUpBtn.setEnabled(true);
-        setResult(RESULT_OK,null);
+        setResult(RESULT_OK, null);
         finish();
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
