@@ -14,7 +14,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
+import com.ckt.ckttodo.database.User;
+import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.network.BeanConstant;
 import com.ckt.ckttodo.network.HTTPConstants;
 import com.ckt.ckttodo.network.HTTPHelper;
@@ -43,6 +47,7 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
     private EditText et_account;
     private EditText et_password;
     private Button loginBtn;
+    private ProgressDialog mProgressDialog;
 
     private static final int REQUEST_SIGNUP = 1;
 
@@ -97,18 +102,18 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
         }
 
         loginBtn.setEnabled(false);
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+        mProgressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage(getString(R.string.landing));
-        progressDialog.show();
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setMessage(getString(R.string.landing));
+        mProgressDialog.show();
 
         String emailText = et_account.getText().toString().trim();
         String passwordText = et_password.getText().toString().trim();
 
         // do network request
-        Map< String, String > map = new HashMap<>();
-        map.put(BeanConstant.USERNAME, emailText);
+        Map<String, String> map = new HashMap<>();
+        map.put(BeanConstant.EMAIL, emailText);
         map.put(BeanConstant.PASSWORD, passwordText);
         Request request = HTTPHelper.getGetRequest(map, HTTPConstants.PATH_LOGIN);
         HTTPService.getHTTPService().doHTTPRequest(request, this);
@@ -147,13 +152,14 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
 
 
     private void onLoginFailed() {
-        Toast.makeText(getBaseContext(), R.string.login_failed, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getBaseContext(), R.string.login_failed, Toast.LENGTH_SHORT).show();
         loginBtn.setEnabled(true);
     }
 
 
     private void onLoginSuccess() {
         loginBtn.setEnabled(true);
+        mProgressDialog.dismiss();
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
@@ -164,12 +170,12 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
 
         String emailText = et_account.getText().toString().trim();
         String passwordText = et_password.getText().toString().trim();
-//        if (emailText.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
-//            et_account.setError(getString(R.string.please_input_email));
-//            valid = false;
-//        } else {
-//            et_account.setError(null);
-//        }
+        if (emailText.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
+            et_account.setError(getString(R.string.please_input_email));
+            valid = false;
+        } else {
+            et_account.setError(null);
+        }
 
         if (passwordText.isEmpty()) {
             et_password.setError(getString(R.string.please_input_password));
@@ -196,8 +202,24 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
     @Override
     public void replyRequestResult(String strJson) {
 
-        Log.d(TAG, "replyRequestResult: " + strJson);
-        Toast.makeText(this, "Successful!", Toast.LENGTH_SHORT).show();
+        JSONObject json = JSON.parseObject(strJson);
+
+        switch (json.getInteger(BeanConstant.RESULT_CODE)) {
+
+            case BeanConstant.SUCCESS_RESULT_CODE:
+                String data = json.getString(BeanConstant.DATA);
+                UserInfo info = JSON.parseObject(data, UserInfo.class);
+                User user = new User(this, info);
+                onLoginSuccess();
+                break;
+
+            case BeanConstant.LOGIN_FAIL_RESULT_CODE:
+                mProgressDialog.dismiss();
+                Toast.makeText(this, getString(R.string.login_fail), Toast.LENGTH_SHORT).show();
+                break;
+
+        }
+
     }
 
     @Override

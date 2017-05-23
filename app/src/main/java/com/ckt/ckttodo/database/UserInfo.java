@@ -1,121 +1,79 @@
 package com.ckt.ckttodo.database;
 
-import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class UserInfo extends RealmObject{
 
     @PrimaryKey
-    private String userId;
-    private String userName;
-    private String userIcon;
-    private String userEmail;
-    private int userLevel;
-    private String phoneNumber;
-    private long createTime;
-    private int role;
+    private Integer mem_id;
 
-    private String token;
-    private long tokenCreateTime;
+    private String mem_name;
 
-    private Team team;
+    private String mem_password;
 
-    private RealmList<Project> projects;
+    private String mem_phone_num;
 
-    public String getUserName() {
-        return userName;
+    private Integer mem_level;
+
+    private String mem_email;
+
+    private String mem_icon;
+
+
+    public Integer getMem_id() {
+        return mem_id;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setMem_id(Integer mem_id) {
+        this.mem_id = mem_id;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getMem_name() {
+        return mem_name;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setMem_name(String mem_name) {
+        this.mem_name = mem_name;
     }
 
-    public String getUserIcon() {
-        return userIcon;
+    public String getMem_password() {
+        return mem_password;
     }
 
-    public void setUserIcon(String userIcon) {
-        this.userIcon = userIcon;
+    public void setMem_password(String mem_password) {
+        this.mem_password = mem_password;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public String getMem_phone_num() {
+        return mem_phone_num;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setMem_phone_num(String mem_phone_num) {
+        this.mem_phone_num = mem_phone_num;
     }
 
-    public long getCreateTime() {
-        return createTime;
+    public Integer getMem_level() {
+        return mem_level;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
+    public void setMem_level(Integer mem_level) {
+        this.mem_level = mem_level;
     }
 
-    public int getRole() {
-        return role;
+    public String getMem_email() {
+        return mem_email;
     }
 
-    public void setRole(int role) {
-        this.role = role;
+    public void setMem_email(String mem_email) {
+        this.mem_email = mem_email;
     }
 
-    public int getUserLevel() {
-        return userLevel;
+    public String getMem_icon() {
+        return mem_icon;
     }
 
-    public void setUserLevel(int userLevel) {
-        this.userLevel = userLevel;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public long getTokenCreateTime() {
-        return tokenCreateTime;
-    }
-
-    public void setTokenCreateTime(long tokenCreateTime) {
-        this.tokenCreateTime = tokenCreateTime;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
-    public RealmList<Project> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(RealmList<Project> projects) {
-        this.projects = projects;
+    public void setMem_icon(String mem_icon) {
+        this.mem_icon = mem_icon;
     }
 }

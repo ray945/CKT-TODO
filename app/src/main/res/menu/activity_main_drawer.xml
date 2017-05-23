@@ -37,6 +37,11 @@
             android:icon="@mipmap/nav_about"
             android:checkable="false"
             android:title="@string/about"/>
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@mipmap/nav_about"
+            android:checkable="false"
+            android:title="@string/logout"/>
     </group>
 
 

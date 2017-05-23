@@ -37,6 +37,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
@@ -44,6 +45,7 @@ import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
+import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
 import com.ckt.ckttodo.util.CircularAnimUtil;
 import com.ckt.ckttodo.util.Constants;
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
             if (resultCode == RESULT_OK) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                if (list.size() == 0){
+                if (list.size() == 0) {
                     return;
                 }
                 withResultInsertDatabase(list.get(0).getPath());
@@ -165,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initUI() {
-        mDialog = new VoiceInputDialog(this,this);
+        mDialog = new VoiceInputDialog(this, this);
         mActivityMainBinding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
         Toolbar toolbar = mActivityMainBinding.appBarMain.toolbar;
         toolbar.setTitle(R.string.app_name);
@@ -177,8 +179,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         drawer.setDrawerListener(toggle);
 
+
         NavigationView navigationView = mActivityMainBinding.navView;
         navigationView.setNavigationItemSelectedListener(this);
+
+        User user = new User(this);
+        //侧滑栏 用户名相关展示
+        TextView textViewUsername = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_userName);
+        textViewUsername.setText(user.getMem_name());
+        TextView textViewEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_userEmail);
+        textViewEmail.setText(user.getMem_email());
+        //TODO UserICON
+
 
         final ViewPager viewPager = mActivityMainBinding.appBarMain.contentMain.viewPager;
 
@@ -464,18 +476,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transitionTo(new Intent(this, FinishedTaskActivity.class));
                 break;
             case R.id.nav_timer:
-                transitionTo(new Intent(this,ClockAnimationActivity.class));
+                transitionTo(new Intent(this, ClockAnimationActivity.class));
                 break;
             case R.id.nav_count:
                 transitionTo(new Intent(this, ChartActivity.class));
                 break;
             case R.id.nav_team:
-                transitionTo(new Intent(this,LoginActivity.class));
+                transitionTo(new Intent(this, LoginActivity.class));
                 break;
             case R.id.nav_settings:
                 break;
             case R.id.nav_about:
                 transitionTo(new Intent(this, AboutActivity.class));
+                break;
+            case R.id.nav_logout:
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
                 break;
         }
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
