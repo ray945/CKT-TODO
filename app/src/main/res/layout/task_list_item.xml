@@ -33,10 +33,10 @@
             android:id="@+id/relative_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple_bg"
             android:clickable="true"
             android:longClickable="true"
             android:paddingBottom="10dp"
+            android:background="@color/color_ffffff"
             android:paddingLeft="20dp"
             android:paddingTop="10dp">
 

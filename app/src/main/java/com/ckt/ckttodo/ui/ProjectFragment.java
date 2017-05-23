@@ -40,7 +40,7 @@ public class ProjectFragment extends Fragment {
     private ProjectListAdapter mAdapter;
     private Plan currentPlan;
     private List<EventTask> mTasks;
-
+    private NotifyTask mNotifyTask;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,7 +87,7 @@ public class ProjectFragment extends Fragment {
                                     });
                                 }
                                 DatebaseHelper.getInstance(getContext()).delete(plans.get(i));
-                            } 
+                            }
                             mNotifyTask = (NotifyTask) getActivity();
                             mNotifyTask.notifyTask();
                             mAdapter.flash();
@@ -109,13 +109,17 @@ public class ProjectFragment extends Fragment {
         return binding.getRoot();
     }
 
+    public void notifyDataChange() {
+        mProjectList = DatebaseHelper.getInstance(getContext()).findAll(Project.class);
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         mAdapter.flash();
     }
 
-    NotifyTask mNotifyTask;
 
     public interface NotifyTask {
         void notifyTask();
@@ -159,6 +163,7 @@ public class ProjectFragment extends Fragment {
                 }
             });
         }
+
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {

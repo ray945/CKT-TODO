@@ -13,6 +13,7 @@ import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.print.PrintJob;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -80,7 +81,7 @@ import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback,
-        VoiceInputDialog.VoiceInputFinishedListener, ProjectFragment.NotifyTask,BaseView {
+        VoiceInputDialog.VoiceInputFinishedListener, ProjectFragment.NotifyTask, BaseView {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
     public static final String SHARE_PREFERENCES_NAME = "com.ckt.ckttodo";
@@ -343,6 +344,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     project.setEndTime(date.getTime());
                                     project.setLastUpdateTime(date.getTime());
                                     DatebaseHelper.getInstance(MainActivity.this).insert(project);
+                                    //TODO
+                                    ((ProjectFragment) mFragmentList.get(1)).notifyDataChange();
                                 } else {
                                     showToast(getResources().getString(R.string.plan_not_null));
                                 }
@@ -508,11 +511,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         User user = new User(this);
         user.setmIsLogin(false);
         startActivity(new Intent(this, LoginActivity.class));
-        Map<String,String> map = new HashMap<>();
-        map.put(BeanConstant.EMAIL,user.getmEmail());
-        map.put(BeanConstant.TOKEN,user.getmToken());
+        Map<String, String> map = new HashMap<>();
+        map.put(BeanConstant.EMAIL, user.getmEmail());
+        map.put(BeanConstant.TOKEN, user.getmToken());
         Request request = HTTPHelper.getGetRequest(map, HTTPConstants.PATH_LOGINOUT);
-        HTTPService.getHTTPService().doHTTPRequest(request,this);
+        HTTPService.getHTTPService().doHTTPRequest(request, this);
         finish();
     }
 
