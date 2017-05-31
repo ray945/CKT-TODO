@@ -493,6 +493,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_team:
                 transitionTo(new Intent(this, LoginActivity.class));
                 break;
+            case R.id.nav_project:
+                transitionTo(new Intent(this,ProjectActivity.class));
+                break;
             case R.id.nav_settings:
                 break;
             case R.id.nav_about:

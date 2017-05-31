@@ -47,5 +47,7 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
     compile 'com.squareup.retrofit2:converter-scalars:2.0.0'
     compile 'com.alibaba:fastjson:1.1.57.android'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'me.relex:circleindicator:1.2.2@aar'
     testCompile 'junit:junit:4.12'
 }
