@@ -10,4 +10,6 @@
     <integer name="anim_duration_long">300</integer>
     <dimen name="task_input_list_padding">40dp</dimen>
     <dimen name="card_corner">2dp</dimen>
+    <dimen name="one_and_a_half_grid_unit">12dp</dimen>
+    <dimen name="three_grid_unit">24dp</dimen>
 </resources>

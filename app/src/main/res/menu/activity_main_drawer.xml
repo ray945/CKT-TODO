@@ -28,6 +28,11 @@
             android:checkable="false"
             android:title="@string/team"/>
         <item
+            android:id="@+id/nav_project"
+            android:icon="@mipmap/nav_team"
+            android:checkable="false"
+            android:title="@string/personal_project"/>
+        <item
             android:id="@+id/nav_settings"
             android:icon="@mipmap/nav_settings"
             android:checkable="false"
