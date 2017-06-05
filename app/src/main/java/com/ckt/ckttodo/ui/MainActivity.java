@@ -275,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //                    getTheVoiceInput();
                 //                    preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
                 //                } else {
+                mActivityMainBinding.appBarMain.fam.collapse();
                 if (VoiceInputUtil.isNetAvaliable(mConnectivityManager)) {
 
                     mDialog.show();
@@ -288,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActivityMainBinding.appBarMain.addText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mActivityMainBinding.appBarMain.fam.collapse();
                 startActivityForResult(new Intent(MainActivity.this, NewTaskActivity.class), MAIN_TO_NEW_TASK_CODE);
             }
         });
@@ -295,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActivityMainBinding.appBarMain.addAttach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivityMainBinding.appBarMain.fam.collapse();
                 Intent intent = new Intent(MainActivity.this, NormalFilePickActivity.class);
                 intent.putExtra(Constant.MAX_NUMBER, 1);
                 intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls"});

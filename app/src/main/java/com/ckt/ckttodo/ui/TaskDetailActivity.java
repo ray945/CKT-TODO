@@ -186,7 +186,9 @@ public class TaskDetailActivity extends AppCompatActivity {
 
     private Dialog initDialog(final float update) {
         AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.info))
                 .setMessage(getResources().getString(R.string.remind_save))
+                .setIcon(android.R.drawable.ic_menu_info_details)
                 .setPositiveButton("是", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

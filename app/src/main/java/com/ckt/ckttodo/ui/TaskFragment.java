@@ -1,10 +1,14 @@
 package com.ckt.ckttodo.ui;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -183,7 +188,13 @@ public class TaskFragment extends Fragment {
                 holder.imageButtonStatus.setVisibility(View.INVISIBLE);
                 holder.textViewToTop.setVisibility(View.VISIBLE);
                 if (mShowTasks.get(position).getTopNumber() > 0) {
+                    Drawable drawableTop = getResources().getDrawable(R.drawable.ic_vertical_align_bottom_black_48dp);
                     holder.textViewToTop.setText(getResources().getString(R.string.cancel_top));
+                    holder.textViewToTop.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop, null, null);
+                } else {
+                    Drawable drawableTop = getResources().getDrawable(R.drawable.ic_vertical_align_top_black_48dp);
+                    holder.textViewToTop.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop, null, null);
+                    holder.textViewToTop.setText(getResources().getString(R.string.to_top));
                 }
 
             } else {
@@ -313,8 +324,8 @@ public class TaskFragment extends Fragment {
         mHelper.update(eventTask);
         mShowMenuItem.setShowMenuItem(false);
         isShowCheckBox = false;
-        mAdapter.customDeleteNotifyDataSetChanged();
-
+//        mAdapter.customDeleteNotifyDataSetChanged();
+        notifyData();
     }
 
 
@@ -400,22 +411,37 @@ public class TaskFragment extends Fragment {
      * @param isDelete
      */
 
-    public void finishDeleteAction(boolean isDelete) {
+    public void finishDeleteAction(final boolean isDelete) {
         isShowCheckBox = false;
-        if (isDelete) {
-            List<EventTask> tasks = new ArrayList<>();
-            for (int position : mItemsSelectStatus.keySet()) {
-                if (mItemsSelectStatus.get(position)) {
-                    tasks.add(mShowTasks.get(position));
-                }
-            }
-            for (EventTask task1 : tasks) {
-                mHelper.delete(task1);
-            }
-            mAdapter.customDeleteNotifyDataSetChanged();
-        }
-
-        mAdapter.customNotifyDataSetChanged();
+        new AlertDialog.Builder(getContext())
+                .setTitle(getString(R.string.info))
+                .setMessage(getResources().getString(R.string.notice_delete))
+                .setPositiveButton(getString(R.string.sure), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (isDelete) {
+                            List<EventTask> tasks = new ArrayList<>();
+                            for (int position : mItemsSelectStatus.keySet()) {
+                                if (mItemsSelectStatus.get(position)) {
+                                    tasks.add(mShowTasks.get(position));
+                                }
+                            }
+                            for (EventTask task1 : tasks) {
+                                mHelper.delete(task1);
+                            }
+                            mAdapter.customDeleteNotifyDataSetChanged();
+                        }
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAdapter.customNotifyDataSetChanged();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_menu_info_details)
+                .setCancelable(false)
+                .create().show();
     }
 
     public void finishTaskAction() {

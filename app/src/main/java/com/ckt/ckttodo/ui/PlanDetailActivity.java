@@ -47,17 +47,19 @@ public class PlanDetailActivity extends AppCompatActivity {
     private void getData() {
         Intent intent = getIntent();
         planId = intent.getStringExtra(PLAN_ID);
-        DatebaseHelper.getInstance(PlanDetailActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                plan = DatebaseHelper.getInstance(PlanDetailActivity.this).getRealm().where(Plan.class).equalTo(PLAN_ID, planId).findFirst();
+        if (planId != null) {
+            DatebaseHelper.getInstance(PlanDetailActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    plan = DatebaseHelper.getInstance(PlanDetailActivity.this).getRealm().where(Plan.class).equalTo(PLAN_ID, planId).findFirst();
+                }
+            });
+            calculateProgress(plan.getEventTasks(), planId);
+            if (plan.getPlanContent() == null || plan.getPlanContent().equals("")) {
+                mActivityPlanDetailBinding.tvPlanDescription.setVisibility(View.GONE);
             }
-        });
-        calculateProgress(plan.getEventTasks(), planId);
-        if (plan.getPlanContent().equals("")) {
-            mActivityPlanDetailBinding.tvPlanDescription.setVisibility(View.GONE);
+            mActivityPlanDetailBinding.setPlan(plan);
         }
-        mActivityPlanDetailBinding.setPlan(plan);
         mTasklistAdapter = new TaskListAdapter(this, plan.getEventTasks());
         mTasklistAdapter.setOnItemClickListener(new NoteFragment.NoteAdapter.OnItemClickListener() {
             @Override

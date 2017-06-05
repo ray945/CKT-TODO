@@ -227,7 +227,7 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                 }
             });
             mActivityNewPlanBinding.etPlanTitle.setText(plan.getPlanName());
-            if (!plan.getPlanContent().equals("")) {
+            if (plan.getPlanContent() != null || !plan.getPlanContent().equals("")) {
                 isEmpty = false;
                 mActivityNewPlanBinding.etPlanDescription.setText(plan.getPlanContent());
             } else {
