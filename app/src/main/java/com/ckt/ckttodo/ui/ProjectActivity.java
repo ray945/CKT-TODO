@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -28,6 +29,8 @@ public class ProjectActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getResources().getString(R.string.personal_project));
         ownRecyclerView = (RecyclerView) findViewById(R.id.rv_project_own);
         joinRecyclerView = (RecyclerView) findViewById(R.id.rv_project_join);
         imageButtonAdd = (ImageButton) findViewById(R.id.btn_addProject);
@@ -43,6 +46,19 @@ public class ProjectActivity extends AppCompatActivity {
                 /*start a new project Activity*/
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -62,7 +78,7 @@ public class ProjectActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return 3;
+            return 8;
         }
 
         public class OwnHolder extends RecyclerView.ViewHolder {
@@ -89,7 +105,7 @@ public class ProjectActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return 2;
+            return 8;
         }
 
         public class JoinHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

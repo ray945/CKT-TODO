@@ -2,19 +2,14 @@ package com.ckt.ckttodo.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.widgt.NiceSpinner;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import me.relex.circleindicator.CircleIndicator;
 
 /**
  * Created by hcy on 17-5-25.
@@ -23,8 +18,7 @@ import me.relex.circleindicator.CircleIndicator;
 public class DetailProActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Fragment mFragment;
-    private CircleIndicator mCircleIndicator;
-    private NiceSpinner mNiceSpinner;
+    private TabLayout mTabLayout;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,11 +27,10 @@ public class DetailProActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getResources().getString(R.string.personal_project));
+        mTabLayout = (TabLayout) findViewById(R.id.detail_tab);
         mViewPager = (ViewPager) findViewById(R.id.detail_view_pager);
-        mCircleIndicator = (CircleIndicator) findViewById(R.id.indicator);
-        mNiceSpinner = (NiceSpinner) findViewById(R.id.spinner_sprint);
-        List<String> dataset = new LinkedList<>(Arrays.asList("Sprint1", "Sprint2", "Sprint3", "Sprint4", "Sprint5"));
-        mNiceSpinner.attachDataSource(dataset);
         FragmentPagerAdapter mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -69,6 +62,19 @@ public class DetailProActivity extends AppCompatActivity {
             }
         };
         mViewPager.setAdapter(mFragmentPagerAdapter);
-        mCircleIndicator.setViewPager(mViewPager);
+        mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
