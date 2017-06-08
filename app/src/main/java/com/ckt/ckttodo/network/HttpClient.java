@@ -6,7 +6,7 @@ import okhttp3.OkHttpClient;
  * Created by ckt on 5/16/17.
  */
 
-public class HTTPUtil {
+public class HttpClient {
 
     private volatile static OkHttpClient mClient;
 

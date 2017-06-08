@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,19 +16,10 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.util.NetworkService;
-
-import org.w3c.dom.Text;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.network.BeanConstant;
-import com.ckt.ckttodo.network.HTTPConstants;
+import com.ckt.ckttodo.network.HttpConstants;
 import com.ckt.ckttodo.network.HTTPHelper;
 import com.ckt.ckttodo.network.HTTPService;
 
@@ -117,7 +107,7 @@ public class SignUpActivity extends AppCompatActivity implements BaseView {
         object.put(BeanConstant.USER, info);
         Map<String, String> map = new HashMap<>();
         map.put(BeanConstant.DATA, object.toJSONString());
-        Request request = HTTPHelper.getPostRequest(map, HTTPConstants.PATH_SIGNUP);
+        Request request = HTTPHelper.getPostRequest(map, HttpConstants.PATH_SIGNUP);
         HTTPService.getHTTPService().doHTTPRequest(request, this);
 
         // Authenticating
@@ -163,7 +153,7 @@ public class SignUpActivity extends AppCompatActivity implements BaseView {
             case BeanConstant.SIGNUP_EMAIL_EXSIT_RESULT_CODE:
                 Toast.makeText(this, getString(R.string.signup_email_exist), Toast.LENGTH_SHORT).show();
                 break;
-            case BeanConstant.SIGNUP_PASS_DATA_ERRO_RESULT_CODE:
+            case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
                 //TODO 系统错误
 
                  break;

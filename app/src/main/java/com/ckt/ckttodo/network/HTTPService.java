@@ -46,7 +46,7 @@ public class HTTPService {
                 .create(new rx.Observable.OnSubscribe<String>() {
                     @Override
                     public void call(final Subscriber<? super String> subscriber) {
-                        OkHttpClient client = HTTPUtil.getClient();
+                        OkHttpClient client = HttpClient.getClient();
                         client.newCall(request).enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {

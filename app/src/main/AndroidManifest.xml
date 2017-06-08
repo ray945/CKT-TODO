@@ -24,9 +24,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".ui.NewTaskActivity" />
@@ -63,11 +63,13 @@
         <activity android:name=".ui.NewPlanActivity" />
         <activity android:name=".ui.PlanDetailActivity" />
         <activity android:name=".ui.LoginActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
 
         </activity>
         <activity android:name=".ui.SignUpActivity" />
@@ -79,5 +81,8 @@
             android:enabled="true"
             android:exported="true"
             android:singleUser="true" />
+
+        <activity android:name=".ui.NewProjectActivity"></activity>
     </application>
+
 </manifest>

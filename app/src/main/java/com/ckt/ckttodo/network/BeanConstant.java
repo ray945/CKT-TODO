@@ -16,6 +16,7 @@ public class BeanConstant {
     public static final int SUCCESS_RESULT_CODE = 200;
     public static final int LOGIN_FAIL_RESULT_CODE = 400;
     public static final int SIGNUP_EMAIL_EXSIT_RESULT_CODE = 300;
-    public static final int SIGNUP_PASS_DATA_ERRO_RESULT_CODE = 400;
+    public static final int USER_STATUS_INVALID_ERRO_RESULT_CODE = 300;
+    public static final int PASS_DATA_INVALID_RESULT_CODE = 400;
 
 }

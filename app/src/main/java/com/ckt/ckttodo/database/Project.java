@@ -31,6 +31,13 @@ public class Project extends RealmObject {
 
     private RealmList<UserInfo> userInfos;
 
+    private boolean isSync;
+
+
+    public static final int PROJECT_PRIVATE = 0;
+    public static final int PROJECT_PUBLIC = 1;
+
+
     public String getProjectId() {
         return projectId;
     }
@@ -109,5 +116,13 @@ public class Project extends RealmObject {
 
     public void setUserInfos(RealmList<UserInfo> userInfos) {
         this.userInfos = userInfos;
+    }
+
+    public boolean isSync() {
+        return isSync;
+    }
+
+    public void setSync(boolean sync) {
+        isSync = sync;
     }
 }

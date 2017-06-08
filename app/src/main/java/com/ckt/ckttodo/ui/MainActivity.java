@@ -13,7 +13,6 @@ import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.print.PrintJob;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -48,7 +47,7 @@ import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
 import com.ckt.ckttodo.network.BeanConstant;
-import com.ckt.ckttodo.network.HTTPConstants;
+import com.ckt.ckttodo.network.HttpConstants;
 import com.ckt.ckttodo.network.HTTPHelper;
 import com.ckt.ckttodo.network.HTTPService;
 import com.ckt.ckttodo.util.CircularAnimUtil;
@@ -520,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Map<String, String> map = new HashMap<>();
         map.put(BeanConstant.EMAIL, user.getmEmail());
         map.put(BeanConstant.TOKEN, user.getmToken());
-        Request request = HTTPHelper.getGetRequest(map, HTTPConstants.PATH_LOGINOUT);
+        Request request = HTTPHelper.getGetRequest(map, HttpConstants.PATH_LOGINOUT);
         HTTPService.getHTTPService().doHTTPRequest(request, this);
         finish();
     }

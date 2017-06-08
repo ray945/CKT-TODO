@@ -19,7 +19,7 @@ import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.network.BeanConstant;
-import com.ckt.ckttodo.network.HTTPConstants;
+import com.ckt.ckttodo.network.HttpConstants;
 import com.ckt.ckttodo.network.HTTPHelper;
 import com.ckt.ckttodo.network.HTTPService;
 import com.ckt.ckttodo.util.OptimizeInteractonUtils;
@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
         Map<String, String> map = new HashMap<>();
         map.put(BeanConstant.EMAIL, emailText);
         map.put(BeanConstant.PASSWORD, passwordText);
-        Request request = HTTPHelper.getGetRequest(map, HTTPConstants.PATH_LOGIN);
+        Request request = HTTPHelper.getGetRequest(map, HttpConstants.PATH_LOGIN);
         HTTPService.getHTTPService().doHTTPRequest(request, this);
 
 

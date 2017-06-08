@@ -4,10 +4,10 @@ package com.ckt.ckttodo.network;
  * Created by ckt on 5/16/17.
  */
 
-public class HTTPConstants {
+public class HttpConstants {
 
     //服务器请求基础路径
-    public static final String SERVER_HOST = "http://10.120.1.135:8080/todo";
+    public static final String SERVER_HOST = "http://10.120.1.135:8080/todo/";
 
     //新建用户接口
     public static final String PATH_SIGNUP = "/user";

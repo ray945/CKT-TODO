@@ -25,6 +25,7 @@ public class ProjectActivity extends AppCompatActivity {
     private RecyclerView ownRecyclerView;
     private RecyclerView joinRecyclerView;
     private ImageButton imageButtonAdd;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +45,7 @@ public class ProjectActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /*start a new project Activity*/
+                startActivity(new Intent(ProjectActivity.this, NewProjectActivity.class));
             }
         });
     }
@@ -64,7 +66,7 @@ public class ProjectActivity extends AppCompatActivity {
     /**
      * Just for test
      */
-    private class OwnAdapter extends RecyclerView.Adapter<OwnAdapter.OwnHolder>{
+    private class OwnAdapter extends RecyclerView.Adapter<OwnAdapter.OwnHolder> {
 
         @Override
         public OwnHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -91,7 +93,7 @@ public class ProjectActivity extends AppCompatActivity {
     /**
      * Just for test
      */
-    private class JoinAdapter extends RecyclerView.Adapter<JoinAdapter.JoinHolder>{
+    private class JoinAdapter extends RecyclerView.Adapter<JoinAdapter.JoinHolder> {
 
         @Override
         public JoinHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -110,6 +112,7 @@ public class ProjectActivity extends AppCompatActivity {
 
         public class JoinHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             private RelativeLayout mRelativeLayout;
+
             public JoinHolder(View itemView) {
                 super(itemView);
                 mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relative_container);

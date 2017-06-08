@@ -15,4 +15,6 @@
     <color name="color_8B0000">#8B0000</color>
     <color name="textColorWhite">#FFFFFF</color>
     <color name="color_ffffff">#FFFFFF</color>
+    <color name="color_f7f7f7">#f7f7f7</color>
+    <color name="color_grey_text_808080">#808080</color>
 </resources>

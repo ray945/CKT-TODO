@@ -3,7 +3,6 @@ package com.ckt.ckttodo.network;
 import android.util.Log;
 
 import java.util.Map;
-import java.util.Objects;
 
 import okhttp3.MultipartBody;
 import okhttp3.Request;
@@ -19,7 +18,7 @@ public class HTTPHelper {
 
     public static Request getGetRequest(Map<String, String> data, String path) {
 
-        StringBuilder builder = new StringBuilder(HTTPConstants.SERVER_HOST).append(path).append("?");
+        StringBuilder builder = new StringBuilder(HttpConstants.SERVER_HOST).append(path).append("?");
         for (Map.Entry<String, String> entry : data.entrySet()) {
             builder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
 
@@ -40,7 +39,7 @@ public class HTTPHelper {
             builder.addFormDataPart(entry.getKey(), entry.getValue());
         }
         RequestBody requestBody = builder.build();
-        return new Request.Builder().url(HTTPConstants.SERVER_HOST + path).post(requestBody).build();
+        return new Request.Builder().url(HttpConstants.SERVER_HOST + path).post(requestBody).build();
 
     }
 
