@@ -1,7 +1,11 @@
 package com.ckt.ckttodo.util;
 
+import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
+import com.ckt.ckttodo.database.PostProject;
+import com.ckt.ckttodo.database.Project;
+import com.ckt.ckttodo.database.UserInfo;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -107,7 +111,6 @@ public class TranserverUtil {
     }
 
 
-
     public static String formatTime(int thisTime) {
         int min, hour, sec;
         StringBuilder build = new StringBuilder();
@@ -131,5 +134,32 @@ public class TranserverUtil {
         }
 
         return build;
+    }
+
+    public static Project transProject(DatebaseHelper helper, PostProject postProject) {
+        Project project = new Project();
+        project.setProjectId(postProject.getProjectId());
+        project.setProjectTitle(postProject.getProjectTitle());
+
+        // TODO 手机数据库缺少TeamID 字段
+//        postProject.getTeamId();
+
+        // TODO 这里关联User有问题需要解决
+        // helper.getRealm().where(UserInfo.class).beginsWith()
+        if (postProject.getProjectSummary() != null) {
+            project.setProjectSummary(postProject.getProjectSummary());
+        }
+        if (postProject.getAccomplishProgress() != null) {
+            project.setAccomplishProgress(postProject.getAccomplishProgress());
+        }
+        if (postProject.getCreateTime() != null && !postProject.getCreateTime().equals("")) {
+            project.setCreateTime(Long.valueOf(postProject.getCreateTime()));
+        }
+        if (postProject.getEndTime() != null && !postProject.getEndTime().equals("")) {
+            project.setEndTime(Long.valueOf(postProject.getEndTime()));
+        }
+        project.setLastUpdateTime(Long.valueOf(postProject.getLastUpdateTime()));
+        project.setSync(true);
+        return project;
     }
 }

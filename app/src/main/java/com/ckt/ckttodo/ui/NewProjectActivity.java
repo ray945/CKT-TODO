@@ -117,6 +117,7 @@ public class NewProjectActivity extends AppCompatActivity {
         mProgressDialog.setTitle(getString(R.string.info));
         mProgressDialog.setMessage(getString(R.string.wait_minutes));
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
 
         Project project = new Project();
         project.setProjectTitle(mEditTextProjectName.getText().toString());
@@ -135,12 +136,7 @@ public class NewProjectActivity extends AppCompatActivity {
     }
 
     private void postProjectToService(Project project) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .client(HttpClient.getClient())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(HttpConstants.SERVER_HOST)
-                .build();
+        Retrofit retrofit = HttpClient.getRetrofit();
         ProjectService projectService = retrofit.create(ProjectService.class);
         JSONObject proStr = new JSONObject();
         proStr.put("project_id", project.getProjectId());
@@ -160,7 +156,7 @@ public class NewProjectActivity extends AppCompatActivity {
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted: " + Thread.currentThread().getId());
+                        mProgressDialog.dismiss();
                     }
 
                     @Override
@@ -175,15 +171,12 @@ public class NewProjectActivity extends AppCompatActivity {
                             JSONObject jsonResult = JSON.parseObject(result);
                             switch (jsonResult.getInteger(BeanConstant.RESULT_CODE)) {
                                 case BeanConstant.SUCCESS_RESULT_CODE:
-                                    mProgressDialog.dismiss();
                                     finish();
                                     break;
                                 case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
-                                    mProgressDialog.dismiss();
                                     Toast.makeText(NewProjectActivity.this, getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
                                     break;
                                 case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
-                                    mProgressDialog.show();
                                     Toast.makeText(NewProjectActivity.this, getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
                                     break;
                             }
