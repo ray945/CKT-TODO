@@ -335,6 +335,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             Toast.makeText(this, getResources().getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
             setResult(NEW_TASK_SUCCESS_RESULT_CODE);
             finish();
+            return;
         }
         // new plan
 //                planID = makeNewPlan(planName);

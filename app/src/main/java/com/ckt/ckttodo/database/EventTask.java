@@ -60,9 +60,9 @@ public class EventTask extends RealmObject {
     //任务内容
     private String taskContent;
     //任务创建人
-    private String createUerId;
+    private int createUerId;
     //任务执行人
-    private String execUserId;
+    private int execUserId;
     //任务类别
     private int taskType;
     //任务优先级
@@ -136,19 +136,19 @@ public class EventTask extends RealmObject {
         this.taskContent = taskContent;
     }
 
-    public String getCreateUerId() {
+    public int getCreateUerId() {
         return createUerId;
     }
 
-    public void setCreateUerId(String createUerId) {
+    public void setCreateUerId(int createUerId) {
         this.createUerId = createUerId;
     }
 
-    public String getExecUserId() {
+    public int getExecUserId() {
         return execUserId;
     }
 
-    public void setExecUserId(String execUserId) {
+    public void setExecUserId(int execUserId) {
         this.execUserId = execUserId;
     }
 

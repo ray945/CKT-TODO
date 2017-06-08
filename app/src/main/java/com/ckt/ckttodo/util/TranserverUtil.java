@@ -4,6 +4,7 @@ import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.PostProject;
+import com.ckt.ckttodo.database.PostTask;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.UserInfo;
 
@@ -161,5 +162,38 @@ public class TranserverUtil {
         project.setLastUpdateTime(Long.valueOf(postProject.getLastUpdateTime()));
         project.setSync(true);
         return project;
+    }
+
+    public static EventTask transTask(PostTask postTask) {
+        EventTask task = new EventTask();
+        task.setTaskId(postTask.getTaskId());
+        task.setTaskTitle(postTask.getTaskTitle());
+        task.setCreateUerId(postTask.getMem_id());
+        if (postTask.getTaskContent() != null) {
+            task.setTaskContent(postTask.getTaskContent());
+        }
+        if (postTask.getPlanId() != null) {
+            //TODO
+//            task.setPlan();
+        }
+        if (postTask.getTaskPredictTime() != null && !postTask.getTaskPredictTime().equals("")) {
+            task.setTaskPredictTime(Float.valueOf(postTask.getTaskPredictTime()));
+        }
+        task.setTaskPriority(postTask.getTaskPriority());
+        if (postTask.getTaskRealSpendTime() != null && !postTask.getTaskRealSpendTime().equals("")) {
+            task.setTaskRealSpendTime(Float.valueOf(postTask.getTaskRealSpendTime()));
+        }
+        if (postTask.getTaskRemindTime() != null && !postTask.getTaskRemindTime().equals("")) {
+            task.setTaskRemindTime(Long.valueOf(postTask.getTaskRemindTime()));
+        }
+        if (postTask.getTaskStartTime() != null && !postTask.getTaskStartTime().equals("")) {
+            task.setTaskStartTime(Long.valueOf(postTask.getTaskStartTime()));
+        }
+        task.setTaskStatus(postTask.getTaskStatus());
+        task.setTaskType(postTask.getTaskType());
+        if (postTask.getTaskUpdateTime() != null && !postTask.getTaskUpdateTime().equals("")) {
+            task.setTaskUpdateTime(Long.valueOf(postTask.getTaskUpdateTime()));
+        }
+        return task;
     }
 }

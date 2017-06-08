@@ -36,4 +36,16 @@ public class HttpClient {
         return sRetrofit;
     }
 
+    public static <T> T getHttpService(Class<T> service) {
+        if (sRetrofit == null) {
+            sRetrofit = new Retrofit.Builder()
+                    .client(HttpClient.getClient())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl(HttpConstants.SERVER_HOST)
+                    .build();
+        }
+        return sRetrofit.create(service);
+    }
+
 }

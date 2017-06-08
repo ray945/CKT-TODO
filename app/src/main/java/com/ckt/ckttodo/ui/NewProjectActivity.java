@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +21,6 @@ import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.network.BeanConstant;
 import com.ckt.ckttodo.network.HttpClient;
-import com.ckt.ckttodo.network.HttpConstants;
 import com.ckt.ckttodo.retrofit.ProjectService;
 import com.ckt.ckttodo.widgt.ProjectVisibilityDialog;
 
@@ -33,8 +31,6 @@ import java.util.UUID;
 
 import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -186,5 +182,6 @@ public class NewProjectActivity extends AppCompatActivity {
                     }
                 })
         );
+
     }
 }
