@@ -10,9 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +65,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         mDataJoin = new ArrayList<>();
         mDataOwner = new ArrayList<>();
         mProjectAdapter = new ProjectAdapter();
+        mProjectAdapter.shouldShowHeadersForEmptySections(true);
         mUserId = new User(this).getmID();
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.setAdapter(mProjectAdapter);
@@ -72,22 +75,25 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.personal_project, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
                 onBackPressed();
                 break;
+            case R.id.add_project:
+                Intent intent = new Intent(ProjectActivity.this, NewProjectActivity.class);
+                startActivity(intent);
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    void transitionTo(Intent i) {
-        final Pair<View, String>[] pairs = TransitionHelper.createSafeTransitionParticipants(this, true);
-        ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(this, pairs);
-        startActivity(i, transitionActivityOptions.toBundle());
     }
 
     @Override
@@ -167,7 +173,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         mProjectAdapter.notifyDataSetChanged();
     }
 
-    public class ProjectAdapter extends SectionedRecyclerViewAdapter<ProjectAdapter.MainVH> {
+    public class ProjectAdapter extends SectionedRecyclerViewAdapter<ProjectAdapter.MainVH> implements View.OnClickListener{
 
 
         @Override
@@ -179,9 +185,9 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         public int getItemCount(int section) {
             switch (section) {
                 case 0:
-                    return mDataJoin.size();
-                case 1:
                     return mDataOwner.size();
+                case 1:
+                    return mDataJoin.size();
                 default:
                     return 0;
             }
@@ -191,10 +197,10 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         public void onBindHeaderViewHolder(MainVH holder, int section, boolean expanded) {
             switch (section) {
                 case 0:
-                    holder.title.setText("我参与的项目");
+                    holder.tvHeader.setText(getResources().getText(R.string.owner_project));
                     break;
                 case 1:
-                    holder.title.setText("我拥有的项目");
+                    holder.tvHeader.setText(getResources().getText(R.string.join_project));
                     break;
                 default:
                     break;
@@ -204,11 +210,11 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         @Override
         public void onBindViewHolder(MainVH holder, int section, int relativePosition, int absolutePosition) {
             if (section == 0) {
-                holder.projectTitle.setText(mDataJoin.get(relativePosition).getProjectTitle());
+                holder.tvItem.setText(mDataOwner.get(relativePosition).getProjectTitle());
             } else {
-                holder.projectTitle.setText(mDataOwner.get(relativePosition).getProjectTitle());
+                holder.tvItem.setText(mDataJoin.get(relativePosition).getProjectTitle());
             }
-
+            holder.relativeLayout.setOnClickListener(this);
         }
 
         @Override
@@ -235,17 +241,24 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
             return new MainVH(v, this);
         }
 
-        class MainVH extends SectionedViewHolder {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(ProjectActivity.this, DetailProActivity.class);
+            startActivity(intent);
+        }
 
+        class MainVH extends SectionedViewHolder {
             final ProjectAdapter adapter;
-            final TextView title;
-            TextView projectTitle;
+            final TextView tvHeader;
+            TextView tvItem;
+            RelativeLayout relativeLayout;
 
             MainVH(View itemView, ProjectAdapter adapter) {
                 super(itemView);
                 this.adapter = adapter;
-                this.title = (TextView) itemView.findViewById(R.id.header);
-                this.projectTitle = (TextView) itemView.findViewById(R.id.project_own_tv);
+                this.tvHeader = (TextView) itemView.findViewById(R.id.tv_header);
+                this.tvItem = (TextView) itemView.findViewById(R.id.tv_item);
+                this.relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relative_container);
             }
 
         }
