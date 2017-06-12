@@ -120,8 +120,7 @@ public class NewProjectActivity extends AppCompatActivity {
             project.setProjectSummary(mEditTextProjectDescription.getText().toString());
         }
         project.setCreateTime(System.currentTimeMillis());
-        UserInfo userInfo = helper.getRealm().where(UserInfo.class).contains("mem_email", new User(this).getmEmail()).findFirst();
-        project.setUserInfo(userInfo);
+        project.setOwnerId(new User(this).getmID());
         project.setProjectId(UUID.randomUUID().toString());
         project.setSync(false);
         helper.insert(project);

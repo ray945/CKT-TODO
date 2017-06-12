@@ -147,8 +147,7 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onRefresh() {
 
-        Retrofit retrofit = HttpClient.getRetrofit();
-        ProjectService projectService = retrofit.create(ProjectService.class);
+        ProjectService projectService = HttpClient.getHttpService(ProjectService.class);
         User user = new User(getContext());
         projectService.getProjects(user.getmEmail(), user.getmToken(), user.getmEmail())
                 .subscribeOn(Schedulers.io())

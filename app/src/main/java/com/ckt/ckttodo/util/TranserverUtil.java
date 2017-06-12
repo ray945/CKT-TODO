@@ -147,6 +147,7 @@ public class TranserverUtil {
 
         // TODO 这里关联User有问题需要解决
         // helper.getRealm().where(UserInfo.class).beginsWith()
+        project.setOwnerId(postProject.getMemId());
         if (postProject.getProjectSummary() != null) {
             project.setProjectSummary(postProject.getProjectSummary());
         }

@@ -17,7 +17,7 @@ public class Project extends RealmObject {
     //项目描述
     private String projectSummary;
     //项目创建人id
-    private UserInfo userInfo;
+    private int ownerId;
     //项目创建时间
     private long createTime;
     //项目结束时间
@@ -102,12 +102,12 @@ public class Project extends RealmObject {
         this.plans = plans;
     }
 
-    public UserInfo getUserInfo() {
-        return userInfo;
+    public int getOwnerId() {
+        return ownerId;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
     }
 
     public RealmList<UserInfo> getUserInfos() {
