@@ -12,11 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.Project;
+import com.ckt.ckttodo.database.Result;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.network.BeanConstant;
@@ -24,28 +24,27 @@ import com.ckt.ckttodo.network.HttpClient;
 import com.ckt.ckttodo.retrofit.ProjectService;
 import com.ckt.ckttodo.widgt.ProjectVisibilityDialog;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import okhttp3.ResponseBody;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 public class NewProjectActivity extends AppCompatActivity {
 
     private static final String TAG = "NewProjectActivity";
-    private LinearLayout mLinearLayoutVisibility;
     private EditText mEditTextProjectName;
     private EditText mEditTextProjectDescription;
     private TextView mTextViewVisible;
     private ProgressDialog mProgressDialog;
     private int mCurrentVisibility = 0;
-    private CompositeSubscription mSubscription = new CompositeSubscription();
+    private LinearLayout mLinearLayoutVisibility;
+
+    public static final int NEW_PROJECT_SUCCESS_RESULT_CODE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,42 +145,44 @@ public class NewProjectActivity extends AppCompatActivity {
         map.put("postproject", proStr.toString());
         map.put("email", user.getmEmail());
         map.put("token", user.getmToken());
-        mSubscription.add(projectService.postNewProject(map)
+
+        projectService.postNewProject(map)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new Observer<Result>() {
                     @Override
-                    public void onCompleted() {
-                        mProgressDialog.dismiss();
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(Result value) {
+                        switch (value.getResultcode()) {
+                            case BeanConstant.SUCCESS_RESULT_CODE:
+                                Toast.makeText(NewProjectActivity.this, getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
+                                setResult(NEW_PROJECT_SUCCESS_RESULT_CODE);
+                                finish();
+                                break;
+                            case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
+                                Toast.makeText(NewProjectActivity.this, getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
+                                break;
+                            case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
+                                Toast.makeText(NewProjectActivity.this, getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
+                                break;
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        mProgressDialog.dismiss();
                         e.printStackTrace();
                     }
 
                     @Override
-                    public void onNext(ResponseBody response) {
-                        try {
-                            String result = response.string();
-                            JSONObject jsonResult = JSON.parseObject(result);
-                            switch (jsonResult.getInteger(BeanConstant.RESULT_CODE)) {
-                                case BeanConstant.SUCCESS_RESULT_CODE:
-                                    finish();
-                                    break;
-                                case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
-                                    Toast.makeText(NewProjectActivity.this, getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
-                                    break;
-                                case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
-                                    Toast.makeText(NewProjectActivity.this, getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
-                                    break;
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    public void onComplete() {
+                        mProgressDialog.dismiss();
                     }
-                })
-        );
+                });
+
 
     }
 }

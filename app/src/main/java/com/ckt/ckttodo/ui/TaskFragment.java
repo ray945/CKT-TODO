@@ -1,6 +1,5 @@
 package com.ckt.ckttodo.ui;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,49 +11,44 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
-import com.ckt.ckttodo.database.PostProject;
 import com.ckt.ckttodo.database.PostTask;
+import com.ckt.ckttodo.database.Result;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.databinding.FragmentTaskBinding;
 import com.ckt.ckttodo.databinding.TaskListItemBinding;
 import com.ckt.ckttodo.network.BeanConstant;
-import com.ckt.ckttodo.network.HTTPService;
 import com.ckt.ckttodo.network.HttpClient;
 import com.ckt.ckttodo.retrofit.TaskService;
 import com.ckt.ckttodo.util.TranserverUtil;
 import com.ckt.ckttodo.widgt.TaskDividerItemDecoration;
 import com.ckt.ckttodo.widgt.TimeWatchDialog;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.RealmResults;
-import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -159,16 +153,30 @@ public class TaskFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        Retrofit retrofit = HttpClient.getRetrofit();
         User user = new User(getContext());
-        mCompositeSubscription.add(HttpClient.getHttpService(TaskService.class)
-                .getTasksById(user.getmEmail(), user.getmToken())
+        HttpClient.getHttpService(TaskService.class).getTasksById(user.getmEmail(), user.getmToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new Observer<Result<PostTask>>() {
                     @Override
-                    public void onCompleted() {
-                        mSwipeRefreshLayout.setRefreshing(false);
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Result<PostTask> value) {
+                        switch (value.getResultcode()) {
+                            case BeanConstant.SUCCESS_RESULT_CODE:
+                                saveAndNotifyDataChanged(value.getData());
+                                break;
+                            case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
+                                Toast.makeText(getContext(), getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
+                                break;
+                            case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
+                                Toast.makeText(getContext(), getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
+                                break;
+                            default:
+                        }
                     }
 
                     @Override
@@ -178,41 +186,18 @@ public class TaskFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     }
 
                     @Override
-                    public void onNext(ResponseBody responseBody) {
-                        try {
-                            String replyStr = responseBody.string();
-                            JSONObject replyJson = JSON.parseObject(replyStr);
-                            switch (replyJson.getInteger(BeanConstant.RESULT_CODE)) {
-                                case BeanConstant.SUCCESS_RESULT_CODE:
-                                    String resultStr = replyJson.getString("data");
-                                    saveAndNotifyDataChanged(resultStr);
-                                    break;
-                                case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
-                                    Toast.makeText(getContext(), getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
-                                    break;
-                                case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
-                                    Toast.makeText(getContext(), getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
-                                    break;
-
-
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
+                    public void onComplete() {
+                        mSwipeRefreshLayout.setRefreshing(false);
                     }
-                })
-
-        );
+                });
 
     }
 
-    private void saveAndNotifyDataChanged(String resultStr) {
-        List<PostTask> postTasks = JSON.parseArray(resultStr, PostTask.class);
+    private void saveAndNotifyDataChanged(List<PostTask> resultData) {
         List<EventTask> insertList = new ArrayList<>();
         List<EventTask> updateList = new ArrayList<>();
         EventTask task;
-        for (PostTask postTask : postTasks) {
+        for (PostTask postTask : resultData) {
             task = mHelper.getRealm().where(EventTask.class).contains("taskId", postTask.getTaskId()).findFirst();
             if (task == null) {
                 insertList.add(TranserverUtil.transTask(postTask));

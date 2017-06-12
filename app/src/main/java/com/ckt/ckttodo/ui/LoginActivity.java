@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,29 +14,29 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
+import com.ckt.ckttodo.database.ResultUser;
 import com.ckt.ckttodo.database.User;
-import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.network.BeanConstant;
-import com.ckt.ckttodo.network.HttpConstants;
-import com.ckt.ckttodo.network.HTTPHelper;
-import com.ckt.ckttodo.network.HTTPService;
+import com.ckt.ckttodo.network.HttpClient;
+import com.ckt.ckttodo.retrofit.UserService;
 import com.ckt.ckttodo.util.OptimizeInteractonUtils;
 
-import okhttp3.Request;
+import java.io.IOException;
 
-import java.util.HashMap;
-import java.util.Map;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 
 /**
  * Created by zhiwei.li on 2017/3/17.
  */
 
-public class LoginActivity extends AppCompatActivity implements BaseView {
+public class LoginActivity extends AppCompatActivity {
 
-    private static final String TAG = "LoginActivity";
+    private static final String TAG = "mozre";
     private EditText et_account;
     private EditText et_password;
     private Button loginBtn;
@@ -46,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-		loginStatus();
+        loginStatus();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         //      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -101,6 +102,7 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
             onLoginFailed();
             return;
         }
+        Log.d(TAG, "login: 1111111111111111");
 
 //        loginBtn.setEnabled(false);
         mProgressDialog = new ProgressDialog(LoginActivity.this,
@@ -113,42 +115,76 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
         String emailText = et_account.getText().toString().trim();
         String passwordText = et_password.getText().toString().trim();
 
-        // do network request
-        Map<String, String> map = new HashMap<>();
-        map.put(BeanConstant.EMAIL, emailText);
-        map.put(BeanConstant.PASSWORD, passwordText);
-        Request request = HTTPHelper.getGetRequest(map, HttpConstants.PATH_LOGIN);
-        HTTPService.getHTTPService().doHTTPRequest(request, this);
-
-
-        // Authenticating
-//        new android.os.Handler().postDelayed(new Runnable() {
-//            @Override public void run() {
-//                onLoginSuccess();
-//                progressDialog.dismiss();
+        UserService userService = HttpClient.getHttpService(UserService.class);
+//        userService.doLogin(emailText, passwordText)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<ResponseBody>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
 //
-//                // network test
-//                Retrofit retrofit = new Retrofit.Builder()
-//                    .baseUrl("http://10.120.3.191:8080/")
-//                    .addConverterFactory(ScalarsConverterFactory.create())
-//                    .build();
+//                    }
 //
-//                NetworkService service = retrofit.create(NetworkService.class);
-//                service.login("1","1").enqueue(new Callback<String>() {
-//                    @Override public void onResponse(Call<String> call, Response<String> response) {
-//                        Log.e("Network", response.body());
-//                        if ("true".equals(response.body())){
-//                            Toast.makeText(LoginActivity.this,"登陆成功",Toast.LENGTH_SHORT).show();
+//                    @Override
+//                    public void onNext(ResponseBody value) {
+//                        try {
+//                            Log.d(TAG, "onNext: " + value.string());
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
 //                        }
 //                    }
 //
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
 //
-//                    @Override public void onFailure(Call<String> call, Throwable t) {
+//                    @Override
+//                    public void onComplete() {
 //
 //                    }
 //                });
-//            }
-//        }, 3000);
+
+        userService.doLogin(emailText, passwordText)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResultUser>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResultUser value) {
+                        switch (value.getResultcode()) {
+
+                            case BeanConstant.SUCCESS_RESULT_CODE:
+
+                                User user = new User(LoginActivity.this, value.getData());
+                                user.setmToken(value.getToken());
+                                mProgressDialog.dismiss();
+                                onLoginSuccess();
+                                break;
+
+                            case BeanConstant.LOGIN_FAIL_RESULT_CODE:
+                                mProgressDialog.dismiss();
+                                Toast.makeText(LoginActivity.this, getString(R.string.login_fail), Toast.LENGTH_SHORT).show();
+                                break;
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
 
     }
 
@@ -199,35 +235,4 @@ public class LoginActivity extends AppCompatActivity implements BaseView {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void replyRequestResult(String strJson) {
-
-        JSONObject json = JSON.parseObject(strJson);
-
-        switch (json.getInteger(BeanConstant.RESULT_CODE)) {
-
-            case BeanConstant.SUCCESS_RESULT_CODE:
-                String data = json.getString(BeanConstant.DATA);
-                UserInfo info = JSON.parseObject(data, UserInfo.class);
-                User user = new User(this, info);
-                user.setmToken(json.getString(BeanConstant.TOKEN));
-                mProgressDialog.dismiss();
-                onLoginSuccess();
-                break;
-
-            case BeanConstant.LOGIN_FAIL_RESULT_CODE:
-                mProgressDialog.dismiss();
-                Toast.makeText(this, getString(R.string.login_fail), Toast.LENGTH_SHORT).show();
-                break;
-
-        }
-
-    }
-
-    @Override
-    public void replyNetworkErr() {
-        mProgressDialog.dismiss();
-        Toast.makeText(this, getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-
-    }
 }

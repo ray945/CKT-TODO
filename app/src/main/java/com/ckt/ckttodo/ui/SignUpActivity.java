@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,23 +18,32 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
 
+import com.ckt.ckttodo.database.Result;
 import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.network.BeanConstant;
+import com.ckt.ckttodo.network.HttpClient;
 import com.ckt.ckttodo.network.HttpConstants;
 import com.ckt.ckttodo.network.HTTPHelper;
 import com.ckt.ckttodo.network.HTTPService;
+import com.ckt.ckttodo.retrofit.UserService;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
+import retrofit2.Retrofit;
 
 /**
  * Created by zhiwei.li on 2017/3/20.
  */
 
-public class SignUpActivity extends AppCompatActivity implements BaseView {
+public class SignUpActivity extends AppCompatActivity {
 
+    private static final String TAG = "mozre";
     private EditText et_name;
     private EditText et_email;
     private EditText et_mobileNumber;
@@ -107,64 +117,48 @@ public class SignUpActivity extends AppCompatActivity implements BaseView {
         object.put(BeanConstant.USER, info);
         Map<String, String> map = new HashMap<>();
         map.put(BeanConstant.DATA, object.toJSONString());
-        Request request = HTTPHelper.getPostRequest(map, HttpConstants.PATH_SIGNUP);
-        HTTPService.getHTTPService().doHTTPRequest(request, this);
+        HttpClient.getHttpService(UserService.class).doSignup(map)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Result>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        // Authenticating
-//        new android.os.Handler().postDelayed(new Runnable() {
-//            @Override public void run() {
-//                onSignUpSuccess();
-//                progressDialog.dismiss();
-//
-//                Retrofit retrofit = new Retrofit.Builder()
-//                    .baseUrl("http://10.120.3.191:8080/")
-//                    .addConverterFactory(ScalarsConverterFactory.create())
-//                    .build();
-//
-//                NetworkService service = retrofit.create(NetworkService.class);
-//                service.register("test_name","test_pwd","test@email.com","6","6").enqueue(new Callback<String>() {
-//                    @Override public void onResponse(Call<String> call, Response<String> response) {
-//                        Log.e("Network",response.body());
-//                        if ("true".equals(response.body())){
-//                            Toast.makeText(SignUpActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//
-//
-//                    @Override public void onFailure(Call<String> call, Throwable t) {
-//
-//                    }
-//                });
-//
-//            }
-//        },3000);
+                    }
+
+                    @Override
+                    public void onNext(Result value) {
+                        switch (value.getResultcode()) {
+                            case BeanConstant.SUCCESS_RESULT_CODE:
+                                Toast.makeText(SignUpActivity.this, getString(R.string.signup_success), Toast.LENGTH_SHORT).show();
+                                finish();
+                                break;
+                            case BeanConstant.SIGNUP_EMAIL_EXSIT_RESULT_CODE:
+                                Toast.makeText(SignUpActivity.this, getString(R.string.signup_email_exist), Toast.LENGTH_SHORT).show();
+                                break;
+                            case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
+                                //TODO 系统错误
+
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        progressDialog.dismiss();
+                        Toast.makeText(SignUpActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        progressDialog.dismiss();
+                    }
+                });
+
+
     }
 
-
-    @Override
-    public void replyRequestResult(String strJson) {
-        JSONObject json = JSON.parseObject(strJson);
-        switch (json.getInteger(BeanConstant.RESULT_CODE)) {
-
-            case BeanConstant.SUCCESS_RESULT_CODE:
-                Toast.makeText(this, getString(R.string.signup_success), Toast.LENGTH_SHORT).show();
-                finish();
-                break;
-            case BeanConstant.SIGNUP_EMAIL_EXSIT_RESULT_CODE:
-                Toast.makeText(this, getString(R.string.signup_email_exist), Toast.LENGTH_SHORT).show();
-                break;
-            case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
-                //TODO 系统错误
-
-                 break;
-
-        }
-    }
-
-    @Override
-    public void replyNetworkErr() {
-        Toast.makeText(this, getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-    }
 
     private void onSignUpFailed() {
         Toast.makeText(getBaseContext(), getString(R.string.signup_failed), Toast.LENGTH_SHORT)

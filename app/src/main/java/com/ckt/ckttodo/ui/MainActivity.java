@@ -83,11 +83,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         VoiceInputDialog.VoiceInputFinishedListener, ProjectFragment.NotifyTask, BaseView {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
-    public static final String SHARE_PREFERENCES_NAME = "com.ckt.ckttodo";
     private static final String IS_FIRST_CHECK_PERMISSION = "permission_status";
     private static final int REQUEST_PERMISSIONS = 1;
-    public final static int MAIN_TO_NEW_TASK_CODE = 100;
-    public final static int MAIN_TO_TASK_DETAIL_CODE = 200;
+    public static final int MAIN_TO_NEW_TASK_CODE = 100;
+    public static final int MAIN_TO_TASK_DETAIL_CODE = 200;
+    public static final int MAIN_TO_NEW_PROJECT_CODE = 300;
     private ActivityMainBinding mActivityMainBinding;
     private MenuItem mMenuItemSure;
     private MenuItem mMenuItemFalse;
@@ -110,14 +110,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     mTaskFragment.notifyData();
                 }
             }
-        }
-        if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
+        } else if (requestCode == Constant.REQUEST_CODE_PICK_FILE) {
             if (resultCode == RESULT_OK) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
                 if (list.size() == 0) {
                     return;
                 }
                 withResultInsertDatabase(list.get(0).getPath());
+            }
+        } else if (requestCode == MAIN_TO_NEW_PROJECT_CODE && resultCode == NewProjectActivity.NEW_PROJECT_SUCCESS_RESULT_CODE) {
+            if (mFragmentList.get(1) != null) {
+                ((ProjectFragment)mFragmentList.get(1)).notifyDataChange();
             }
         }
     }
@@ -154,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initPermission() {
-        SharedPreferences preferences = MainActivity.this.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = MainActivity.this.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
         boolean isFirstTime = preferences.getBoolean(IS_FIRST_CHECK_PERMISSION, true);
         if (isFirstTime) {
             getTheVoiceInput();
@@ -183,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.syncState();
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
 
 
         NavigationView navigationView = mActivityMainBinding.navView;
@@ -234,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         };
 
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -313,48 +316,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         //                        getTheVoiceInput();
                         break;
                     case 1:
-                        Log.e(TAG, "project click");
-                        View editTextView = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
-                        final EditText editText = (EditText) editTextView.findViewById(R.id.new_task_name);
-                        editText.setFocusable(true);
-                        editText.setFocusableInTouchMode(true);
-                        editText.requestFocus();
-                        Timer timer = new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                InputMethodManager inputManager = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                inputManager.showSoftInput(editText, 0);
-                            }
-                        }, 200);
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).setTitle(R.string.new_project).setView(editTextView).setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                final String projectName = editText.getText().toString().trim();
-                                for (Project project : DatebaseHelper.getInstance(MainActivity.this).findAll(Project.class)) {
-                                    if (projectName.equals(project.getProjectTitle())) {
-                                        showToast(getResources().getString(R.string.project_exist));
-                                        return;
-                                    }
-                                }
-                                if (!projectName.equals("")) {
-                                    Project project = new Project();
-                                    project.setProjectId(UUID.randomUUID().toString());
-                                    project.setProjectTitle(projectName);
-                                    Date date = new Date();
-                                    project.setCreateTime(date.getTime());
-                                    project.setEndTime(date.getTime());
-                                    project.setLastUpdateTime(date.getTime());
-                                    DatebaseHelper.getInstance(MainActivity.this).insert(project);
-                                    //TODO
-                                    ((ProjectFragment) mFragmentList.get(1)).notifyDataChange();
-                                } else {
-                                    showToast(getResources().getString(R.string.plan_not_null));
-                                }
-                            }
-                        }).setNegativeButton(R.string.cancel, null);
-                        builder.create().show();
-
+                        startActivityForResult(new Intent(MainActivity.this, NewProjectActivity.class), MAIN_TO_NEW_PROJECT_CODE);
                         break;
                     case 2:
                         Log.e(TAG, "note click");
@@ -496,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transitionTo(new Intent(this, LoginActivity.class));
                 break;
             case R.id.nav_project:
-                transitionTo(new Intent(this,ProjectActivity.class));
+                transitionTo(new Intent(this, ProjectActivity.class));
                 break;
             case R.id.nav_settings:
                 break;

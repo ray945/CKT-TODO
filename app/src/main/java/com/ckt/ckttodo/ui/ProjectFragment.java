@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
@@ -25,6 +24,7 @@ import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.PostProject;
 import com.ckt.ckttodo.database.Project;
+import com.ckt.ckttodo.database.Result;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.databinding.FragmentProjectBinding;
 import com.ckt.ckttodo.network.BeanConstant;
@@ -33,18 +33,16 @@ import com.ckt.ckttodo.retrofit.ProjectService;
 import com.ckt.ckttodo.util.ProjectListAdapter;
 import com.ckt.ckttodo.util.TranserverUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -74,8 +72,6 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         mSwipeRefreshLayout = binding.swipeProject;
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        onRefresh();
-
         rvProjects.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), rvProjects, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -154,13 +150,28 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
         Retrofit retrofit = HttpClient.getRetrofit();
         ProjectService projectService = retrofit.create(ProjectService.class);
         User user = new User(getContext());
-        mSubscription.add(projectService.getProjects(user.getmEmail(), user.getmToken(), user.getmEmail())
+        projectService.getProjects(user.getmEmail(), user.getmToken(), user.getmEmail())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new Observer<Result<PostProject>>() {
                     @Override
-                    public void onCompleted() {
-                        mSwipeRefreshLayout.setRefreshing(false);
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Result<PostProject> value) {
+                        switch (value.getResultcode()) {
+                            case BeanConstant.SUCCESS_RESULT_CODE:
+                                saveAndNotifyDataChange(value.getData());
+                                break;
+                            case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
+                                Toast.makeText(getContext(), getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
+                                break;
+                            case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
+                                Toast.makeText(getContext(), getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
+                                break;
+                        }
                     }
 
                     @Override
@@ -170,40 +181,21 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     }
 
                     @Override
-                    public void onNext(ResponseBody response) {
-                        try {
-                            String replyStr = response.string();
-                            JSONObject replyJson = JSON.parseObject(replyStr);
-                            switch (replyJson.getInteger(BeanConstant.RESULT_CODE)) {
-                                case BeanConstant.SUCCESS_RESULT_CODE:
-                                    String resultData = replyJson.getString("data");
-                                    saveAndNotifyDataChange(resultData);
-                                    break;
-                                case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
-                                    Toast.makeText(getContext(), getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
-                                    break;
-                                case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
-                                    Toast.makeText(getContext(), getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
-                                    break;
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    public void onComplete() {
+                        mSwipeRefreshLayout.setRefreshing(false);
                     }
-                })
-        );
+                });
 
     }
 
-    private void saveAndNotifyDataChange(String resultData) {
+    private void saveAndNotifyDataChange(List<PostProject> resultData) {
         DatebaseHelper helper = DatebaseHelper.getInstance(getContext());
-        List<PostProject> postProjects = JSONObject.parseArray(resultData, PostProject.class);
-        if (postProjects.size() == 0) {
+        if (resultData.size() == 0) {
             return;
         }
         List<Project> insertList = new ArrayList<>();
         List<Project> updateList = new ArrayList<>();
-        for (PostProject postProject : postProjects) {
+        for (PostProject postProject : resultData) {
             Project project = helper.getRealm().where(Project.class).contains("projectId", postProject.getProjectId()).findFirst();
             if (project == null) {
                 insertList.add(TranserverUtil.transProject(helper, postProject));

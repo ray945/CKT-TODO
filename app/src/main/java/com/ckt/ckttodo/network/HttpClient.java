@@ -1,8 +1,9 @@
 package com.ckt.ckttodo.network;
 
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -28,7 +29,7 @@ public class HttpClient {
         if (sRetrofit == null) {
             sRetrofit = new Retrofit.Builder()
                     .client(HttpClient.getClient())
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(HttpConstants.SERVER_HOST)
                     .build();
@@ -40,7 +41,7 @@ public class HttpClient {
         if (sRetrofit == null) {
             sRetrofit = new Retrofit.Builder()
                     .client(HttpClient.getClient())
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(HttpConstants.SERVER_HOST)
                     .build();

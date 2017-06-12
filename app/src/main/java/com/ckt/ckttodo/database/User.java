@@ -32,12 +32,25 @@ public class User {
     private String mToken;
     private SharedPreferences mSharedPreferences;
 
+    public User() {
+    }
 
     public User(Context context) {
         mSharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
     }
 
     public User(Context context, UserInfo info) {
+        mSharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
+        setmID(info.getMem_id());
+        setmEmail(info.getMem_email());
+        setmIcon(info.getMem_icon());
+        setmLevel(info.getMem_level());
+        setmName(info.getMem_name());
+        setmPhoneNum(info.getMem_phone_num());
+        setmIsLogin(true);
+    }
+
+    public User(Context context, PostUser info) {
         mSharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
         setmID(info.getMem_id());
         setmEmail(info.getMem_email());

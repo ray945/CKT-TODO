@@ -13,7 +13,7 @@ public class HttpConstants {
     public static final String PATH_SIGNUP = "/user";
 
     //用户登录接口
-    public static final String PATH_LOGIN = "/user/login";
+    public static final String PATH_LOGIN = "user/login";
 
 
     //用户登出
