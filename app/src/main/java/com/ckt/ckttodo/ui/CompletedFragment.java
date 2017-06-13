@@ -51,8 +51,6 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
         mRecyclerView.getView().setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.getView().setAdapter(mAdapter);
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new BatCallback(this));
-        itemTouchHelper.attachToRecyclerView(mRecyclerView.getView());
         mRecyclerView.getView().setItemAnimator(mAnimator);
         mRecyclerView.setAddItemListener(this);
 
@@ -73,8 +71,7 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
 
     @Override
     public void delete(int position) {
-        mGoals.remove(position);
-        mAdapter.notify(AnimationType.REMOVE, position);
+        /* conflict with viewpager,don't realize */
     }
 
     @Override
