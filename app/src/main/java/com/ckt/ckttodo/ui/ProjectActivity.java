@@ -1,14 +1,22 @@
 package com.ckt.ckttodo.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.Visibility;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +30,7 @@ import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
 import com.afollestad.sectionedrecyclerview.SectionedViewHolder;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.PostProject;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.Result;
@@ -48,6 +57,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLinearLayoutManager;
     private ProjectAdapter mProjectAdapter;
+    private Transition transition;
     private DatebaseHelper mHelper;
     private List<Project> mDataOwner;
     private List<Project> mDataJoin;
@@ -57,21 +67,32 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getResources().getString(R.string.personal_project));
+        initData();
+        initUI();
+        setDataAndNotifyDataChanged();
+    }
+
+    private void initData() {
         mHelper = DatebaseHelper.getInstance(ProjectActivity.this);
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_personal_project);
-        mLinearLayoutManager = new LinearLayoutManager(this);
         mDataJoin = new ArrayList<>();
         mDataOwner = new ArrayList<>();
-        mProjectAdapter = new ProjectAdapter();
-        mProjectAdapter.shouldShowHeadersForEmptySections(true);
         mUserId = new User(this).getmID();
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mRecyclerView.setAdapter(mProjectAdapter);
-        setDataAndNotifyDataChanged();
+    }
+
+    private void initUI() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getResources().getString(R.string.personal_project));
+        if (Build.VERSION.SDK_INT >= 21){
+            setupWindowAnimations();
+        }
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_personal_project);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_project_show);
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        mLinearLayoutManager = new LinearLayoutManager(this);
+        mProjectAdapter = new ProjectAdapter();
+        mProjectAdapter.shouldShowHeadersForEmptySections(true);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView.setAdapter(mProjectAdapter);
     }
 
     @Override
@@ -96,9 +117,20 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         return super.onOptionsItemSelected(item);
     }
 
+    private void setupWindowAnimations() {
+        transition = buildEnterTransition();
+        getWindow().setEnterTransition(transition);
+    }
+
+    private Visibility buildEnterTransition() {
+        Slide enterTransition = new Slide();
+        enterTransition.setDuration(getResources().getInteger(R.integer.anim_duration_long));
+        enterTransition.setSlideEdge(Gravity.RIGHT);
+        return enterTransition;
+    }
+
     @Override
     public void onRefresh() {
-
         ProjectService projectService = HttpClient.getHttpService(ProjectService.class);
         User user = new User(ProjectActivity.this);
         projectService.getProjects(user.getmEmail(), user.getmToken(), user.getmEmail())
@@ -140,7 +172,6 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
     }
 
     private void saveAndNotifyDataChange(List<PostProject> resultData) {
-
         if (resultData.size() == 0) {
             return;
         }
@@ -173,9 +204,31 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         mProjectAdapter.notifyDataSetChanged();
     }
 
-    public class ProjectAdapter extends SectionedRecyclerViewAdapter<ProjectAdapter.MainVH> implements View.OnClickListener{
+    /**
+     *
+     * @param position
+     * Delete the selected item
+     */
+    private void deleteProject(final int position) {
+        new AlertDialog.Builder(this)
+                .setMessage(getResources().getString(R.string.notice_delete))
+                .setPositiveButton(getResources().getString(R.string.sure), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mProjectAdapter.notifyItemRemoved(position);
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                })
+                .create()
+                .show();
+    }
 
+    public class ProjectAdapter extends SectionedRecyclerViewAdapter<ProjectAdapter.MainVH>{
         @Override
         public int getSectionCount() {
             return 2;
@@ -208,13 +261,26 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         }
 
         @Override
-        public void onBindViewHolder(MainVH holder, int section, int relativePosition, int absolutePosition) {
+        public void onBindViewHolder(MainVH holder, int section, final int relativePosition, int absolutePosition) {
             if (section == 0) {
                 holder.tvItem.setText(mDataOwner.get(relativePosition).getProjectTitle());
             } else {
                 holder.tvItem.setText(mDataJoin.get(relativePosition).getProjectTitle());
             }
-            holder.relativeLayout.setOnClickListener(this);
+            holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProjectActivity.this, DetailProActivity.class);
+                    startActivity(intent);
+                }
+            });
+            holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    deleteProject(relativePosition);
+                    return false;
+                }
+            });
         }
 
         @Override
@@ -224,7 +290,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
 
         @Override
         public MainVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            int layout;
+            int layout = 0;
             switch (viewType) {
                 case VIEW_TYPE_HEADER:
                     layout = R.layout.item_persoanl_project_header;
@@ -233,7 +299,6 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                     layout = R.layout.item_personal_project;
                     break;
                 default:
-                    layout = R.layout.item_personal_project;
                     break;
             }
 
@@ -241,17 +306,11 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
             return new MainVH(v, this);
         }
 
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(ProjectActivity.this, DetailProActivity.class);
-            startActivity(intent);
-        }
-
         class MainVH extends SectionedViewHolder {
             final ProjectAdapter adapter;
             final TextView tvHeader;
-            TextView tvItem;
-            RelativeLayout relativeLayout;
+            final TextView tvItem;
+            final RelativeLayout relativeLayout;
 
             MainVH(View itemView, ProjectAdapter adapter) {
                 super(itemView);
@@ -264,5 +323,4 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         }
 
     }
-
 }

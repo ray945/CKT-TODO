@@ -67,7 +67,7 @@ public class FinishedTaskActivity extends AppCompatActivity {
     }
 
     private void setupWindowAnimations() {
-        transition = buildEnterTransition();;
+        transition = buildEnterTransition();
         getWindow().setEnterTransition(transition);
     }
 
