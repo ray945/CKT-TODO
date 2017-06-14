@@ -6,13 +6,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.yalantis.beamazingtoday.ui.widget.BatRecyclerView
-        android:id="@+id/rv_personal_project"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_plan"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        app:hint="@string/str_add_goal"
-        app:list_background="@color/textColorWhite"
-        />
+        android:layout_height="match_parent">
+
+        <com.yalantis.beamazingtoday.ui.widget.BatRecyclerView
+            android:id="@+id/rv_personal_project"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            app:hint="@string/str_add_goal"
+            app:list_background="@color/textColorWhite" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
 </LinearLayout>

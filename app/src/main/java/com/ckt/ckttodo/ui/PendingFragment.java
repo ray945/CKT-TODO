@@ -4,6 +4,7 @@ package com.ckt.ckttodo.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -29,8 +30,9 @@ import java.util.List;
  * Created by hcy on 17-5-25.
  */
 
-public class PendingFragment extends Fragment implements BatListener, OnItemClickListener, OnOutsideClickedListener {
+public class PendingFragment extends Fragment implements BatListener, OnItemClickListener, OnOutsideClickedListener, SwipeRefreshLayout.OnRefreshListener {
     private BatRecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private BatAdapter mAdapter;
     private List<BatModel> mGoals;
     private BatItemAnimator mAnimator;
@@ -39,6 +41,8 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View mView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_personal_project, container, false);
         mRecyclerView = (BatRecyclerView) mView.findViewById(R.id.rv_personal_project);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.swipe_plan);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         mGoals = new ArrayList<BatModel>() {{
             add(new Goal("first"));
             add(new Goal("second"));
@@ -101,4 +105,11 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
     }
 
 
+    @Override
+    public void onRefresh() {
+
+
+
+
+    }
 }

@@ -148,6 +148,7 @@
     <string name="me">我</string>
     <string name="input_project_name">输入项目名称</string>
     <string name="project_owner">项目归属</string>
+    <string name="delete_project_success">删除项目成功</string>
     <string name="project_visibility">项目公开性</string>
     <string name="project_is_not_null">请输入合法的项目名！</string>
     <string name="project_private">私有</string>

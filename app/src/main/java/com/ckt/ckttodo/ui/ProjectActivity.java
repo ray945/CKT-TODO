@@ -36,7 +36,9 @@ import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.Result;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.network.BeanConstant;
+import com.ckt.ckttodo.network.HTTPService;
 import com.ckt.ckttodo.network.HttpClient;
+import com.ckt.ckttodo.network.HttpConstants;
 import com.ckt.ckttodo.retrofit.ProjectService;
 import com.ckt.ckttodo.util.TranserverUtil;
 
@@ -53,6 +55,8 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+
+    public static final int PROJECT_NEW_REQUEST_CODE = 100;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLinearLayoutManager;
@@ -62,6 +66,14 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
     private List<Project> mDataOwner;
     private List<Project> mDataJoin;
     private int mUserId;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PROJECT_NEW_REQUEST_CODE && resultCode == NewProjectActivity.NEW_PROJECT_SUCCESS_RESULT_CODE) {
+            setDataAndNotifyDataChanged();
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,7 +94,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
     private void initUI() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.personal_project));
-        if (Build.VERSION.SDK_INT >= 21){
+        if (Build.VERSION.SDK_INT >= 21) {
             setupWindowAnimations();
         }
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_personal_project);
@@ -110,7 +122,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                 break;
             case R.id.add_project:
                 Intent intent = new Intent(ProjectActivity.this, NewProjectActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, PROJECT_NEW_REQUEST_CODE);
             default:
                 break;
         }
@@ -204,18 +216,25 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         mProjectAdapter.notifyDataSetChanged();
     }
 
+
     /**
-     *
-     * @param position
-     * Delete the selected item
+     * @param position Delete the selected item
      */
-    private void deleteProject(final int position) {
+    private void deleteProject(final int position, final int section) {
         new AlertDialog.Builder(this)
                 .setMessage(getResources().getString(R.string.notice_delete))
                 .setPositiveButton(getResources().getString(R.string.sure), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mProjectAdapter.notifyItemRemoved(position);
+                        String projectId = "";
+                        if (section == 0) {
+                            projectId = mDataOwner.get(position).getProjectId();
+                            mDataOwner.remove(position);
+                        } else {
+                            mDataJoin.get(position).getProjectId();
+                            mDataJoin.remove(position);
+                        }
+                        doDeleteRequest(projectId, position);
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -228,7 +247,47 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                 .show();
     }
 
-    public class ProjectAdapter extends SectionedRecyclerViewAdapter<ProjectAdapter.MainVH>{
+    private void doDeleteRequest(String projectId, final int position) {
+        User user = new User(this);
+        HttpClient.getHttpService(ProjectService.class).deleteProject(user.getmEmail(), user.getmToken(), projectId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Result>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Result value) {
+                        switch (value.getResultcode()) {
+                            case BeanConstant.SUCCESS_RESULT_CODE:
+                                Toast.makeText(ProjectActivity.this, getString(R.string.delete_project_success), Toast.LENGTH_SHORT).show();
+                                break;
+                            case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
+                                Toast.makeText(ProjectActivity.this, getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
+                                break;
+                            case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
+                                Toast.makeText(ProjectActivity.this, getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        mProjectAdapter.notifyItemRemoved(position);
+                    }
+                });
+
+
+    }
+
+    public class ProjectAdapter extends SectionedRecyclerViewAdapter<ProjectAdapter.MainVH> {
         @Override
         public int getSectionCount() {
             return 2;
@@ -261,7 +320,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         }
 
         @Override
-        public void onBindViewHolder(MainVH holder, int section, final int relativePosition, int absolutePosition) {
+        public void onBindViewHolder(MainVH holder, final int section, final int relativePosition, int absolutePosition) {
             if (section == 0) {
                 holder.tvItem.setText(mDataOwner.get(relativePosition).getProjectTitle());
             } else {
@@ -277,7 +336,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
             holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    deleteProject(relativePosition);
+                    deleteProject(relativePosition, section);
                     return false;
                 }
             });
