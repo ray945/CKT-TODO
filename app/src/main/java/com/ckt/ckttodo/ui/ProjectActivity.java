@@ -260,12 +260,12 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                     public void onNext(Result value) {
                         switch (value.getResultcode()) {
                             case BeanConstant.SUCCESS_RESULT_CODE:
-                                mHelper.delete(project);
                                 if (section == 0) {
                                     mDataOwner.remove(project);
                                 } else {
                                     mDataJoin.remove(project);
                                 }
+                                mHelper.delete(project);
                                 Toast.makeText(ProjectActivity.this, getString(R.string.delete_project_success), Toast.LENGTH_SHORT).show();
                                 break;
                             case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
