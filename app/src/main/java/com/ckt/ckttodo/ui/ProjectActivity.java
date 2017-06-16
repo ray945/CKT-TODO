@@ -226,15 +226,13 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                 .setPositiveButton(getResources().getString(R.string.sure), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String projectId = "";
+                        Project project = null;
                         if (section == 0) {
-                            projectId = mDataOwner.get(position).getProjectId();
-                            mDataOwner.remove(position);
+                            project = mDataOwner.get(position);
                         } else {
-                            mDataJoin.get(position).getProjectId();
-                            mDataJoin.remove(position);
+                            mDataJoin.get(position);
                         }
-                        doDeleteRequest(projectId, position);
+                        doDeleteRequest(project, position, section);
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -247,9 +245,9 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                 .show();
     }
 
-    private void doDeleteRequest(String projectId, final int position) {
+    private void doDeleteRequest(final Project project, final int position, final int section) {
         User user = new User(this);
-        HttpClient.getHttpService(ProjectService.class).deleteProject(user.getmEmail(), user.getmToken(), projectId)
+        HttpClient.getHttpService(ProjectService.class).deleteProject(user.getmEmail(), user.getmToken(), project.getProjectId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Result>() {
@@ -262,6 +260,12 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                     public void onNext(Result value) {
                         switch (value.getResultcode()) {
                             case BeanConstant.SUCCESS_RESULT_CODE:
+                                mHelper.delete(project);
+                                if (section == 0) {
+                                    mDataOwner.remove(project);
+                                } else {
+                                    mDataJoin.remove(project);
+                                }
                                 Toast.makeText(ProjectActivity.this, getString(R.string.delete_project_success), Toast.LENGTH_SHORT).show();
                                 break;
                             case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
@@ -280,7 +284,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
 
                     @Override
                     public void onComplete() {
-                        mProjectAdapter.notifyItemRemoved(position);
+                       setDataAndNotifyDataChanged();
                     }
                 });
 
