@@ -18,10 +18,10 @@ import retrofit2.http.Query;
 
 public interface PlanService {
 
-    @POST
+    @POST("project/plan")
     @FormUrlEncoded
     Observable<Result> postNewPlan(@FieldMap Map<String, String> map);
 
-    @GET
+    @GET("project/plan")
     Observable<Result<PostPlan>> getPlans(@Query("email") String email, @Query("token") String token, @Query("sprint") int sprint, @Query("status") int status);
 }

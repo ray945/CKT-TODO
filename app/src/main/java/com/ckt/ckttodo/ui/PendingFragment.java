@@ -1,6 +1,7 @@
 package com.ckt.ckttodo.ui;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,9 +11,15 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
+import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.Plan;
+import com.ckt.ckttodo.database.User;
+import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.model.Goal;
+import com.ckt.ckttodo.util.TranserverUtil;
 import com.yalantis.beamazingtoday.interfaces.AnimationType;
 import com.yalantis.beamazingtoday.interfaces.BatModel;
 import com.yalantis.beamazingtoday.listeners.BatListener;
@@ -25,6 +32,7 @@ import com.yalantis.beamazingtoday.ui.widget.BatRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by hcy on 17-5-25.
@@ -36,6 +44,14 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
     private BatAdapter mAdapter;
     private List<BatModel> mGoals;
     private BatItemAnimator mAnimator;
+    private  DetailProActivity mDetailProActivity;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mDetailProActivity = (DetailProActivity) context;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,8 +87,18 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
 
     @Override
     public void add(String string) {
-        mGoals.add(0, new Goal(string));
+        DatebaseHelper helper = DatebaseHelper.getInstance(getContext());
+        Plan plan = new Plan();
+        plan.setPlanId(UUID.randomUUID().toString());
+        UserInfo userInfo = helper.getRealm().where(UserInfo.class).contains(UserInfo.MEM_ID,String.valueOf(new User(getContext()).getmID())).findFirst();
+        if(mDetailProActivity.mProjectId==null){
+            Toast.makeText(getContext(), getString(R.string.project_id_not_null), Toast.LENGTH_SHORT).show();
+        }
+        plan.setProjectId(mDetailProActivity.mProjectId);
+        plan.setUserInfo(userInfo);
+
         mAdapter.notify(AnimationType.ADD, 0);
+        mDetailProActivity.postNewPlan(plan);
     }
 
     @Override

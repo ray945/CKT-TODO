@@ -21,6 +21,8 @@ public class UserInfo extends RealmObject{
     private String mem_icon;
 
 
+    public static final String MEM_ID = "mem_id";
+
     public Integer getMem_id() {
         return mem_id;
     }

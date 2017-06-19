@@ -151,6 +151,7 @@
     <string name="delete_project_success">删除项目成功</string>
     <string name="project_visibility">项目公开性</string>
     <string name="project_is_not_null">请输入合法的项目名！</string>
+    <string name="project_id_not_null">项目ID不能为空！</string>
     <string name="project_private">私有</string>
     <string name="project_private_description">仅项目成员可查看或编辑</string>
     <string name="project_public">公开</string>

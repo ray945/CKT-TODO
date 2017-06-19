@@ -228,6 +228,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                     public void onClick(DialogInterface dialog, int which) {
                         Project project = null;
                         if (section == 0) {
+                            Log.d("hcy", "onClick: position is: " + position + "size is:" + mDataOwner.size());
                             project = mDataOwner.get(position);
                         } else {
                             mDataJoin.get(position);
@@ -284,7 +285,8 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
 
                     @Override
                     public void onComplete() {
-                       setDataAndNotifyDataChanged();
+//                       setDataAndNotifyDataChanged();
+                        mProjectAdapter.notifyItemRemoved(position);
                     }
                 });
 
@@ -334,6 +336,11 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(ProjectActivity.this, DetailProActivity.class);
+                    if(section ==0) {
+                        intent.putExtra(Project.PROJECT_ID,mDataOwner.get(relativePosition).getProjectId());
+                    }else {
+                        intent.putExtra(Project.PROJECT_ID,mDataJoin.get(relativePosition).getProjectId());
+                    }
                     startActivity(intent);
                 }
             });

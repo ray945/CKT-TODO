@@ -36,7 +36,7 @@ public class Project extends RealmObject {
 
     public static final int PROJECT_PRIVATE = 0;
     public static final int PROJECT_PUBLIC = 1;
-
+    public static final String PROJECT_ID = "projectId";
 
     public String getProjectId() {
         return projectId;
