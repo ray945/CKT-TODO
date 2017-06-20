@@ -12,4 +12,5 @@
     <dimen name="card_corner">2dp</dimen>
     <dimen name="one_and_a_half_grid_unit">12dp</dimen>
     <dimen name="three_grid_unit">24dp</dimen>
+    <dimen name="btn_fab_size">56dp</dimen>
 </resources>

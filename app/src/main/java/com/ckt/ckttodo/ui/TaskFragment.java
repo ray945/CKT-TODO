@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ import com.ckt.ckttodo.databinding.TaskListItemBinding;
 import com.ckt.ckttodo.network.BeanConstant;
 import com.ckt.ckttodo.network.HttpClient;
 import com.ckt.ckttodo.retrofit.TaskService;
+import com.ckt.ckttodo.util.ScreenUtils;
 import com.ckt.ckttodo.util.TranserverUtil;
 import com.ckt.ckttodo.widgt.TaskDividerItemDecoration;
 import com.ckt.ckttodo.widgt.TimeWatchDialog;
@@ -56,6 +58,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class TaskFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    private static final int ANIM_DURATION_RECYCLERVIEW = 300;
     private FragmentTaskBinding mFragmentTaskBinding;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -101,8 +104,19 @@ public class TaskFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mRecyclerView.addItemDecoration(new TaskDividerItemDecoration(getContext(),
                 TaskDividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setAdapter(mAdapter);
+        setAnimate();
         return mFragmentTaskBinding.getRoot();
     }
+
+    private void setAnimate() {
+        int actionbarSize = ScreenUtils.dp2px(getContext(), 56);
+        mRecyclerView.setTranslationY(-actionbarSize);
+        mRecyclerView.animate()
+                .translationY(0)
+                .setDuration(ANIM_DURATION_RECYCLERVIEW)
+                .setStartDelay(400);
+    }
+
 
     private void screenTask() {
         if (mShowTasks == null) {

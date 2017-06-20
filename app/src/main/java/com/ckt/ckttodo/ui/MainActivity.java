@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -34,6 +35,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -54,11 +56,13 @@ import com.ckt.ckttodo.util.CircularAnimUtil;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.NotificationBroadcastReceiver;
 import com.ckt.ckttodo.util.PermissionUtil;
+import com.ckt.ckttodo.util.ScreenUtils;
 import com.ckt.ckttodo.util.VoiceInputUtil;
 import com.ckt.ckttodo.util.excelutil.EventTaskExcelBean;
 import com.ckt.ckttodo.util.excelutil.ExcelManager;
 import com.ckt.ckttodo.widgt.VoiceInputDialog;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.activity.NormalFilePickActivity;
 import com.vincent.filepicker.filter.entity.NormalFile;
@@ -88,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int MAIN_TO_NEW_TASK_CODE = 100;
     public static final int MAIN_TO_TASK_DETAIL_CODE = 200;
     public static final int MAIN_TO_NEW_PROJECT_CODE = 300;
+    private static final int ANIM_DURATION_TOOLBAR = 200;
+    private static final int ANIM_DURATION_FAB = 300;
     private ActivityMainBinding mActivityMainBinding;
     private MenuItem mMenuItemSure;
     private MenuItem mMenuItemFalse;
@@ -97,6 +103,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static String[] PERMISSION_LIST = new String[]{Constants.RECORD_AUDIO, Constants.READ_PHONE_STATE, Constants.READ_EXTERNAL_STORAGE, Constants.WRITE_EXTERNAL_STORAGE};
     private VoiceInputDialog mDialog;
     private ConnectivityManager mConnectivityManager;
+    private Toolbar mToolbar;
+    private TabLayout mTabLayout;
+    private FloatingActionsMenu floatingActionsMenu;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -178,19 +187,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void initUI() {
         mDialog = new VoiceInputDialog(this, this);
         mActivityMainBinding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
-        Toolbar toolbar = mActivityMainBinding.appBarMain.toolbar;
-        toolbar.setTitle(R.string.app_name);
-        setSupportActionBar(toolbar);
+        mToolbar = mActivityMainBinding.appBarMain.toolbar;
+        mToolbar.setTitle(R.string.app_name);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.syncState();
         drawer.addDrawerListener(toggle);
 
 
         NavigationView navigationView = mActivityMainBinding.navView;
         navigationView.setNavigationItemSelectedListener(this);
+        disableNavigationViewScrollbars(navigationView);
 
         User user = new User(this);
         //侧滑栏 用户名相关展示
@@ -237,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         };
 
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -265,18 +277,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         viewPager.setAdapter(fragmentPagerAdapter);
-        TabLayout tabLayout = mActivityMainBinding.appBarMain.contentMain.tabLayout;
-        tabLayout.setupWithViewPager(viewPager);
+        mTabLayout = mActivityMainBinding.appBarMain.contentMain.tabLayout;
+        mTabLayout.setupWithViewPager(viewPager);
+
+        floatingActionsMenu = mActivityMainBinding.appBarMain.fam;
 
         mActivityMainBinding.appBarMain.addVoid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //                SharedPreferences preferences = MainActivity.this.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
-                //                boolean isFirstTime = preferences.getBoolean(IS_FIRST_CHECK_PERMISSION, true);
-                //                if (isFirstTime) {
-                //                    getTheVoiceInput();
-                //                    preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
-                //                } else {
                 mActivityMainBinding.appBarMain.fam.collapse();
                 if (VoiceInputUtil.isNetAvaliable(mConnectivityManager)) {
 
@@ -284,8 +292,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.net_not_connected), Toast.LENGTH_SHORT).show();
                 }
-
-                //                }
             }
         });
         mActivityMainBinding.appBarMain.addText.setOnClickListener(new View.OnClickListener() {
@@ -313,7 +319,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 switch (viewPager.getCurrentItem()) {
                     case 0:
-                        //                        getTheVoiceInput();
                         break;
                     case 1:
                         startActivityForResult(new Intent(MainActivity.this, NewProjectActivity.class), MAIN_TO_NEW_PROJECT_CODE);
@@ -329,13 +334,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    private void disableNavigationViewScrollbars(NavigationView navigationView) {
+        if (navigationView != null) {
+            NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
+            if (navigationMenuView != null) {
+                navigationMenuView.setVerticalScrollBarEnabled(false);
+            }
+        }
+    }
+
+    private void setAnimate() {
+        int actionbarSize = ScreenUtils.dp2px(this,56);
+        mToolbar.setTranslationY(-actionbarSize);
+        mToolbar.animate()
+                .translationY(0)
+                .setDuration(ANIM_DURATION_TOOLBAR)
+                .setStartDelay(300);
+
+        mTabLayout.setTranslationY(-actionbarSize);
+        mTabLayout.animate()
+                .translationY(0)
+                .setDuration(ANIM_DURATION_FAB)
+                .setStartDelay(400);
+
+        floatingActionsMenu.setTranslationY(2 * getResources().getDimensionPixelOffset(R.dimen.btn_fab_size));
+        floatingActionsMenu.animate()
+                .translationY(0)
+                .setDuration(ANIM_DURATION_FAB)
+                .setStartDelay(400);
+
+    }
+
     private void getTheVoiceInput() {
         if (ActivityCompat.checkSelfPermission(this, Constants.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Constants.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Constants.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Constants.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             requestContactsPermission();
 
         }
-       /* mVoiceInput.startListening();
-        Log.e(TAG, "task click " + mVoiceInput.isListening());*/
     }
 
     private void requestContactsPermission() {
@@ -395,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        setAnimate();
         return true;
     }
 
