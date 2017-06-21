@@ -102,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
             onLoginFailed();
             return;
         }
-        Log.d(TAG, "login: 1111111111111111");
 
 //        loginBtn.setEnabled(false);
         mProgressDialog = new ProgressDialog(LoginActivity.this,
@@ -116,35 +115,6 @@ public class LoginActivity extends AppCompatActivity {
         String passwordText = et_password.getText().toString().trim();
 
         UserService userService = HttpClient.getHttpService(UserService.class);
-//        userService.doLogin(emailText, passwordText)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<ResponseBody>() {
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(ResponseBody value) {
-//                        try {
-//                            Log.d(TAG, "onNext: " + value.string());
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
-
         userService.doLogin(emailText, passwordText)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
