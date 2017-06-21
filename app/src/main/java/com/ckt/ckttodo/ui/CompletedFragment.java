@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +24,9 @@ import com.yalantis.beamazingtoday.listeners.OnItemClickListener;
 import com.yalantis.beamazingtoday.listeners.OnOutsideClickedListener;
 import com.yalantis.beamazingtoday.ui.adapter.BatAdapter;
 import com.yalantis.beamazingtoday.ui.animator.BatItemAnimator;
-import com.yalantis.beamazingtoday.ui.callback.BatCallback;
 import com.yalantis.beamazingtoday.ui.widget.BatRecyclerView;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +37,7 @@ import java.util.UUID;
 public class CompletedFragment extends Fragment implements BatListener, OnItemClickListener, OnOutsideClickedListener {
     private BatRecyclerView mRecyclerView;
     private BatAdapter mAdapter;
-    private LinkedList<BatModel> mGoals;
+    private ArrayList<BatModel> mGoals;
     private BatItemAnimator mAnimator;
     private DetailProActivity mDetailProActivity;
     private DatebaseHelper mHelper;
@@ -55,7 +52,7 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View mView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_personal_project, container, false);
         mRecyclerView = (BatRecyclerView) mView.findViewById(R.id.rv_personal_project);
-        mGoals = new LinkedList<>();
+        mGoals = new ArrayList<>();
         mAnimator = new BatItemAnimator();
         mAdapter = new BatAdapter(mGoals, this, mAnimator);
         mAdapter.setOnItemClickListener(this);
@@ -64,7 +61,7 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
         mRecyclerView.getView().setAdapter(mAdapter);
         mRecyclerView.getView().setItemAnimator(mAnimator);
         mRecyclerView.setAddItemListener(this);
-//        sceenData();
+        sceenData();
         mHelper = DatebaseHelper.getInstance(getContext());
         mView.findViewById(R.id.root).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,14 +72,14 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
         return mView;
     }
 
-//    private void sceenData() {
-//        mHelper = DatebaseHelper.getInstance(getContext());
-//        List<Plan> planList = mHelper.getRealm().where(Plan.class).contains(Project.PROJECT_ID, mDetailProActivity.mProjectId).findAll();
-//        for (Plan plan : planList) {
-//            mGoals.add(new Goal(plan.getProjectId()));
-//        }
-//        mAdapter.notifyDataSetChanged();
-//    }
+    private void sceenData() {
+        mHelper = DatebaseHelper.getInstance(getContext());
+        List<Plan> planList = mHelper.getRealm().where(Plan.class).contains(Project.PROJECT_ID, mDetailProActivity.mProjectId).findAll();
+        for (Plan plan : planList) {
+            mGoals.add(new Goal(plan.getPlanName()));
+        }
+        mAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void add(String string) {
@@ -95,11 +92,12 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
         plan.setProjectId(mDetailProActivity.mProjectId);
         plan.setUserInfo(userInfo);
         plan.setPlanName(string);
+        mHelper.insert(plan);
         mDetailProActivity.postNewPlan(plan);
     }
 
     public void postPlanSuccessful(String string) {
-        mGoals.addFirst(new Goal(string));
+        mGoals.add(0, new Goal(string));
         mAdapter.notify(AnimationType.ADD, 0);
     }
 
@@ -132,5 +130,6 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
     public void onOutsideClicked() {
         mRecyclerView.revertAnimation();
     }
+
 
 }
