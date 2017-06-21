@@ -44,7 +44,7 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
     private BatAdapter mAdapter;
     private List<BatModel> mGoals;
     private BatItemAnimator mAnimator;
-    private  DetailProActivity mDetailProActivity;
+    private DetailProActivity mDetailProActivity;
 
     @Override
     public void onAttach(Context context) {
@@ -90,16 +90,21 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
         DatebaseHelper helper = DatebaseHelper.getInstance(getContext());
         Plan plan = new Plan();
         plan.setPlanId(UUID.randomUUID().toString());
-        UserInfo userInfo = helper.getRealm().where(UserInfo.class).contains(UserInfo.MEM_ID,String.valueOf(new User(getContext()).getmID())).findFirst();
-        if(mDetailProActivity.mProjectId==null){
+        UserInfo userInfo = helper.getRealm().where(UserInfo.class).contains(UserInfo.MEM_EMAIL, String.valueOf(new User(getContext()).getmEmail())).findFirst();
+        if (mDetailProActivity.mProjectId == null) {
             Toast.makeText(getContext(), getString(R.string.project_id_not_null), Toast.LENGTH_SHORT).show();
         }
         plan.setProjectId(mDetailProActivity.mProjectId);
         plan.setUserInfo(userInfo);
-
-        mAdapter.notify(AnimationType.ADD, 0);
+        plan.setPlanName(string);
         mDetailProActivity.postNewPlan(plan);
     }
+
+    public void postPlanSuccessful(String string) {
+        mGoals.add(0, new Goal(string));
+        mAdapter.notify(AnimationType.ADD, 0);
+    }
+
 
     @Override
     public void delete(int position) {
@@ -133,8 +138,6 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
 
     @Override
     public void onRefresh() {
-
-
 
 
     }

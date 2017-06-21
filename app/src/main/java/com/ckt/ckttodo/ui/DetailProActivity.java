@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
@@ -44,10 +45,13 @@ public class DetailProActivity extends AppCompatActivity {
 
     private static final String TAG = "DetailProActivity";
     private ViewPager mViewPager;
-    private Fragment mFragment;
+    private PendingFragment mPendingFragment;
+    private OngoingFragment mOngoingFragment;
+    private CompletedFragment mCompletedFragment;
     private TabLayout mTabLayout;
     protected String mProjectId;
     private Spinner mSpinner;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,27 +67,31 @@ public class DetailProActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.detail_view_pager);
         mSpinner = (Spinner) findViewById(R.id.nice_spinner);
         List<String> items = new LinkedList<>(Arrays.asList("Sprint1", "Sprint2", "Sprint3", "Sprint4", "Sprint5"));
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.simple_spinner_item, android.R.id.text1,  items);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.simple_spinner_item, android.R.id.text1, items);
         arrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(arrayAdapter);
 
         FragmentPagerAdapter mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
+                Fragment fragment = new Fragment();
                 switch (position) {
                     case 0:
-                        mFragment = new PendingFragment();
+                        mPendingFragment = new PendingFragment();
+                        fragment = mPendingFragment;
                         break;
                     case 1:
-                        mFragment = new OngoingFragment();
+                        mOngoingFragment = new OngoingFragment();
+                        fragment = mOngoingFragment;
                         break;
                     case 2:
-                        mFragment = new CompletedFragment();
+                        mCompletedFragment = new CompletedFragment();
+                        fragment = mCompletedFragment;
                         break;
                     default:
                         break;
                 }
-                return mFragment;
+                return fragment;
             }
 
             @Override
@@ -116,7 +124,7 @@ public class DetailProActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void postNewPlan(Plan plan) {
+    public void postNewPlan(final Plan plan) {
 
         User user = new User(this);
         Map<String, String> postMap = new HashMap<>();
@@ -130,6 +138,7 @@ public class DetailProActivity extends AppCompatActivity {
         jPlan.put("sprint", plan.getSprint());
         jPlan.put("plan_state", plan.getStatus());
         postMap.put("plan", jPlan.toJSONString());
+
         HttpClient.getHttpService(PlanService.class).postNewPlan(postMap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -141,12 +150,30 @@ public class DetailProActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(Result value) {
-                        Log.d(TAG, "onNext: " + value.getResultcode() + " Fragment type: " + (mFragment instanceof PendingFragment));
+                        switch (value.getResultcode()) {
+                            case BeanConstant.SUCCESS_RESULT_CODE:
+                                if (mViewPager.getCurrentItem() == 0) {
+                                    mPendingFragment.postPlanSuccessful(plan.getPlanName());
+                                } else if (mViewPager.getCurrentItem() == 1) {
+                                    mOngoingFragment.postPlanSuccessful(plan.getPlanName());
+                                } else if (mViewPager.getCurrentItem() == 2) {
+                                    mCompletedFragment.postPlanSuccessful(plan.getPlanName());
+                                }
+                                break;
+                            case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
+                                Toast.makeText(DetailProActivity.this, getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
+                                break;
+                            case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
+                                Toast.makeText(DetailProActivity.this, getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
+                                break;
+
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
+                        Toast.makeText(DetailProActivity.this, getString(R.string.request_service_fail), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

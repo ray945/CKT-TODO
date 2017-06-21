@@ -22,6 +22,7 @@ public class UserInfo extends RealmObject{
 
 
     public static final String MEM_ID = "mem_id";
+    public static final String MEM_EMAIL = "mem_email";
 
     public Integer getMem_id() {
         return mem_id;

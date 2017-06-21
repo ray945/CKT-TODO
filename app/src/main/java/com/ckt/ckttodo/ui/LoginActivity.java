@@ -146,6 +146,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
+                        mProgressDialog.dismiss();
                         e.printStackTrace();
                     }
 

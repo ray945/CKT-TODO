@@ -7,10 +7,10 @@ package com.ckt.ckttodo.network;
 public class HttpConstants {
 
     //服务器请求基础路径
-//    public static final String SERVER_HOST = "http://10.120.1.135:8080/todo/";
+    public static final String SERVER_HOST = "http://10.120.1.135:8080/todo/";
 
 
-    public static final String SERVER_HOST = "http://114.215.87.217:8080/TODO-SSM/";
+//    public static final String SERVER_HOST = "http://114.215.87.217:8080/TODO-SSM/";
 
     //新建用户接口
     public static final String PATH_SIGNUP = "/user";
