@@ -16,7 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ActivityNewPlanBinding;
@@ -161,10 +161,10 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
             if (planStartTime > planEndTime) {
                 toast();
             } else {
-                DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
+                DatabaseHelper.getInstance(NewPlanActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        Project sProject = DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().where(Project.class).equalTo(PROJECT_ID, mProjectId).findFirst();
+                        Project sProject = DatabaseHelper.getInstance(NewPlanActivity.this).getRealm().where(Project.class).equalTo(PROJECT_ID, mProjectId).findFirst();
                         if ("2".equals(tag)) {
                             plan.setPlanContent(mActivityNewPlanBinding.etPlanDescription.getText().toString().trim());
                             plan.setPlanName(mActivityNewPlanBinding.etPlanTitle.getText().toString().trim());
@@ -220,10 +220,10 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
         if ("2".equals(tag)) {
             getSupportActionBar().setTitle("修改计划");
             planId = intent.getStringExtra(PLAN_ID);
-            DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
+            DatabaseHelper.getInstance(NewPlanActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    plan = DatebaseHelper.getInstance(NewPlanActivity.this).getRealm().where(Plan.class).equalTo(PLAN_ID, planId).findFirst();
+                    plan = DatabaseHelper.getInstance(NewPlanActivity.this).getRealm().where(Plan.class).equalTo(PLAN_ID, planId).findFirst();
                 }
             });
             mActivityNewPlanBinding.etPlanTitle.setText(plan.getPlanName());

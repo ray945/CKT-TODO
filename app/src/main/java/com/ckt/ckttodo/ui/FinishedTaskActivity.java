@@ -22,7 +22,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.databinding.ActivityFinishedTaskBinding;
 import com.ckt.ckttodo.databinding.TaskListItemBinding;
@@ -50,7 +50,7 @@ public class FinishedTaskActivity extends AppCompatActivity {
     private FinishedTaskRecyclerAdapter mAdapter;
     private boolean isShowCheckBox = false;
     private Map<Integer, Boolean> mItemSelectedStatus = new HashMap<>();
-    private DatebaseHelper mHelper = DatebaseHelper.getInstance(this);
+    private DatabaseHelper mHelper = DatabaseHelper.getInstance(this);
     private Transition transition;
 
     @Override

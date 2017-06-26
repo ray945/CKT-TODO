@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.Note;
 import com.ckt.ckttodo.databinding.FragmentNoteBinding;
 import com.ckt.ckttodo.databinding.NoteItemBinding;
@@ -78,7 +78,7 @@ public class NoteFragment extends Fragment {
     private View init(LayoutInflater inflater) {
         mFragmentNoteBinding = FragmentNoteBinding.inflate(inflater);
         rv_note = mFragmentNoteBinding.rvNote;
-        baseList = DatebaseHelper.getInstance(getContext()).findAll(Note.class);
+        baseList = DatabaseHelper.getInstance(getContext()).findAll(Note.class);
         noteAdapter = new NoteAdapter(baseList);
         mContext = getContext();
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
@@ -111,7 +111,7 @@ public class NoteFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // 点击“确认”后的操作 
-                        DatebaseHelper.getInstance(mContext).delete(baseList.get(position));
+                        DatabaseHelper.getInstance(mContext).delete(baseList.get(position));
                         noteAdapter.notifyDataSetChanged();
                     }
                 }).setNegativeButton("返回", new DialogInterface.OnClickListener() {
@@ -127,7 +127,7 @@ public class NoteFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        baseList = DatebaseHelper.getInstance(getContext()).findAll(Note.class);
+        baseList = DatabaseHelper.getInstance(getContext()).findAll(Note.class);
         noteAdapter.notifyDataSetChanged();
     }
 

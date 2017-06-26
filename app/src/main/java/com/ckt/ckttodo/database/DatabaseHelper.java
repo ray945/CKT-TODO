@@ -17,19 +17,19 @@ import io.realm.RealmResults;
 import io.realm.Realm.Transaction;
 import io.realm.exceptions.RealmMigrationNeededException;
 
-public class DatebaseHelper {
+public class DatabaseHelper {
 
-    private static final String TAG = "DatebaseHelper";
+    private static final String TAG = "DatabaseHelper";
 
-    private static DatebaseHelper mInstance;
+    private static DatabaseHelper mInstance;
 
     private static Object lock = new Object();
 
     private Realm mRealm;
 
-    private DatebaseHelper(Context context) {
+    private DatabaseHelper(Context context) {
        try {
-           Log.e(TAG,"DatebaseHelper configuration ");
+           Log.e(TAG,"DatabaseHelper configuration ");
            RealmConfiguration configuration = new RealmConfiguration.Builder(context)
                    .name(RealmConfiguration.DEFAULT_REALM_NAME)
                    .schemaVersion(3)
@@ -56,10 +56,10 @@ public class DatebaseHelper {
         }
     }
 
-    public static DatebaseHelper getInstance(Context context) {
+    public static DatabaseHelper getInstance(Context context) {
         synchronized (lock) {
             if (mInstance == null) {
-                mInstance = new DatebaseHelper(context);
+                mInstance = new DatabaseHelper(context);
             }
             return mInstance;
         }

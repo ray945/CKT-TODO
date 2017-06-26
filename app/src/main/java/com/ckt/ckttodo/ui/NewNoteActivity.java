@@ -13,13 +13,12 @@ import android.transition.Transition;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.Note;
 import com.ckt.ckttodo.databinding.ActivityNewNoteBinding;
 
@@ -154,7 +153,7 @@ public class NewNoteActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        baseList = DatebaseHelper.getInstance(this).findAll(Note.class);
+        baseList = DatabaseHelper.getInstance(this).findAll(Note.class);
         mIntent = getIntent();
         mNoteTag = mIntent.getStringExtra("noteTag");
         if (mNoteTag.equals("1")) {
@@ -176,7 +175,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
 
     private void updateNote() {
-        DatebaseHelper.getInstance(this).getRealm().executeTransaction(new Realm.Transaction() {
+        DatabaseHelper.getInstance(this).getRealm().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 note.setNoteContent(et_noteContent.getText().toString().trim());
@@ -195,7 +194,7 @@ public class NewNoteActivity extends AppCompatActivity {
         note.setNoteContent(et_noteContent.getText().toString().trim());
         note.setNoteTitle(et_noteTitle.getText().toString().trim());
         note.setNoteId(UUID.randomUUID().toString());
-        DatebaseHelper.getInstance(this).insert(note);
+        DatabaseHelper.getInstance(this).insert(note);
         mIntent.putExtra("new", "1");
         setResult(1, mIntent);
         Toast.makeText(this, "新建成功", Toast.LENGTH_SHORT).show();

@@ -9,7 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,9 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.PostProject;
@@ -42,7 +40,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import retrofit2.Retrofit;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -68,7 +65,7 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         FragmentProjectBinding binding = FragmentProjectBinding.inflate(inflater);
         RecyclerView rvProjects = binding.rvProject;
-        mProjectList = DatebaseHelper.getInstance(getContext()).findAll(Project.class);
+        mProjectList = DatabaseHelper.getInstance(getContext()).findAll(Project.class);
 
         mSwipeRefreshLayout = binding.swipeProject;
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -97,26 +94,26 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                     for (int j = 0; j < plans.get(i).getEventTasks().size(); j++) {
                                         mTasks.add(plans.get(i).getEventTasks().get(j));
                                     }
-                                    DatebaseHelper.getInstance(getContext()).getRealm().executeTransaction(new Realm.Transaction() {
+                                    DatabaseHelper.getInstance(getContext()).getRealm().executeTransaction(new Realm.Transaction() {
                                         @Override
                                         public void execute(Realm realm) {
                                             for (EventTask task : mTasks) {
                                                 task.setPlanId("");
                                                 realm.copyToRealmOrUpdate(task);
-//                                              DatebaseHelper.getInstance(getContext()).delete(task);
+//                                              DatabaseHelper.getInstance(getContext()).delete(task);
                                             }
                                             currentPlan.getEventTasks().clear();
                                             realm.copyToRealmOrUpdate(currentPlan);
                                         }
                                     });
                                 }
-                                DatebaseHelper.getInstance(getContext()).delete(plans.get(i));
+                                DatabaseHelper.getInstance(getContext()).delete(plans.get(i));
                             }
                             mNotifyTask = (NotifyTask) getActivity();
                             mNotifyTask.notifyTask();
                             mAdapter.flash();
                         }
-                        DatebaseHelper.getInstance(getContext()).delete(mProjectList.get(position));
+                        DatabaseHelper.getInstance(getContext()).delete(mProjectList.get(position));
                         mAdapter.notifyDataSetChanged();
                     }
                 }).setNegativeButton("返回", new DialogInterface.OnClickListener() {
@@ -134,7 +131,7 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     public void notifyDataChange() {
-        mProjectList = DatebaseHelper.getInstance(getContext()).findAll(Project.class);
+        mProjectList = DatabaseHelper.getInstance(getContext()).findAll(Project.class);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -149,7 +146,7 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         ProjectService projectService = HttpClient.getHttpService(ProjectService.class);
         User user = new User(getContext());
-        projectService.getProjects(user.getmEmail(), user.getmToken(), user.getmEmail())
+        projectService.getProjects(user.getEmail(), user.getToken(), user.getEmail())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Result<PostProject>>() {
@@ -188,7 +185,7 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     private void saveAndNotifyDataChange(List<PostProject> resultData) {
-        DatebaseHelper helper = DatebaseHelper.getInstance(getContext());
+        DatabaseHelper helper = DatabaseHelper.getInstance(getContext());
         if (resultData.size() == 0) {
             return;
         }

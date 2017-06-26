@@ -14,11 +14,10 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.Result;
 import com.ckt.ckttodo.database.User;
-import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.network.BeanConstant;
 import com.ckt.ckttodo.network.HttpClient;
 import com.ckt.ckttodo.retrofit.ProjectService;
@@ -98,7 +97,7 @@ public class NewProjectActivity extends AppCompatActivity {
     }
 
     private void checkAndCommit() {
-        DatebaseHelper helper = DatebaseHelper.getInstance(this);
+        DatabaseHelper helper = DatabaseHelper.getInstance(this);
         if (TextUtils.isEmpty(mEditTextProjectName.getText()) || mEditTextProjectName.getText().toString().replace(" ", "").length() == 0) {
             Toast.makeText(this, getResources().getString(R.string.project_is_not_null), Toast.LENGTH_SHORT).show();
             return;
@@ -120,8 +119,9 @@ public class NewProjectActivity extends AppCompatActivity {
             project.setProjectSummary(mEditTextProjectDescription.getText().toString());
         }
         project.setCreateTime(System.currentTimeMillis());
-        project.setOwnerId(new User(this).getmID());
+        project.setOwnerId(new User(this).getId());
         project.setProjectId(UUID.randomUUID().toString());
+        project.setSprintCount(1);
         project.setSync(false);
         helper.insert(project);
         // post project to service
@@ -139,11 +139,11 @@ public class NewProjectActivity extends AppCompatActivity {
             proStr.put("projcet_description", project.getProjectSummary());
         }
         User user = new User(this);
-        proStr.put("mem_id", user.getmID());
+        proStr.put("mem_id", user.getId());
         Map<String, String> map = new HashMap<>();
         map.put("postproject", proStr.toString());
-        map.put("email", user.getmEmail());
-        map.put("token", user.getmToken());
+        map.put("email", user.getEmail());
+        map.put("token", user.getToken());
 
         projectService.postNewProject(map)
                 .subscribeOn(Schedulers.io())

@@ -3,7 +3,7 @@ package com.ckt.ckttodo.util;
 import android.content.Context;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Note;
 import com.ckt.ckttodo.database.Plan;
@@ -38,17 +38,17 @@ public class InitDataBase {
             project.setCreateTime(time);
             project.setEndTime(time);
             project.setLastUpdateTime(time);
-            DatebaseHelper.getInstance(context).insert(project);
+            DatabaseHelper.getInstance(context).insert(project);
             final String projectId = project.getProjectId();
 
             for (int j = 0; j < 4; j++) {
                 final String planId = UUID.randomUUID().toString();
-                DatebaseHelper.getInstance(context)
+                DatabaseHelper.getInstance(context)
                     .getRealm()
                     .executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            Project sProject = DatebaseHelper.getInstance(context)
+                            Project sProject = DatabaseHelper.getInstance(context)
                                 .getRealm()
                                 .where(Project.class)
                                 .equalTo(PROJECT_ID, projectId)
@@ -67,17 +67,17 @@ public class InitDataBase {
                             plan.setPredictSpendTime(20f);
                             plan.setProjectId(projectId);
                             sProject.getPlans().add(plan);
-                            //                        DatebaseHelper.getInstance(context).insert(plan);
+                            //                        DatabaseHelper.getInstance(context).insert(plan);
                         }
                     });
 
                 if (j == 0) {
-                    DatebaseHelper.getInstance(context)
+                    DatabaseHelper.getInstance(context)
                         .getRealm()
                         .executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
-                                Plan sPlan = DatebaseHelper.getInstance(context)
+                                Plan sPlan = DatabaseHelper.getInstance(context)
                                     .getRealm()
                                     .where(Plan.class)
                                     .equalTo(PLAN_ID, planId)
@@ -103,12 +103,12 @@ public class InitDataBase {
                             }
                         });
                 } else if (j == 1) {
-                    DatebaseHelper.getInstance(context)
+                    DatabaseHelper.getInstance(context)
                         .getRealm()
                         .executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
-                                Plan sPlan = DatebaseHelper.getInstance(context)
+                                Plan sPlan = DatabaseHelper.getInstance(context)
                                     .getRealm()
                                     .where(Plan.class)
                                     .equalTo(PLAN_ID, planId)
@@ -134,12 +134,12 @@ public class InitDataBase {
                             }
                         });
                 } else if (j == 2) {
-                    DatebaseHelper.getInstance(context)
+                    DatabaseHelper.getInstance(context)
                         .getRealm()
                         .executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
-                                Plan sPlan = DatebaseHelper.getInstance(context)
+                                Plan sPlan = DatabaseHelper.getInstance(context)
                                     .getRealm()
                                     .where(Plan.class)
                                     .equalTo(PLAN_ID, planId)
@@ -179,6 +179,6 @@ public class InitDataBase {
         note.setNoteContent(context.getResources().getString(R.string.init_note_content));
         note.setNoteCreateTime(time);
         note.setNoteUpdateTime(time);
-        DatebaseHelper.getInstance(context).insert(note);
+        DatabaseHelper.getInstance(context).insert(note);
     }
 }

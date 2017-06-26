@@ -1,9 +1,25 @@
-<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
-    style="?android:attr/spinnerDropDownItemStyle"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="?attr/listPreferredItemHeightSmall"
-    android:ellipsize="marquee"
-    android:gravity="center"
-    android:maxLines="1"
-    android:textAlignment="gravity" />
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <CheckedTextView
+        android:id="@+id/spinner_sprint_content"
+        style="?android:attr/spinnerDropDownItemStyle"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/listPreferredItemHeightSmall"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textAlignment="gravity" />
+
+    <TextView
+        android:layout_gravity="center"
+        android:id="@+id/spinner_sprint_add"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/listPreferredItemHeightSmall"
+        android:drawableLeft="@drawable/ic_add_black_24dp"
+        android:gravity="center"
+        android:text="@string/add_new_sprint"
+        android:visibility="gone" />
+</LinearLayout>

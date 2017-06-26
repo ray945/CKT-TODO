@@ -7,19 +7,19 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.Plan;
+import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.model.Goal;
-import com.ckt.ckttodo.util.TranserverUtil;
+import com.ckt.ckttodo.util.Constants;
 import com.yalantis.beamazingtoday.interfaces.AnimationType;
 import com.yalantis.beamazingtoday.interfaces.BatModel;
 import com.yalantis.beamazingtoday.listeners.BatListener;
@@ -27,7 +27,6 @@ import com.yalantis.beamazingtoday.listeners.OnItemClickListener;
 import com.yalantis.beamazingtoday.listeners.OnOutsideClickedListener;
 import com.yalantis.beamazingtoday.ui.adapter.BatAdapter;
 import com.yalantis.beamazingtoday.ui.animator.BatItemAnimator;
-import com.yalantis.beamazingtoday.ui.callback.BatCallback;
 import com.yalantis.beamazingtoday.ui.widget.BatRecyclerView;
 
 import java.util.ArrayList;
@@ -45,6 +44,7 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
     private List<BatModel> mGoals;
     private BatItemAnimator mAnimator;
     private DetailProActivity mDetailProActivity;
+    private DatabaseHelper mHelper;
 
     @Override
     public void onAttach(Context context) {
@@ -59,23 +59,16 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
         mRecyclerView = (BatRecyclerView) mView.findViewById(R.id.rv_personal_project);
         mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.swipe_plan);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mGoals = new ArrayList<BatModel>() {{
-            add(new Goal("first"));
-            add(new Goal("second"));
-            add(new Goal("third"));
-            add(new Goal("fourth"));
-            add(new Goal("fifth"));
-        }};
+        mGoals = new ArrayList<BatModel>();
         mAnimator = new BatItemAnimator();
         mAdapter = new BatAdapter(mGoals, this, mAnimator);
         mAdapter.setOnItemClickListener(this);
         mAdapter.setOnOutsideClickListener(this);
         mRecyclerView.getView().setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.getView().setAdapter(mAdapter);
-
         mRecyclerView.getView().setItemAnimator(mAnimator);
         mRecyclerView.setAddItemListener(this);
-
+        sceenData();
         mView.findViewById(R.id.root).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,23 +78,38 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
         return mView;
     }
 
+    private void sceenData() {
+        mGoals.clear();
+        int sprint = getContext().getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE).getInt(Constants.CURRENT_SPRINT, 1);
+        mHelper = DatabaseHelper.getInstance(getContext());
+        List<Plan> planList = mHelper.getRealm().where(Plan.class).contains(Project.PROJECT_ID, mDetailProActivity.project.getProjectId()).findAll();
+        for (Plan plan : planList) {
+            if (plan.getStatus() == Plan.PLAN_PENDING && sprint == plan.getSprint()) {
+                mGoals.add(new Goal(plan.getPlanName(), plan.getPlanId()));
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void add(String string) {
-        DatebaseHelper helper = DatebaseHelper.getInstance(getContext());
+        DatabaseHelper helper = DatabaseHelper.getInstance(getContext());
         Plan plan = new Plan();
+        plan.setSprint(mDetailProActivity.lastPosition + 1);
         plan.setPlanId(UUID.randomUUID().toString());
-        UserInfo userInfo = helper.getRealm().where(UserInfo.class).contains(UserInfo.MEM_EMAIL, String.valueOf(new User(getContext()).getmEmail())).findFirst();
-        if (mDetailProActivity.mProjectId == null) {
+        plan.setStatus(Plan.PLAN_PENDING);
+        UserInfo userInfo = helper.getRealm().where(UserInfo.class).contains(UserInfo.MEM_EMAIL, String.valueOf(new User(getContext()).getEmail())).findFirst();
+        if (mDetailProActivity.project.getProjectId()== null) {
             Toast.makeText(getContext(), getString(R.string.project_id_not_null), Toast.LENGTH_SHORT).show();
         }
-        plan.setProjectId(mDetailProActivity.mProjectId);
+        plan.setProjectId(mDetailProActivity.project.getProjectId());
         plan.setUserInfo(userInfo);
         plan.setPlanName(string);
         mDetailProActivity.postNewPlan(plan);
     }
 
-    public void postPlanSuccessful(String string) {
-        mGoals.add(0, new Goal(string));
+    public void postPlanSuccessful(String string, String planId) {
+        mGoals.add(0, new Goal(string, planId));
         mAdapter.notify(AnimationType.ADD, 0);
     }
 
@@ -139,6 +147,15 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
     @Override
     public void onRefresh() {
 
+        int sprint = getContext().getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE).getInt(Constants.CURRENT_SPRINT, 1);
+        mDetailProActivity.getCurrentSprintData(sprint, Plan.PLAN_PENDING);
+    }
 
+    public void notifySprintChanged() {
+        sceenData();
+    }
+
+    public void onRefreshComplete() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

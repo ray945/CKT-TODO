@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.databinding.ActivityScreenBinding;
 import com.ckt.ckttodo.databinding.ItemLockBinding;
@@ -122,7 +122,7 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
 
     public void getData() {
         mUnFinishedTasks.clear();
-        RealmResults<EventTask> tasks = DatebaseHelper.getInstance(LockScreenActivity.this).getRealm().where(EventTask.class).findAllSorted(EventTask.TASK_STATUS, false);
+        RealmResults<EventTask> tasks = DatabaseHelper.getInstance(LockScreenActivity.this).getRealm().where(EventTask.class).findAllSorted(EventTask.TASK_STATUS, false);
         for (EventTask task : tasks) {
             if (task.getTaskStatus() != EventTask.DONE && task.getTaskStatus() != EventTask.BLOCK && task.getTaskStatus() != EventTask.PENDING && time(task.getTaskStartTime()).equals(time(System.currentTimeMillis()))) {
                 mUnFinishedTasks.add(task);

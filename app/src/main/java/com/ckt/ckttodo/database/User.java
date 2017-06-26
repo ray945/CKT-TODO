@@ -14,156 +14,156 @@ public class User {
 
     public static final String MEM_STATUS = "mStatus";
 
-    private static final String MEM_ID = "mID";
-    private static final String MEM_NAME = "mName";
-    private static final String MEM_PHONE_NUM = "mPhoneNum";
-    private static final String MEM_LEVEL = "mLevel";
-    private static final String MEM_EMAIL = "mEmail";
-    private static final String MEM_ICON = "mIcon";
-    private static final String MEM_TOKEN = "mToken";
+    private static final String MEM_ID = "id";
+    private static final String MEM_NAME = "name";
+    private static final String MEM_PHONE_NUM = "phoneNum";
+    private static final String MEM_LEVEL = "level";
+    private static final String MEM_EMAIL = "email";
+    private static final String MEM_ICON = "icon";
+    private static final String MEM_TOKEN = "token";
 
-    private Integer mID;
-    private String mName;
-    private String mPhoneNum;
-    private Integer mLevel;
-    private String mEmail;
-    private String mIcon;
-    private Boolean mIsLogin;
-    private String mToken;
-    private SharedPreferences mSharedPreferences;
+    private Integer id;
+    private String name;
+    private String phoneNum;
+    private Integer level;
+    private String email;
+    private String icon;
+    private Boolean isLogin;
+    private String token;
+    private SharedPreferences sharedPreferences;
 
     public User() {
     }
 
     public User(Context context) {
-        mSharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
     }
 
     public User(Context context, UserInfo info) {
-        mSharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
-        setmID(info.getMem_id());
-        setmEmail(info.getMem_email());
-        setmIcon(info.getMem_icon());
-        setmLevel(info.getMem_level());
-        setmName(info.getMem_name());
-        setmPhoneNum(info.getMem_phone_num());
-        setmIsLogin(true);
+        sharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
+        setId(info.getMem_id());
+        setEmail(info.getMem_email());
+        setIcon(info.getMem_icon());
+        setLevel(info.getMem_level());
+        setName(info.getMem_name());
+        setPhoneNum(info.getMem_phone_num());
+        setIsLogin(true);
     }
 
     public User(Context context, PostUser info) {
-        mSharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
-        setmID(info.getMem_id());
-        setmEmail(info.getMem_email());
-        setmIcon(info.getMem_icon());
-        setmLevel(info.getMem_level());
-        setmName(info.getMem_name());
-        setmPhoneNum(info.getMem_phone_num());
-        setmIsLogin(true);
+        sharedPreferences = context.getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
+        setId(info.getMem_id());
+        setEmail(info.getMem_email());
+        setIcon(info.getMem_icon());
+        setLevel(info.getMem_level());
+        setName(info.getMem_name());
+        setPhoneNum(info.getMem_phone_num());
+        setIsLogin(true);
     }
 
-    public Integer getmID() {
-        if (this.mID == null) {
-            this.mID = mSharedPreferences.getInt(MEM_ID, 0);
+    public Integer getId() {
+        if (this.id == null) {
+            this.id = sharedPreferences.getInt(MEM_ID, 0);
         }
-        return mID;
+        return id;
     }
 
-    public void setmID(Integer mID) {
-        if (mSharedPreferences.edit().putInt(MEM_ID, mID).commit()) {
-            this.mID = mID;
-        }
-    }
-
-    public String getmName() {
-        if (this.mName == null) {
-            this.mName = mSharedPreferences.getString(MEM_NAME, "");
-        }
-        return mName;
-
-    }
-
-    public void setmName(String mName) {
-        if (mSharedPreferences.edit().putString(MEM_NAME, mName).commit()) {
-            this.mName = mName;
+    public void setId(Integer id) {
+        if (sharedPreferences.edit().putInt(MEM_ID, id).commit()) {
+            this.id = id;
         }
     }
 
-    public String getmPhoneNum() {
-        if (this.mPhoneNum == null) {
-            this.mPhoneNum = mSharedPreferences.getString(MEM_PHONE_NUM, "");
+    public String getName() {
+        if (this.name == null) {
+            this.name = sharedPreferences.getString(MEM_NAME, "");
         }
-        return mPhoneNum;
-    }
-
-    public void setmPhoneNum(String mPhoneNum) {
-        if (mSharedPreferences.edit().putString(MEM_PHONE_NUM, mPhoneNum).commit()) {
-            this.mPhoneNum = mPhoneNum;
-        }
-    }
-
-    public Integer getmLevel() {
-        if (this.mLevel == null) {
-            this.mLevel = mSharedPreferences.getInt(MEM_LEVEL, 0);
-        }
-        return mLevel;
+        return name;
 
     }
 
-    public void setmLevel(Integer mLevel) {
-        if (mSharedPreferences.edit().putInt(MEM_LEVEL, mLevel).commit()) {
-            this.mLevel = mLevel;
+    public void setName(String name) {
+        if (sharedPreferences.edit().putString(MEM_NAME, name).commit()) {
+            this.name = name;
         }
     }
 
-    public String getmEmail() {
-        if (this.mEmail == null) {
-            this.mEmail = mSharedPreferences.getString(MEM_EMAIL, "");
+    public String getPhoneNum() {
+        if (this.phoneNum == null) {
+            this.phoneNum = sharedPreferences.getString(MEM_PHONE_NUM, "");
         }
-        return mEmail;
+        return phoneNum;
     }
 
-    public void setmEmail(String mEmail) {
-        if (mSharedPreferences.edit().putString(MEM_EMAIL, mEmail).commit()) {
-            this.mEmail = mEmail;
-        }
-    }
-
-    public String getmIcon() {
-        if (this.mIcon == null) {
-            this.mIcon = mSharedPreferences.getString(MEM_ICON, "");
-        }
-        return mIcon;
-    }
-
-    public void setmIcon(String mIcon) {
-        if (mSharedPreferences.edit().putString(MEM_ICON, mIcon).commit()) {
-            this.mIcon = mIcon;
+    public void setPhoneNum(String phoneNum) {
+        if (sharedPreferences.edit().putString(MEM_PHONE_NUM, phoneNum).commit()) {
+            this.phoneNum = phoneNum;
         }
     }
 
-    public boolean getmIsLogin() {
-        if (this.mIsLogin == null) {
-            this.mIsLogin = mSharedPreferences.getBoolean(MEM_STATUS, false);
+    public Integer getLevel() {
+        if (this.level == null) {
+            this.level = sharedPreferences.getInt(MEM_LEVEL, 0);
         }
-        return mIsLogin;
+        return level;
+
     }
 
-    public void setmIsLogin(boolean mIsLogin) {
-        if (mSharedPreferences.edit().putBoolean(MEM_STATUS, mIsLogin).commit()) {
-            this.mIsLogin = mIsLogin;
+    public void setLevel(Integer level) {
+        if (sharedPreferences.edit().putInt(MEM_LEVEL, level).commit()) {
+            this.level = level;
         }
     }
 
-    public String getmToken() {
-        if (mToken == null) {
-            this.mToken = mSharedPreferences.getString(MEM_TOKEN, "");
+    public String getEmail() {
+        if (this.email == null) {
+            this.email = sharedPreferences.getString(MEM_EMAIL, "");
         }
-        return mToken;
+        return email;
     }
 
-    public void setmToken(String mToken) {
-        if (mSharedPreferences.edit().putString(MEM_TOKEN, mToken).commit()) {
-            this.mToken = mToken;
+    public void setEmail(String email) {
+        if (sharedPreferences.edit().putString(MEM_EMAIL, email).commit()) {
+            this.email = email;
+        }
+    }
+
+    public String getIcon() {
+        if (this.icon == null) {
+            this.icon = sharedPreferences.getString(MEM_ICON, "");
+        }
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        if (sharedPreferences.edit().putString(MEM_ICON, icon).commit()) {
+            this.icon = icon;
+        }
+    }
+
+    public boolean getIsLogin() {
+        if (this.isLogin == null) {
+            this.isLogin = sharedPreferences.getBoolean(MEM_STATUS, false);
+        }
+        return isLogin;
+    }
+
+    public void setIsLogin(boolean isLogin) {
+        if (sharedPreferences.edit().putBoolean(MEM_STATUS, isLogin).commit()) {
+            this.isLogin = isLogin;
+        }
+    }
+
+    public String getToken() {
+        if (token == null) {
+            this.token = sharedPreferences.getString(MEM_TOKEN, "");
+        }
+        return token;
+    }
+
+    public void setToken(String token) {
+        if (sharedPreferences.edit().putString(MEM_TOKEN, token).commit()) {
+            this.token = token;
         }
     }
 }

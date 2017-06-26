@@ -22,13 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.databinding.ActivityTaskDetailBinding;
 import com.ckt.ckttodo.util.Constants;
 import com.ckt.ckttodo.util.TranserverUtil;
-
-import org.w3c.dom.Text;
 
 public class TaskDetailActivity extends AppCompatActivity {
 
@@ -42,7 +40,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     private TextView mTextViewRemind;
     private EditText mEditTextSpendTime;
     private TextView mTextViewContent;
-    private DatebaseHelper mHelper;
+    private DatabaseHelper mHelper;
     private EventTask mTask;
     private boolean isModify = false;
     private String mTaskID;
@@ -116,7 +114,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     private void setData() {
         mTaskID = getIntent().getStringExtra(EVENT_TASK_ID);
         if (mTaskID != null) {
-            mHelper = DatebaseHelper.getInstance(this);
+            mHelper = DatabaseHelper.getInstance(this);
             mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
             mActivityTaskDetailBinding.setTask(mTask);
             mActivityTaskDetailBinding.executePendingBindings();

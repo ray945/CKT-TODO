@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,13 +21,10 @@ import com.ckt.ckttodo.network.HttpClient;
 import com.ckt.ckttodo.retrofit.UserService;
 import com.ckt.ckttodo.util.OptimizeInteractonUtils;
 
-import java.io.IOException;
-
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 
 /**
  * Created by zhiwei.li on 2017/3/17.
@@ -77,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginStatus() {
         User user = new User(this);
-        if (user.getmIsLogin()) {
+        if (user.getIsLogin()) {
             onLoginSuccess();
         }
 
@@ -131,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                             case BeanConstant.SUCCESS_RESULT_CODE:
 
                                 User user = new User(LoginActivity.this, value.getData());
-                                user.setmToken(value.getToken());
+                                user.setToken(value.getToken());
                                 mProgressDialog.dismiss();
                                 onLoginSuccess();
                                 break;

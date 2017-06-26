@@ -23,8 +23,11 @@ public interface ProjectService {
     Observable<Result> postNewProject(@FieldMap Map<String, String> map);
 
     @GET("project")
-    Observable<Result<PostProject>> getProjects(@Query("email")String email, @Query("token")String token, @Query("target_email")String targetEmail);
+    Observable<Result<PostProject>> getProjects(@Query("email") String email, @Query("token") String token, @Query("target_email") String targetEmail);
 
     @GET("project/delete")
-    Observable<Result> deleteProject(@Query("email")String email, @Query("token")String token,@Query("project_id")String projectId);
+    Observable<Result> deleteProject(@Query("email") String email, @Query("token") String token, @Query("project_id") String projectId);
+
+    @GET("project/sprint")
+    Observable<Result> postNewSprint(@Query("email") String email, @Query("token") String token, @Query("projectId") String projectId, @Query("sprint") int sprint);
 }

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,9 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.PostTask;
 import com.ckt.ckttodo.database.Result;
@@ -50,7 +48,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.RealmResults;
-import retrofit2.Retrofit;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -69,7 +66,7 @@ public class TaskFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private static boolean isShowCheckBox = false;
     private Map<Integer, Boolean> mItemsSelectStatus = new HashMap<>();
     private ShowMainMenuItem mShowMenuItem;
-    private DatebaseHelper mHelper;
+    private DatabaseHelper mHelper;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     @Override
@@ -93,7 +90,7 @@ public class TaskFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
 
     private View init(LayoutInflater inflater) {
-        mHelper = DatebaseHelper.getInstance(getContext());
+        mHelper = DatabaseHelper.getInstance(getContext());
         screenTask();
         mFragmentTaskBinding = FragmentTaskBinding.inflate(inflater);
         mSwipeRefreshLayout = mFragmentTaskBinding.swipeTask;
@@ -168,7 +165,7 @@ public class TaskFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onRefresh() {
         User user = new User(getContext());
-        HttpClient.getHttpService(TaskService.class).getTasksById(user.getmEmail(), user.getmToken())
+        HttpClient.getHttpService(TaskService.class).getTasksById(user.getEmail(), user.getToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Result<PostTask>>() {

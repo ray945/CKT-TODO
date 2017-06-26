@@ -1,8 +1,9 @@
 package com.ckt.ckttodo.util;
 
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
+import com.ckt.ckttodo.database.PostPlan;
 import com.ckt.ckttodo.database.PostProject;
 import com.ckt.ckttodo.database.PostTask;
 import com.ckt.ckttodo.database.Project;
@@ -137,17 +138,17 @@ public class TranserverUtil {
         return build;
     }
 
-    public static Project transProject(DatebaseHelper helper, PostProject postProject) {
+    public static Project transProject(DatabaseHelper helper, PostProject postProject) {
         Project project = new Project();
         project.setProjectId(postProject.getProjectId());
         project.setProjectTitle(postProject.getProjectTitle());
 
         // TODO 手机数据库缺少TeamID 字段
 //        postProject.getTeamId();
-
         // TODO 这里关联User有问题需要解决
         // helper.getRealm().where(UserInfo.class).beginsWith()
         project.setOwnerId(postProject.getMemId());
+        project.setSprintCount(postProject.getSprint());
         if (postProject.getProjectSummary() != null) {
             project.setProjectSummary(postProject.getProjectSummary());
         }
@@ -196,5 +197,33 @@ public class TranserverUtil {
             task.setTaskUpdateTime(Long.valueOf(postTask.getTaskUpdateTime()));
         }
         return task;
+    }
+
+    public static Plan convertPlan(PostPlan postPlan, DatabaseHelper helper, String email) throws Exception {
+
+        Plan plan = new Plan();
+        plan.setPlanId(postPlan.getPlanID());
+        plan.setPlanName(postPlan.getPlanName());
+        UserInfo info = helper.find(UserInfo.class).contains(UserInfo.MEM_EMAIL, email).findFirst();
+        plan.setUserInfo(info);
+        plan.setStatus(postPlan.getPlanState());
+        plan.setSprint(postPlan.getSprint());
+        plan.setProjectId(postPlan.getProjectID());
+        if (postPlan.getPlanLastUpdateTime() != null) {
+            plan.setLastUpdateTime(Long.valueOf(postPlan.getPlanLastUpdateTime()));
+        }
+        if (postPlan.getPlanAcomplishProgress() != null) {
+            plan.setAccomplishProgress(postPlan.getPlanAcomplishProgress());
+        }
+        if (postPlan.getPlanCreateTime() != null) {
+            plan.setStartTime(Long.valueOf(postPlan.getPlanAcomplishProgress()));
+        }
+        if (postPlan.getPlanDescrition() != null) {
+            plan.setPlanContent(postPlan.getPlanDescrition());
+        }
+        if (postPlan.getPlanEndTime() != null) {
+            plan.setEndTime(Long.valueOf(postPlan.getPlanEndTime()));
+        }
+        return plan;
     }
 }

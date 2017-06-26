@@ -44,4 +44,6 @@ public class Constants {
 
     public static final String SHARE_NAME_CKT = "com.ckt.ckttodo";
 
+    public static final String CURRENT_SPRINT = "current_sprint";
+
 }

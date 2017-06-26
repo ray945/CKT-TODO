@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -29,16 +27,13 @@ import android.widget.Toast;
 import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
 import com.afollestad.sectionedrecyclerview.SectionedViewHolder;
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
-import com.ckt.ckttodo.database.EventTask;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.PostProject;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.Result;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.network.BeanConstant;
-import com.ckt.ckttodo.network.HTTPService;
 import com.ckt.ckttodo.network.HttpClient;
-import com.ckt.ckttodo.network.HttpConstants;
 import com.ckt.ckttodo.retrofit.ProjectService;
 import com.ckt.ckttodo.util.TranserverUtil;
 
@@ -62,7 +57,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
     private LinearLayoutManager mLinearLayoutManager;
     private ProjectAdapter mProjectAdapter;
     private Transition transition;
-    private DatebaseHelper mHelper;
+    private DatabaseHelper mHelper;
     private List<Project> mDataOwner;
     private List<Project> mDataJoin;
     private int mUserId;
@@ -85,10 +80,10 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
     }
 
     private void initData() {
-        mHelper = DatebaseHelper.getInstance(ProjectActivity.this);
+        mHelper = DatabaseHelper.getInstance(ProjectActivity.this);
         mDataJoin = new ArrayList<>();
         mDataOwner = new ArrayList<>();
-        mUserId = new User(this).getmID();
+        mUserId = new User(this).getId();
     }
 
     private void initUI() {
@@ -145,7 +140,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
     public void onRefresh() {
         ProjectService projectService = HttpClient.getHttpService(ProjectService.class);
         User user = new User(ProjectActivity.this);
-        projectService.getProjects(user.getmEmail(), user.getmToken(), user.getmEmail())
+        projectService.getProjects(user.getEmail(), user.getToken(), user.getEmail())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Result<PostProject>>() {
@@ -248,7 +243,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
 
     private void doDeleteRequest(final Project project, final int position, final int section) {
         User user = new User(this);
-        HttpClient.getHttpService(ProjectService.class).deleteProject(user.getmEmail(), user.getmToken(), project.getProjectId())
+        HttpClient.getHttpService(ProjectService.class).deleteProject(user.getEmail(), user.getToken(), project.getProjectId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Result>() {

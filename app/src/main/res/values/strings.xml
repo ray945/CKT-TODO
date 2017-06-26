@@ -223,7 +223,9 @@
     <string name="notice_delete">是否删除？</string>
     <string name="invalid_parameters">非法参数！</string>
     <string name="request_service_fail">请求服务器失败！请稍候重试～～</string>
-
     <string name="owner_project">我拥有的项目</string>
     <string name="join_project">我参与的项目</string>
+    <string name="add_new_sprint">新增</string>
+    <string name="sprint">sprint</string>
+    <string name="sprint_add_success">添加sprint成功！</string>
 </resources>

@@ -21,6 +21,9 @@ public class Plan extends RealmObject {
     public static final int PLAN_BLOCK = 3;
     public static final int DONE = 4;
 
+
+    public static final String PLAN_ID = "plan_id";
+
     //计划id
     @PrimaryKey
     private String planId;

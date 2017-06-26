@@ -8,7 +8,6 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +15,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -25,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.ActivityNewTaskBinding;
@@ -77,7 +75,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
     public static final int NEW_TASK_SUCCESS_RESULT_CODE = 50;
     private boolean isEditMode = false;
 
-    DatebaseHelper mHelper;
+    DatabaseHelper mHelper;
     private String mTaskID;
 
     @Override
@@ -86,7 +84,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.new_task));
         mActivityNewTaskBinding = DataBindingUtil.setContentView(NewTaskActivity.this, R.layout.activity_new_task);
-        mHelper = DatebaseHelper.getInstance(this);
+        mHelper = DatabaseHelper.getInstance(this);
         getPlanData();
         init();
         getIntentData();
@@ -485,7 +483,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
             mEditViewTitle.setSelection(editable.length());
             mEditViewPlanTime.setText("");
         } else if (mTaskID != null) {
-            mHelper = DatebaseHelper.getInstance(this);
+            mHelper = DatabaseHelper.getInstance(this);
             mTask = mHelper.getRealm().where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
             mSpinnerTaskKinds.setSelection(mTask.getTaskType() - 1);
             mSpinnerTaskLevel.setSelection(mTask.getTaskPriority() - 1);

@@ -8,9 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
+
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.ui.MainActivity;
 import io.realm.RealmResults;
@@ -27,7 +27,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
     @Override public void onReceive(Context context, Intent intent) {
 
-        RealmResults<EventTask> tasks = DatebaseHelper.getInstance(context)
+        RealmResults<EventTask> tasks = DatabaseHelper.getInstance(context)
             .findAll(EventTask.class);
         for (int i = 0; i < tasks.size(); i++) {
             EventTask task = tasks.get(i);

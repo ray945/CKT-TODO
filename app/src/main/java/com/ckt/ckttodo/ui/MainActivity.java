@@ -2,10 +2,8 @@ package com.ckt.ckttodo.ui;
 
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -35,17 +33,13 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
-import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
 import com.ckt.ckttodo.network.BeanConstant;
@@ -74,12 +68,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 
@@ -206,9 +197,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         User user = new User(this);
         //侧滑栏 用户名相关展示
         TextView textViewUsername = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_userName);
-        textViewUsername.setText(user.getmName());
+        textViewUsername.setText(user.getName());
         TextView textViewEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_userEmail);
-        textViewEmail.setText(user.getmEmail());
+        textViewEmail.setText(user.getEmail());
         //TODO UserICON
 
 
@@ -511,11 +502,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void doLogout() {
         User user = new User(this);
-        user.setmIsLogin(false);
+        user.setIsLogin(false);
         startActivity(new Intent(this, LoginActivity.class));
         Map<String, String> map = new HashMap<>();
-        map.put(BeanConstant.EMAIL, user.getmEmail());
-        map.put(BeanConstant.TOKEN, user.getmToken());
+        map.put(BeanConstant.EMAIL, user.getEmail());
+        map.put(BeanConstant.TOKEN, user.getToken());
         Request request = HTTPHelper.getGetRequest(map, HttpConstants.PATH_LOGINOUT);
         HTTPService.getHTTPService().doHTTPRequest(request, this);
         finish();
@@ -587,7 +578,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 eventTask.setTaskTitle(task.getTaskTitle());
                 eventTask.setTaskContent(task.getTaskContent());
                 if (!task.getPlanName().equals("")) {
-                    RealmResults<Plan> plans = DatebaseHelper.getInstance(getApplicationContext()).findAll(Plan.class);
+                    RealmResults<Plan> plans = DatabaseHelper.getInstance(getApplicationContext()).findAll(Plan.class);
                     for (Plan plan : plans) {
                         if (task.getPlanName().equals(plan.getPlanName())) {
                             eventTask.setPlan(plan);
@@ -606,7 +597,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 eventTask.setTaskPredictTime(Float.parseFloat(task.getTaskPredictTime()));
                 eventTask.setTaskRemindTime(Long.parseLong(task.getTaskRemindTime()) * 60);
 
-                DatebaseHelper.getInstance(getApplicationContext()).insert(eventTask);
+                DatabaseHelper.getInstance(getApplicationContext()).insert(eventTask);
             }
             mTaskFragment.notifyData();
             showToast(getResources().getString(R.string.import_success));

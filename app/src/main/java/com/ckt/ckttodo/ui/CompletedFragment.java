@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.model.Goal;
+import com.ckt.ckttodo.util.Constants;
 import com.yalantis.beamazingtoday.interfaces.AnimationType;
 import com.yalantis.beamazingtoday.interfaces.BatModel;
 import com.yalantis.beamazingtoday.listeners.BatListener;
@@ -34,13 +36,14 @@ import java.util.UUID;
  * Created by hcy on 17-5-25.
  */
 
-public class CompletedFragment extends Fragment implements BatListener, OnItemClickListener, OnOutsideClickedListener {
+public class CompletedFragment extends Fragment implements BatListener, OnItemClickListener, OnOutsideClickedListener, SwipeRefreshLayout.OnRefreshListener {
     private BatRecyclerView mRecyclerView;
     private BatAdapter mAdapter;
     private ArrayList<BatModel> mGoals;
     private BatItemAnimator mAnimator;
     private DetailProActivity mDetailProActivity;
-    private DatebaseHelper mHelper;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private DatabaseHelper mHelper;
 
     @Override
     public void onAttach(Context context) {
@@ -52,6 +55,8 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View mView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_personal_project, container, false);
         mRecyclerView = (BatRecyclerView) mView.findViewById(R.id.rv_personal_project);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.swipe_plan);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         mGoals = new ArrayList<>();
         mAnimator = new BatItemAnimator();
         mAdapter = new BatAdapter(mGoals, this, mAnimator);
@@ -62,7 +67,6 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
         mRecyclerView.getView().setItemAnimator(mAnimator);
         mRecyclerView.setAddItemListener(this);
         sceenData();
-        mHelper = DatebaseHelper.getInstance(getContext());
         mView.findViewById(R.id.root).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,10 +77,14 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
     }
 
     private void sceenData() {
-        mHelper = DatebaseHelper.getInstance(getContext());
-        List<Plan> planList = mHelper.getRealm().where(Plan.class).contains(Project.PROJECT_ID, mDetailProActivity.mProjectId).findAll();
+        mGoals.clear();
+        int sprint = getContext().getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE).getInt(Constants.CURRENT_SPRINT, 1);
+        mHelper = DatabaseHelper.getInstance(getContext());
+        List<Plan> planList = mHelper.getRealm().where(Plan.class).contains(Project.PROJECT_ID, mDetailProActivity.project.getProjectId()).findAll();
         for (Plan plan : planList) {
-            mGoals.add(new Goal(plan.getPlanName()));
+            if (plan.getStatus() == Plan.DONE && sprint == plan.getSprint()) {
+                mGoals.add(new Goal(plan.getPlanName(), plan.getPlanId()));
+            }
         }
         mAdapter.notifyDataSetChanged();
     }
@@ -85,19 +93,20 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
     public void add(String string) {
         Plan plan = new Plan();
         plan.setPlanId(UUID.randomUUID().toString());
-        UserInfo userInfo = mHelper.getRealm().where(UserInfo.class).contains(UserInfo.MEM_EMAIL, String.valueOf(new User(getContext()).getmEmail())).findFirst();
-        if (mDetailProActivity.mProjectId == null) {
+        plan.setSprint(mDetailProActivity.lastPosition + 1);
+        plan.setStatus(Plan.DONE);
+        UserInfo userInfo = mHelper.getRealm().where(UserInfo.class).contains(UserInfo.MEM_EMAIL, String.valueOf(new User(getContext()).getEmail())).findFirst();
+        if (mDetailProActivity.project.getProjectId() == null) {
             Toast.makeText(getContext(), getString(R.string.project_id_not_null), Toast.LENGTH_SHORT).show();
         }
-        plan.setProjectId(mDetailProActivity.mProjectId);
+        plan.setProjectId(mDetailProActivity.project.getProjectId());
         plan.setUserInfo(userInfo);
         plan.setPlanName(string);
-        mHelper.insert(plan);
         mDetailProActivity.postNewPlan(plan);
     }
 
-    public void postPlanSuccessful(String string) {
-        mGoals.add(0, new Goal(string));
+    public void postPlanSuccessful(String string, String id) {
+        mGoals.add(0, new Goal(string, id));
         mAdapter.notify(AnimationType.ADD, 0);
     }
 
@@ -131,5 +140,17 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
         mRecyclerView.revertAnimation();
     }
 
+    public void notifySprintChanged() {
+        sceenData();
+    }
 
+    public void onRefreshComplete() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onRefresh() {
+        int sprint = getContext().getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE).getInt(Constants.CURRENT_SPRINT, 1);
+        mDetailProActivity.getCurrentSprintData(sprint, Plan.PLAN_START);
+    }
 }

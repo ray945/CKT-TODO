@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.databinding.ActivityPlanDetailBinding;
@@ -48,10 +48,10 @@ public class PlanDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         planId = intent.getStringExtra(PLAN_ID);
         if (planId != null) {
-            DatebaseHelper.getInstance(PlanDetailActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
+            DatabaseHelper.getInstance(PlanDetailActivity.this).getRealm().executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    plan = DatebaseHelper.getInstance(PlanDetailActivity.this).getRealm().where(Plan.class).equalTo(PLAN_ID, planId).findFirst();
+                    plan = DatabaseHelper.getInstance(PlanDetailActivity.this).getRealm().where(Plan.class).equalTo(PLAN_ID, planId).findFirst();
                 }
             });
             calculateProgress(plan.getEventTasks(), planId);
@@ -90,7 +90,7 @@ public class PlanDetailActivity extends AppCompatActivity {
         if (tasks.size() == 0) {
             mAccomplishProgress = "0%";
         }
-        DatebaseHelper.getInstance(this).getRealm().executeTransaction(new Realm.Transaction() {
+        DatabaseHelper.getInstance(this).getRealm().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 plan.setAccomplishProgress(mAccomplishProgress);

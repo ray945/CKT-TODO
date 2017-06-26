@@ -31,12 +31,32 @@ public class Project extends RealmObject {
 
     private RealmList<UserInfo> userInfos;
 
+    private int sprintCount;
+
     private boolean isSync;
 
 
     public static final int PROJECT_PRIVATE = 0;
     public static final int PROJECT_PUBLIC = 1;
     public static final String PROJECT_ID = "projectId";
+
+    public Project() {
+    }
+
+    public Project(Project project) {
+        this.projectId = project.getProjectId();
+        this.projectSummary = project.getProjectSummary();
+        this.ownerId = project.getOwnerId();
+        this.createTime = project.getCreateTime();
+        this.endTime = project.getEndTime();
+        this.lastUpdateTime = project.getLastUpdateTime();
+        this.accomplishProgress = project.getAccomplishProgress();
+        this.plans = project.getPlans();
+        this.userInfos = project.getUserInfos();
+        this.sprintCount = project.getSprintCount();
+        this.isSync = project.isSync();
+
+    }
 
     public String getProjectId() {
         return projectId;
@@ -124,5 +144,13 @@ public class Project extends RealmObject {
 
     public void setSync(boolean sync) {
         isSync = sync;
+    }
+
+    public int getSprintCount() {
+        return sprintCount;
+    }
+
+    public void setSprintCount(int sprintCount) {
+        this.sprintCount = sprintCount;
     }
 }

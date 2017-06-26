@@ -17,7 +17,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ItemProjectBinding;
@@ -94,7 +94,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                     public void onClick(DialogInterface dialogInterface, int i) {
                         final String projectName = editText.getText().toString().trim();
                         if (!projectName.equals(project.getProjectTitle())) {
-                            for (Project project : DatebaseHelper.getInstance(context).findAll(Project.class)) {
+                            for (Project project : DatabaseHelper.getInstance(context).findAll(Project.class)) {
                                 if (projectName.equals(project.getProjectTitle())) {
                                     showToast(context.getResources().getString(R.string.project_exist));
                                     return;
@@ -104,7 +104,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                             return;
                         }
                         if (!projectName.equals("")) {
-                            DatebaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {
+                            DatabaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
                                     project.setProjectTitle(projectName);
@@ -194,10 +194,10 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         if (plans.size() == 0) {
             mAccomplishProgress = "0%";
         }
-        DatebaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {
+        DatabaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Project tempProject = DatebaseHelper.getInstance(context).getRealm().where(Project.class).equalTo(ProjectFragment.PROJECT_ID, projectId).findFirst();
+                Project tempProject = DatabaseHelper.getInstance(context).getRealm().where(Project.class).equalTo(ProjectFragment.PROJECT_ID, projectId).findFirst();
                 tempProject.setAccomplishProgress(mAccomplishProgress);
             }
         });
@@ -245,10 +245,10 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         float accomplishProgressTemp = doneTaskTime / totalTaskTime;
         NumberFormat numberFormat = NumberFormat.getPercentInstance();
         final String accomplishProgress = numberFormat.format(accomplishProgressTemp);
-        DatebaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {
+        DatabaseHelper.getInstance(context).getRealm().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Plan tempPlan = DatebaseHelper.getInstance(context).getRealm().where(Plan.class).equalTo(ProjectFragment.PLAN_ID, planId).findFirst();
+                Plan tempPlan = DatabaseHelper.getInstance(context).getRealm().where(Plan.class).equalTo(ProjectFragment.PLAN_ID, planId).findFirst();
                 tempPlan.setAccomplishProgress(accomplishProgress);
             }
         });

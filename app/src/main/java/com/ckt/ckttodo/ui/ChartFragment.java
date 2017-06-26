@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.databinding.FragmentChartBinding;
 import com.ckt.ckttodo.util.ChartManager;
@@ -101,7 +101,7 @@ public class ChartFragment extends Fragment {
         CombinedChart combinedChart = binding.combinedChart;
         PieChart pieChart = binding.pieChart;
 
-        RealmResults<EventTask> tasks = DatebaseHelper.getInstance(getContext())
+        RealmResults<EventTask> tasks = DatabaseHelper.getInstance(getContext())
             .findAll(EventTask.class);
 
         //以下为展示的数据
