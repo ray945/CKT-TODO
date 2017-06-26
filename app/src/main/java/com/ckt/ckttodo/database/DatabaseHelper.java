@@ -28,28 +28,28 @@ public class DatabaseHelper {
     private Realm mRealm;
 
     private DatabaseHelper(Context context) {
-       try {
-           Log.e(TAG,"DatabaseHelper configuration ");
-           RealmConfiguration configuration = new RealmConfiguration.Builder(context)
-                   .name(RealmConfiguration.DEFAULT_REALM_NAME)
-                   .schemaVersion(3)
-                   .deleteRealmIfMigrationNeeded()
-                   .build();
-           Realm.migrateRealm(configuration, new RealmMigration() {
-               @Override
-               public long execute(Realm realm, long version) {
-                   // version 0
-                   if (0 == version) {
-                       Log.e(TAG,"migrateRealm version = "+version);
-                       // do some chang
-                       version++;
-                   }
-                   return version;
-               }
-           });
+        try {
+            Log.e(TAG, "DatabaseHelper configuration ");
+            RealmConfiguration configuration = new RealmConfiguration.Builder(context)
+                    .name(RealmConfiguration.DEFAULT_REALM_NAME)
+                    .schemaVersion(3)
+                    .deleteRealmIfMigrationNeeded()
+                    .build();
+            Realm.migrateRealm(configuration, new RealmMigration() {
+                @Override
+                public long execute(Realm realm, long version) {
+                    // version 0
+                    if (0 == version) {
+                        Log.e(TAG, "migrateRealm version = " + version);
+                        // do some chang
+                        version++;
+                    }
+                    return version;
+                }
+            });
             mRealm = Realm.getInstance(configuration);
         } catch (RealmMigrationNeededException e) {
-           Log.e(TAG,"RealmMigrationNeededException e = "+e.getMessage());
+            Log.e(TAG, "RealmMigrationNeededException e = " + e.getMessage());
 //            mRealm = null;
 //
 //            mRealm = Realm.getInstance(context);
@@ -218,5 +218,17 @@ public class DatabaseHelper {
     //Get the realm PrimaryKey id by UUID
     public static String getPrimaryKeyId() {
         return UUID.randomUUID().toString();
+    }
+
+    public static void clearAllData(DatabaseHelper helper) {
+        helper.getRealm().beginTransaction();
+        helper.getRealm().clear(Project.class);
+        helper.getRealm().clear(Plan.class);
+        helper.getRealm().clear(EventTask.class);
+        helper.getRealm().clear(UserInfo.class);
+        helper.getRealm().clear(Team.class);
+        helper.getRealm().clear(Note.class);
+        helper.getRealm().commitTransaction();
+
     }
 }

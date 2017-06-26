@@ -40,6 +40,7 @@ import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
+import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.databinding.ActivityMainBinding;
 import com.ckt.ckttodo.network.BeanConstant;
@@ -61,6 +62,7 @@ import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.activity.NormalFilePickActivity;
 import com.vincent.filepicker.filter.entity.NormalFile;
 
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 import okhttp3.Request;
 
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } else if (requestCode == MAIN_TO_NEW_PROJECT_CODE && resultCode == NewProjectActivity.NEW_PROJECT_SUCCESS_RESULT_CODE) {
             if (mFragmentList.get(1) != null) {
-                ((ProjectFragment)mFragmentList.get(1)).notifyDataChange();
+                ((ProjectFragment) mFragmentList.get(1)).notifyDataChange();
             }
         }
     }
@@ -335,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setAnimate() {
-        int actionbarSize = ScreenUtils.dp2px(this,56);
+        int actionbarSize = ScreenUtils.dp2px(this, 56);
         mToolbar.setTranslationY(-actionbarSize);
         mToolbar.animate()
                 .translationY(0)
@@ -509,6 +511,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         map.put(BeanConstant.TOKEN, user.getToken());
         Request request = HTTPHelper.getGetRequest(map, HttpConstants.PATH_LOGINOUT);
         HTTPService.getHTTPService().doHTTPRequest(request, this);
+        DatabaseHelper.clearAllData(DatabaseHelper.getInstance(this));
         finish();
     }
 
