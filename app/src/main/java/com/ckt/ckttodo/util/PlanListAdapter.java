@@ -19,17 +19,17 @@ import io.realm.RealmList;
  * Created by zhiwei.li
  */
 
-class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHolder> implements View.OnClickListener {
+public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHolder> implements View.OnClickListener {
 
     private RealmList<Plan> plans;
     private Context context;
 
-    PlanListAdapter(Context context, RealmList<Plan> plans) {
+    public PlanListAdapter(Context context, RealmList<Plan> plans) {
         this.plans = plans;
         this.context = context;
     }
 
-    PlanListAdapter(Context context) {
+    public PlanListAdapter(Context context) {
         this.context = context;
     }
 

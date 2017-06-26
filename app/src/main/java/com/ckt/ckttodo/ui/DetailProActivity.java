@@ -77,16 +77,19 @@ public class DetailProActivity extends AppCompatActivity {
                 Fragment fragment = new Fragment();
                 switch (position) {
                     case 0:
-                        mPendingFragment = new PendingFragment();
-                        fragment = mPendingFragment;
+                        // mPendingFragment = new PendingFragment();
+                        // fragment = mPendingFragment;
+                        fragment = ProjectSingleFragment.getInstance(mProjectId, Plan.PLAN_PENDING);
                         break;
                     case 1:
-                        mOngoingFragment = new OngoingFragment();
-                        fragment = mOngoingFragment;
+                        // mOngoingFragment = new OngoingFragment();
+                        // fragment = mOngoingFragment;
+                        fragment = ProjectSingleFragment.getInstance(mProjectId, Plan.PLAN_START);
                         break;
                     case 2:
-                        mCompletedFragment = new CompletedFragment();
-                        fragment = mCompletedFragment;
+                        // mCompletedFragment = new CompletedFragment();
+                        // fragment = mCompletedFragment;
+                        fragment = ProjectSingleFragment.getInstance(mProjectId, Plan.DONE);
                         break;
                     default:
                         break;
