@@ -223,7 +223,6 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                     public void onClick(DialogInterface dialog, int which) {
                         Project project = null;
                         if (section == 0) {
-                            Log.d("hcy", "onClick: position is: " + position + "size is:" + mDataOwner.size());
                             project = mDataOwner.get(position);
                         } else {
                             mDataJoin.get(position);

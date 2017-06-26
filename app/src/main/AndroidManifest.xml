@@ -82,7 +82,8 @@
             android:exported="true"
             android:singleUser="true" />
 
-        <activity android:name=".ui.NewProjectActivity"></activity>
+        <activity android:name=".ui.NewProjectActivity" />
+        <activity android:name=".ui.DetailPlanActivity" />
     </application>
 
 </manifest>

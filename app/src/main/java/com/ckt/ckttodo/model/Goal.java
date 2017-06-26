@@ -11,6 +11,10 @@ public class Goal implements BatModel {
 
     private boolean isChecked;
 
+    public Goal(String name) {
+        this.name = name;
+    }
+
     public Goal(String name, String planId) {
         this.name = name;
     }
