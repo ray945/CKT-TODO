@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.ckt.ckttodo.R;
-import com.ckt.ckttodo.database.DatebaseHelper;
+import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.util.PlanListAdapter;
@@ -52,7 +52,7 @@ public class ProjectSingleFragment extends Fragment {
 
 
     private void initView(View view) {
-        Project project = DatebaseHelper.getInstance(getContext())
+        Project project = DatabaseHelper.getInstance(getContext())
             .find(Project.class)
             .equalTo(Project.PROJECT_ID, mProjectId)
             .findFirst();
