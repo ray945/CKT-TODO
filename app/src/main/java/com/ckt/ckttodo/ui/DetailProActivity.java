@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -148,7 +149,7 @@ public class DetailProActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
-            }
+            };
         });
         FragmentPagerAdapter mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -156,19 +157,19 @@ public class DetailProActivity extends AppCompatActivity {
                 Fragment fragment = new Fragment();
                 switch (position) {
                     case 0:
-                         mPendingFragment = new PendingFragment();
-                         fragment = mPendingFragment;
-//                        fragment = ProjectSingleFragment.getInstance(project.getProjectId(), Plan.PLAN_PENDING);
+                         // mPendingFragment = new PendingFragment();
+                         // fragment = mPendingFragment;
+                        fragment = ProjectSingleFragment.getInstance(project.getProjectId(), Plan.PLAN_PENDING);
                         break;
                     case 1:
-                         mOngoingFragment = new OngoingFragment();
-                         fragment = mOngoingFragment;
-//                        fragment = ProjectSingleFragment.getInstance(project.getProjectId(), Plan.PLAN_START);
+                         // mOngoingFragment = new OngoingFragment();
+                         // fragment = mOngoingFragment;
+                        fragment = ProjectSingleFragment.getInstance(project.getProjectId(), Plan.PLAN_START);
                         break;
                     case 2:
-                         mCompletedFragment = new CompletedFragment();
-                         fragment = mCompletedFragment;
-//                        fragment = ProjectSingleFragment.getInstance(project.getProjectId(), Plan.DONE);
+                         // mCompletedFragment = new CompletedFragment();
+                         // fragment = mCompletedFragment;
+                        fragment = ProjectSingleFragment.getInstance(project.getProjectId(), Plan.DONE);
                         break;
                     default:
                         break;
@@ -295,31 +296,31 @@ public class DetailProActivity extends AppCompatActivity {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         Toast.makeText(DetailProActivity.this, getString(R.string.request_service_fail), Toast.LENGTH_SHORT).show();
-                        completeRefresh();
+                        // completeRefresh();
                     }
 
 
                     @Override
                     public void onComplete() {
-                        completeRefresh();
+                        // completeRefresh();
                     }
                 });
 
     }
 
-    private void completeRefresh() {
-        switch (mViewPager.getCurrentItem()) {
-            case 0:
-                mPendingFragment.onRefreshComplete();
-                break;
-            case 1:
-                mOngoingFragment.onRefreshComplete();
-                break;
-            case 2:
-                mCompletedFragment.onRefreshComplete();
-                break;
-        }
-    }
+    // private void completeRefresh() {
+    //     switch (mViewPager.getCurrentItem()) {
+    //         case 0:
+    //             mPendingFragment.onRefreshComplete();
+    //             break;
+    //         case 1:
+    //             mOngoingFragment.onRefreshComplete();
+    //             break;
+    //         case 2:
+    //             mCompletedFragment.onRefreshComplete();
+    //             break;
+    //     }
+    // }
 
     private void saveData(List<PostPlan> data, String email) throws Exception {
 
@@ -395,13 +396,13 @@ public class DetailProActivity extends AppCompatActivity {
                     public void onNext(Result value) {
                         switch (value.getResultcode()) {
                             case BeanConstant.SUCCESS_RESULT_CODE:
-                                if (mViewPager.getCurrentItem() == 0) {
-                                    mPendingFragment.postPlanSuccessful(plan.getPlanName(), plan.getPlanId());
-                                } else if (mViewPager.getCurrentItem() == 1) {
-                                    mOngoingFragment.postPlanSuccessful(plan.getPlanName(), plan.getPlanId());
-                                } else if (mViewPager.getCurrentItem() == 2) {
-                                    mCompletedFragment.postPlanSuccessful(plan.getPlanName(), plan.getPlanId());
-                                }
+                                // if (mViewPager.getCurrentItem() == 0) {
+                                //     mPendingFragment.postPlanSuccessful(plan.getPlanName(), plan.getPlanId());
+                                // } else if (mViewPager.getCurrentItem() == 1) {
+                                //     mOngoingFragment.postPlanSuccessful(plan.getPlanName(), plan.getPlanId());
+                                // } else if (mViewPager.getCurrentItem() == 2) {
+                                //     mCompletedFragment.postPlanSuccessful(plan.getPlanName(), plan.getPlanId());
+                                // }
                                 break;
                             case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
                                 Toast.makeText(DetailProActivity.this, getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();

@@ -1,5 +1,6 @@
 package com.ckt.ckttodo.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -185,8 +186,10 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                             plan.setEndTime(planEndTime);
                             plan.setProjectId(mProjectId);
                             sProject.getPlans().add(plan);
+                            Intent data = new Intent();
+                            data.putExtra("planName", plan.getPlanName());
+                            setResult(Activity.RESULT_OK, data);
                         }
-
                     }
                 });
                 if ("2".equals(tag)) {
