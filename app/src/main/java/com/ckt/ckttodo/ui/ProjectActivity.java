@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.Visibility;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,8 +24,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
-import com.afollestad.sectionedrecyclerview.SectionedViewHolder;
 import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.PostProject;
@@ -36,6 +34,7 @@ import com.ckt.ckttodo.network.BeanConstant;
 import com.ckt.ckttodo.network.HttpClient;
 import com.ckt.ckttodo.retrofit.ProjectService;
 import com.ckt.ckttodo.util.TranserverUtil;
+import com.truizlop.sectionedrecyclerview.SimpleSectionedAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,12 +54,12 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLinearLayoutManager;
-    private ProjectAdapter mProjectAdapter;
     private Transition transition;
     private DatabaseHelper mHelper;
     private List<Project> mDataOwner;
     private List<Project> mDataJoin;
     private int mUserId;
+    private SimpleSectionAdapter mSimpleSectionAdapter;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -96,10 +95,9 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_project_show);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mLinearLayoutManager = new LinearLayoutManager(this);
-        mProjectAdapter = new ProjectAdapter();
-        mProjectAdapter.shouldShowHeadersForEmptySections(true);
+        mSimpleSectionAdapter = new SimpleSectionAdapter();
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mRecyclerView.setAdapter(mProjectAdapter);
+        mRecyclerView.setAdapter(mSimpleSectionAdapter);
     }
 
     @Override
@@ -124,11 +122,13 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
         return super.onOptionsItemSelected(item);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setupWindowAnimations() {
         transition = buildEnterTransition();
         getWindow().setEnterTransition(transition);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private Visibility buildEnterTransition() {
         Slide enterTransition = new Slide();
         enterTransition.setDuration(getResources().getInteger(R.integer.anim_duration_long));
@@ -208,7 +208,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                 mDataJoin.add(project);
             }
         }
-        mProjectAdapter.notifyDataSetChanged();
+        mSimpleSectionAdapter.notifyDataSetChanged();
     }
 
 
@@ -227,7 +227,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                         } else {
                             mDataJoin.get(position);
                         }
-                        doDeleteRequest(project, position, section);
+                        doDeleteRequest(project, section);
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -240,7 +240,7 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                 .show();
     }
 
-    private void doDeleteRequest(final Project project, final int position, final int section) {
+    private void doDeleteRequest(final Project project, final int section) {
         User user = new User(this);
         HttpClient.getHttpService(ProjectService.class).deleteProject(user.getEmail(), user.getToken(), project.getProjectId())
                 .subscribeOn(Schedulers.io())
@@ -279,112 +279,68 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
 
                     @Override
                     public void onComplete() {
-//                       setDataAndNotifyDataChanged();
-                        mProjectAdapter.notifyItemRemoved(position);
+                        mSimpleSectionAdapter.notifyDataSetChanged();
                     }
                 });
 
 
     }
 
-    public class ProjectAdapter extends SectionedRecyclerViewAdapter<ProjectAdapter.MainVH> {
+    class SimpleSectionAdapter extends SimpleSectionedAdapter<SimpleSectionAdapter.SimpleItemViewHolder> {
+
         @Override
-        public int getSectionCount() {
+        protected String getSectionHeaderTitle(int section) {
+            return section == 0 ? "我拥有的项目" : "我参与的项目";
+        }
+
+        @Override
+        protected int getSectionCount() {
             return 2;
         }
 
         @Override
-        public int getItemCount(int section) {
-            switch (section) {
-                case 0:
-                    return mDataOwner.size();
-                case 1:
-                    return mDataJoin.size();
-                default:
-                    return 0;
-            }
-        }
-
-        @Override
-        public void onBindHeaderViewHolder(MainVH holder, int section, boolean expanded) {
-            switch (section) {
-                case 0:
-                    holder.tvHeader.setText(getResources().getText(R.string.owner_project));
-                    break;
-                case 1:
-                    holder.tvHeader.setText(getResources().getText(R.string.join_project));
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public void onBindViewHolder(MainVH holder, final int section, final int relativePosition, int absolutePosition) {
+        protected int getItemCountForSection(int section) {
             if (section == 0) {
-                holder.tvItem.setText(mDataOwner.get(relativePosition).getProjectTitle());
+                return mDataOwner.size();
             } else {
-                holder.tvItem.setText(mDataJoin.get(relativePosition).getProjectTitle());
+                return mDataJoin.size();
             }
-            holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+        }
+
+        @Override
+        protected SimpleItemViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View view = inflater.inflate(R.layout.item_personal_project, parent, false);
+            return new SimpleItemViewHolder(view);
+        }
+
+        @Override
+        protected void onBindItemViewHolder(SimpleItemViewHolder holder, final int section, final int position) {
+            if (section == 0) {
+                holder.textView.setText(mDataOwner.get(position).getProjectTitle());
+            } else {
+                holder.textView.setText(mDataJoin.get(position).getProjectTitle());
+            }
+            holder.ll.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ProjectActivity.this, DetailProActivity.class);
-                    if(section ==0) {
-                        intent.putExtra(Project.PROJECT_ID,mDataOwner.get(relativePosition).getProjectId());
-                    }else {
-                        intent.putExtra(Project.PROJECT_ID,mDataJoin.get(relativePosition).getProjectId());
-                    }
-                    startActivity(intent);
-                }
-            });
-            holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    deleteProject(relativePosition, section);
+                public boolean onLongClick(View view) {
+                    deleteProject(position, section);
                     return false;
                 }
             });
         }
 
-        @Override
-        public int getItemViewType(int section, int relativePosition, int absolutePosition) {
-            return super.getItemViewType(section, relativePosition, absolutePosition);
-        }
+        class SimpleItemViewHolder extends RecyclerView.ViewHolder {
 
-        @Override
-        public MainVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            int layout = 0;
-            switch (viewType) {
-                case VIEW_TYPE_HEADER:
-                    layout = R.layout.item_persoanl_project_header;
-                    break;
-                case VIEW_TYPE_ITEM:
-                    layout = R.layout.item_personal_project;
-                    break;
-                default:
-                    break;
-            }
+            TextView textView;
+            RelativeLayout ll;
 
-            View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
-            return new MainVH(v, this);
-        }
-
-        class MainVH extends SectionedViewHolder {
-            final ProjectAdapter adapter;
-            final TextView tvHeader;
-            final TextView tvItem;
-            final RelativeLayout relativeLayout;
-
-            MainVH(View itemView, ProjectAdapter adapter) {
+            SimpleItemViewHolder(View itemView) {
                 super(itemView);
-                this.adapter = adapter;
-                this.tvHeader = (TextView) itemView.findViewById(R.id.tv_header);
-                this.tvItem = (TextView) itemView.findViewById(R.id.tv_item);
-                this.relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relative_container);
+                textView = (TextView) itemView.findViewById(R.id.tv_item);
+                ll = (RelativeLayout) itemView.findViewById(R.id.relative_container);
             }
 
         }
-
     }
 }
