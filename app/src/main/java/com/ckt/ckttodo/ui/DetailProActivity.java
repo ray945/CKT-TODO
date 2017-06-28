@@ -113,7 +113,7 @@ public class DetailProActivity extends AppCompatActivity {
     private void initUI() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mHelper = DatabaseHelper.getInstance(this);
-        getSupportActionBar().setTitle(getResources().getString(R.string.personal_project));
+        getSupportActionBar().setTitle(getResources().getString(R.string.detail_project));
         final String projectId = getIntent().getStringExtra(Project.PROJECT_ID);
         project = mHelper.getRealm().where(Project.class).contains(Project.PROJECT_ID, projectId).findFirst();
         mTabLayout = (TabLayout) findViewById(R.id.detail_tab);

@@ -5,7 +5,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.ckt.ckttodo.R;
@@ -33,40 +35,54 @@ public class DetailPlanActivity extends AppCompatActivity implements BatListener
     private BatAdapter mAdapter;
     private List<BatModel> mGoals;
     private BatItemAnimator mAnimator;
+    private LinearLayout ll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_plan);
+        initData();
+        initUI();
+    }
 
+    private void initData() {
+        mGoals = new ArrayList<>();
+    }
+
+    private void initUI() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getResources().getString(R.string.detail_plan));
         mRecyclerView = (BatRecyclerView) findViewById(R.id.bat_recycler_view);
-        mAnimator = new BatItemAnimator();
-
         mRecyclerView.getView().setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.getView().setAdapter(mAdapter = new BatAdapter(mGoals = new ArrayList<BatModel>() {{
-            add(new Goal("first"));
-            add(new Goal("second"));
-            add(new Goal("third"));
-            add(new Goal("fourth"));
-            add(new Goal("fifth"));
-            add(new Goal("sixth"));
-            add(new Goal("seventh"));
-            add(new Goal("eighth"));
-            add(new Goal("ninth"));
-            add(new Goal("tenth"));
-        }}, this, mAnimator).setOnItemClickListener(this).setOnOutsideClickListener(this));
-
+        mAnimator = new BatItemAnimator();
+        mAdapter = new BatAdapter(mGoals, this, mAnimator);
+        mAdapter.setOnItemClickListener(this);
+        mAdapter.setOnOutsideClickListener(this);
+        mRecyclerView.getView().setAdapter(mAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new BatCallback(this));
         itemTouchHelper.attachToRecyclerView(mRecyclerView.getView());
         mRecyclerView.getView().setItemAnimator(mAnimator);
         mRecyclerView.setAddItemListener(this);
-
-        findViewById(R.id.root).setOnClickListener(new View.OnClickListener() {
+        ll = (LinearLayout) findViewById(R.id.ll_detail_plan);
+        ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mRecyclerView.revertAnimation();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

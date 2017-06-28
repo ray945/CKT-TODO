@@ -328,6 +328,18 @@ public class ProjectActivity extends AppCompatActivity implements SwipeRefreshLa
                     return false;
                 }
             });
+            holder.ll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProjectActivity.this, DetailProActivity.class);
+                    if (section == 0) {
+                        intent.putExtra(Project.PROJECT_ID, mDataOwner.get(position).getProjectId());
+                    } else {
+                        intent.putExtra(Project.PROJECT_ID, mDataJoin.get(position).getProjectId());
+                    }
+                    startActivity(intent);
+                }
+            });
         }
 
         class SimpleItemViewHolder extends RecyclerView.ViewHolder {
