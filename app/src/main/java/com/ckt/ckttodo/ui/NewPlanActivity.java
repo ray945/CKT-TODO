@@ -21,6 +21,7 @@ import com.ckt.ckttodo.database.DatabaseHelper;
 import com.ckt.ckttodo.database.Plan;
 import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.ActivityNewPlanBinding;
+import com.ckt.ckttodo.util.event.AdapterEvent;
 import com.ckt.ckttodo.widgt.TaskDateDialog;
 
 import java.text.SimpleDateFormat;
@@ -31,6 +32,7 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 import io.realm.Realm;
+import org.greenrobot.eventbus.EventBus;
 
 public class NewPlanActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -50,6 +52,8 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
     private String planId;
     private Plan plan;
     private boolean isEmpty = true;
+
+    private int planStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,9 +189,11 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
                             plan.setStartTime(planStartTime);
                             plan.setEndTime(planEndTime);
                             plan.setProjectId(mProjectId);
+                            plan.setStatus(planStatus);
                             sProject.getPlans().add(plan);
                             Intent data = new Intent();
                             data.putExtra("planName", plan.getPlanName());
+                            EventBus.getDefault().post(new AdapterEvent());
                             setResult(Activity.RESULT_OK, data);
                         }
                     }
@@ -219,6 +225,7 @@ public class NewPlanActivity extends AppCompatActivity implements View.OnClickLi
     public void getData() {
         Intent intent = getIntent();
         mProjectId = intent.getStringExtra(PROJECT_ID);
+        planStatus = intent.getIntExtra("planStatus", Plan.PLAN_START);
         tag = intent.getStringExtra(TAG);
         if ("2".equals(tag)) {
             getSupportActionBar().setTitle("修改计划");

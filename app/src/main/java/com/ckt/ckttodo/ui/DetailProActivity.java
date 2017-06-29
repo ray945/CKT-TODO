@@ -67,6 +67,7 @@ public class DetailProActivity extends AppCompatActivity {
     private Spinner mSpinner;
     private LinkedList<String> mItems;
     public int lastPosition = 0;
+    private ArrayList<Fragment> fragments;
 
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
@@ -151,30 +152,14 @@ public class DetailProActivity extends AppCompatActivity {
 
             };
         });
+        fragments = new ArrayList<>();
+        fragments.add(0, ProjectSingleFragment.getInstance(project.getProjectId(), Plan.PLAN_PENDING));
+        fragments.add(1, ProjectSingleFragment.getInstance(project.getProjectId(), Plan.PLAN_START));
+        fragments.add(2, ProjectSingleFragment.getInstance(project.getProjectId(), Plan.DONE));
         FragmentPagerAdapter mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                Fragment fragment = new Fragment();
-                switch (position) {
-                    case 0:
-                         // mPendingFragment = new PendingFragment();
-                         // fragment = mPendingFragment;
-                        fragment = ProjectSingleFragment.getInstance(project.getProjectId(), Plan.PLAN_PENDING);
-                        break;
-                    case 1:
-                         // mOngoingFragment = new OngoingFragment();
-                         // fragment = mOngoingFragment;
-                        fragment = ProjectSingleFragment.getInstance(project.getProjectId(), Plan.PLAN_START);
-                        break;
-                    case 2:
-                         // mCompletedFragment = new CompletedFragment();
-                         // fragment = mCompletedFragment;
-                        fragment = ProjectSingleFragment.getInstance(project.getProjectId(), Plan.DONE);
-                        break;
-                    default:
-                        break;
-                }
-                return fragment;
+                return fragments.get(position);
             }
 
             @Override

@@ -22,16 +22,22 @@ import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.database.User;
 import com.ckt.ckttodo.database.UserInfo;
 import com.ckt.ckttodo.util.PlanListAdapter;
+import com.ckt.ckttodo.util.event.AdapterEvent;
 import io.realm.RealmList;
 import java.util.UUID;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class ProjectSingleFragment extends Fragment {
     private String mProjectId;
     private int mPlanStatus;
     private DetailProActivity mDetailProActivity;
-
     public static final int NEW_PLAN_REQUEST_CODE = 1;
     private static final String TAG = "ProjectSingleFragment";
+
+    private PlanListAdapter adapter;
+    private View view;
 
 
     public static Fragment getInstance(String projectId, int planStatus) {
@@ -55,13 +61,28 @@ public class ProjectSingleFragment extends Fragment {
         Bundle bundle = getArguments();
         mPlanStatus = bundle.getInt("planStatus");
         mProjectId = bundle.getString("projectId");
+        EventBus.getDefault().register(this);
+    }
+
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshView(AdapterEvent event) {
+        if (view != null) {
+            initView(view);
+        }
     }
 
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.item_project, container, false);
+        view = inflater.inflate(R.layout.item_project, container, false);
         initView(view);
         return view;
     }
@@ -75,27 +96,27 @@ public class ProjectSingleFragment extends Fragment {
         TextView projectName = (TextView) view.findViewById(R.id.tv_project_name);
         view.findViewById(R.id.tv_project_progress).setVisibility(View.GONE);
         view.findViewById(R.id.tv_project_progress_text).setVisibility(View.GONE);
-        initNewPlanButton((ImageButton) view.findViewById(R.id.btn_addPlan), mProjectId);
+        initNewPlanButton((ImageButton) view.findViewById(R.id.btn_addPlan), mProjectId,
+            mPlanStatus);
         projectName.setText(project.getProjectTitle());
         RecyclerView mPlansRv = (RecyclerView) view.findViewById(R.id.rv_plans);
         mPlansRv.setLayoutManager(
             new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         final RealmList<Plan> planList = project.getPlans();
+        //Classify plan
+        final RealmList<Plan> planCategoryList = new RealmList<>();
+        for (Plan plan : planList) {
+            if (plan.getStatus() == mPlanStatus) {
+                planCategoryList.add(plan);
+            }
+        }
+        adapter = new PlanListAdapter(getContext(), planCategoryList);
 
-        // Classify plan
-        // RealmList<Plan> planCategoryList = new RealmList<>();
-        // for (Plan plan : planList) {
-        //     if (plan.getStatus() == mPlanStatus) {
-        //         planCategoryList.add(plan);
-        //     }
-        // }
-        // PlanListAdapter adapter = new PlanListAdapter(getContext(), planCategoryList);
-
-        PlanListAdapter adapter = new PlanListAdapter(getContext(), planList);
         adapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener() {
             @Override public void onItemClick(int position, View view) {
                 Intent intent = new Intent(getActivity(), DetailPlanActivity.class);
-                intent.putExtra("planId", planList.get(position).getPlanId());
+                intent.putExtra("planId", planCategoryList.get(position).getPlanId());
+                intent.putExtra("planStatus", planCategoryList.get(position).getStatus());
                 startActivity(intent);
             }
         });
@@ -103,13 +124,14 @@ public class ProjectSingleFragment extends Fragment {
     }
 
 
-    private void initNewPlanButton(ImageButton button, final String projectId) {
+    private void initNewPlanButton(ImageButton button, final String projectId, final int planStatus) {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), NewPlanActivity.class);
                 intent.putExtra(NewPlanActivity.PROJECT_ID, projectId);
                 intent.putExtra(NewPlanActivity.TAG, "1");
+                intent.putExtra("planStatus", planStatus);
                 startActivityForResult(intent, NEW_PLAN_REQUEST_CODE);
             }
         });
@@ -121,7 +143,6 @@ public class ProjectSingleFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == NEW_PLAN_REQUEST_CODE) {
-                Log.e(TAG, data.getExtras().getString("planName"));
                 DatabaseHelper helper = DatabaseHelper.getInstance(getContext());
                 Plan plan = new Plan();
                 plan.setSprint(mDetailProActivity.lastPosition + 1);
