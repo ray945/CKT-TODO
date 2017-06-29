@@ -73,16 +73,26 @@ public class ProjectSingleFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refreshView(AdapterEvent event) {
-        if (view != null) {
-            initView(view);
+        Project project = DatabaseHelper.getInstance(getContext())
+            .find(Project.class)
+            .equalTo(Project.PROJECT_ID, mProjectId)
+            .findFirst();
+        RealmList<Plan> planList = project.getPlans();
+        RealmList<Plan> planCategoryList = new RealmList<>();
+        for (Plan plan : planList) {
+            if (plan.getStatus() == mPlanStatus) {
+                planCategoryList.add(plan);
+            }
         }
+        adapter.clear();
+        adapter.setPlans(planCategoryList);
     }
 
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.item_project, container, false);
+        view = inflater.inflate(R.layout.fragment_single_project, container, false);
         initView(view);
         return view;
     }

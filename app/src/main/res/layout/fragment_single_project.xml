@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_margin"
+        android:layout_marginLeft="@dimen/card_margin"
+        android:layout_marginRight="@dimen/card_margin"
+        android:layout_marginBottom="@dimen/card_margin">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <TextView
+                    android:id="@+id/tv_project_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:textColor="@color/textColor"
+                    android:textSize="20sp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_project_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignBaseline="@+id/tv_project_name"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center_vertical"
+                    android:paddingRight="15dp"
+                    android:textColor="@color/textColor"/>
+
+                <TextView
+                    android:id="@+id/tv_project_progress_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignBaseline="@+id/tv_project_name"
+                    android:layout_alignBottom="@+id/tv_project_name"
+                    android:layout_toStartOf="@+id/tv_project_progress"
+                    android:gravity="center_vertical"
+                    android:paddingEnd="8dp"
+                    android:text="@string/accomplishProgress"
+                    android:textColor="@color/textColor"/>
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_plans"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white"
+                android:scrollbars="none"/>
+
+            <ImageButton
+                android:id="@+id/btn_addPlan"
+                android:layout_width="400dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:background="@android:color/white"
+                android:contentDescription="@string/new_plan"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_add_black_48dp"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</ScrollView>

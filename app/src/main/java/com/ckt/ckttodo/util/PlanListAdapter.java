@@ -33,12 +33,12 @@ public class PlanListAdapter extends RecyclerView.Adapter<PlanListAdapter.ViewHo
         this.context = context;
     }
 
-    void setPlans(RealmList<Plan> plans) {
+    public void setPlans(RealmList<Plan> plans) {
         this.plans = plans;
         notifyDataSetChanged();
     }
 
-    void clear() {
+    public void clear() {
         plans.clear();
         notifyDataSetChanged();
     }
