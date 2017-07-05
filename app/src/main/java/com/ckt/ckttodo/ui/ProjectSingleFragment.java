@@ -38,6 +38,7 @@ public class ProjectSingleFragment extends Fragment {
 
     private PlanListAdapter adapter;
     private View view;
+    RealmList<Plan> mPlanCategoryList;
 
 
     public static Fragment getInstance(String projectId, int planStatus) {
@@ -78,14 +79,13 @@ public class ProjectSingleFragment extends Fragment {
             .equalTo(Project.PROJECT_ID, mProjectId)
             .findFirst();
         RealmList<Plan> planList = project.getPlans();
-        RealmList<Plan> planCategoryList = new RealmList<>();
+        mPlanCategoryList.clear();
         for (Plan plan : planList) {
             if (plan.getStatus() == mPlanStatus) {
-                planCategoryList.add(plan);
+                mPlanCategoryList.add(plan);
             }
         }
-        adapter.clear();
-        adapter.setPlans(planCategoryList);
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -114,19 +114,18 @@ public class ProjectSingleFragment extends Fragment {
             new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         final RealmList<Plan> planList = project.getPlans();
         //Classify plan
-        final RealmList<Plan> planCategoryList = new RealmList<>();
+        mPlanCategoryList = new RealmList<>();
         for (Plan plan : planList) {
             if (plan.getStatus() == mPlanStatus) {
-                planCategoryList.add(plan);
+                mPlanCategoryList.add(plan);
             }
         }
-        adapter = new PlanListAdapter(getContext(), planCategoryList);
+        adapter = new PlanListAdapter(getContext(), mPlanCategoryList);
 
         adapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener() {
             @Override public void onItemClick(int position, View view) {
                 Intent intent = new Intent(getActivity(), DetailPlanActivity.class);
-                intent.putExtra("planId", planCategoryList.get(position).getPlanId());
-                intent.putExtra("planStatus", planCategoryList.get(position).getStatus());
+                intent.putExtra("planId", mPlanCategoryList.get(position).getPlanId());
                 startActivity(intent);
             }
         });
@@ -153,6 +152,7 @@ public class ProjectSingleFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == NEW_PLAN_REQUEST_CODE) {
+                adapter.notifyDataSetChanged();
                 DatabaseHelper helper = DatabaseHelper.getInstance(getContext());
                 Plan plan = new Plan();
                 plan.setSprint(mDetailProActivity.lastPosition + 1);
