@@ -23,5 +23,5 @@ public interface PlanService {
     Observable<Result> postNewPlan(@FieldMap Map<String, String> map);
 
     @GET("project/plan")
-    Observable<Result<PostPlan>> getPlans(@Query("email") String email, @Query("token") String token, @Query("sprint") int sprint, @Query("status") int status);
+    Observable<Result<PostPlan>> getPlans(@Query("email") String email, @Query("token") String token,  @Query("status") int status);
 }

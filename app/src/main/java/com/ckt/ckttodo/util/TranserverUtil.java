@@ -148,7 +148,6 @@ public class TranserverUtil {
         // TODO 这里关联User有问题需要解决
         // helper.getRealm().where(UserInfo.class).beginsWith()
         project.setOwnerId(postProject.getMemId());
-        project.setSprintCount(postProject.getSprint());
         if (postProject.getProjectSummary() != null) {
             project.setProjectSummary(postProject.getProjectSummary());
         }
@@ -207,7 +206,6 @@ public class TranserverUtil {
         UserInfo info = helper.find(UserInfo.class).contains(UserInfo.MEM_EMAIL, email).findFirst();
         plan.setUserInfo(info);
         plan.setStatus(postPlan.getPlanState());
-        plan.setSprint(postPlan.getSprint());
         plan.setProjectId(postPlan.getProjectID());
         if (postPlan.getPlanLastUpdateTime() != null) {
             plan.setLastUpdateTime(Long.valueOf(postPlan.getPlanLastUpdateTime()));

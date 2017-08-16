@@ -84,7 +84,7 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
         mHelper = DatabaseHelper.getInstance(getContext());
         List<Plan> planList = mHelper.getRealm().where(Plan.class).contains(Project.PROJECT_ID, mDetailProActivity.project.getProjectId()).findAll();
         for (Plan plan : planList) {
-            if (plan.getStatus() == Plan.PLAN_PENDING && sprint == plan.getSprint()) {
+            if (plan.getStatus() == Plan.PLAN_PENDING) {
                 mGoals.add(new Goal(plan.getPlanName(), plan.getPlanId()));
             }
         }
@@ -95,7 +95,6 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
     public void add(String string) {
         DatabaseHelper helper = DatabaseHelper.getInstance(getContext());
         Plan plan = new Plan();
-        plan.setSprint(mDetailProActivity.lastPosition + 1);
         plan.setPlanId(UUID.randomUUID().toString());
         plan.setStatus(Plan.PLAN_PENDING);
         UserInfo userInfo = helper.getRealm().where(UserInfo.class).contains(UserInfo.MEM_EMAIL, String.valueOf(new User(getContext()).getEmail())).findFirst();
@@ -147,8 +146,7 @@ public class PendingFragment extends Fragment implements BatListener, OnItemClic
     @Override
     public void onRefresh() {
 
-        int sprint = getContext().getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE).getInt(Constants.CURRENT_SPRINT, 1);
-        mDetailProActivity.getCurrentSprintData(sprint, Plan.PLAN_PENDING);
+        mDetailProActivity.getCurrentSprintData( Plan.PLAN_PENDING);
     }
 
     public void notifySprintChanged() {

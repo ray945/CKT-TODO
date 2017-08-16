@@ -83,7 +83,7 @@ public class OngoingFragment extends Fragment implements BatListener, OnItemClic
         int sprint = getContext().getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE).getInt(Constants.CURRENT_SPRINT, 1);
         List<Plan> planList = mHelper.getRealm().where(Plan.class).contains(Project.PROJECT_ID, mDetailProActivity.project.getProjectId()).findAll();
         for (Plan plan : planList) {
-            if (plan.getStatus() == Plan.PLAN_START && sprint == plan.getSprint()) {
+            if (plan.getStatus() == Plan.PLAN_START ) {
                 mGoals.add(new Goal(plan.getPlanName(), plan.getPlanId()));
             }
         }
@@ -96,7 +96,6 @@ public class OngoingFragment extends Fragment implements BatListener, OnItemClic
         DatabaseHelper helper = DatabaseHelper.getInstance(getContext());
         Plan plan = new Plan();
         plan.setPlanId(UUID.randomUUID().toString());
-        plan.setSprint(mDetailProActivity.lastPosition + 1);
         plan.setStatus(Plan.PLAN_START);
         UserInfo userInfo = helper.getRealm().where(UserInfo.class).contains(UserInfo.MEM_EMAIL, String.valueOf(new User(getContext()).getEmail())).findFirst();
         if (mDetailProActivity.project.getProjectId() == null) {
@@ -152,7 +151,6 @@ public class OngoingFragment extends Fragment implements BatListener, OnItemClic
 
     @Override
     public void onRefresh() {
-        int sprint = getContext().getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE).getInt(Constants.CURRENT_SPRINT, 1);
-        mDetailProActivity.getCurrentSprintData(sprint, Plan.PLAN_START);
+        mDetailProActivity.getCurrentSprintData(Plan.PLAN_START);
     }
 }

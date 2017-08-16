@@ -17,7 +17,6 @@ public class PostPlan {
     private String planLastUpdateTime;
     private int planState;
     private String planRealSpendTime;
-    private int sprint;
     private String planAcomplishProgress;
 
     public String getPlanID() {
@@ -98,14 +97,6 @@ public class PostPlan {
 
     public void setPlanRealSpendTime(String planRealSpendTime) {
         this.planRealSpendTime = planRealSpendTime;
-    }
-
-    public int getSprint() {
-        return sprint;
-    }
-
-    public void setSprint(int sprint) {
-        this.sprint = sprint;
     }
 
     public String getPlanCreateTime() {

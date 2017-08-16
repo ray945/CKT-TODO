@@ -82,7 +82,7 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
         mHelper = DatabaseHelper.getInstance(getContext());
         List<Plan> planList = mHelper.getRealm().where(Plan.class).contains(Project.PROJECT_ID, mDetailProActivity.project.getProjectId()).findAll();
         for (Plan plan : planList) {
-            if (plan.getStatus() == Plan.DONE && sprint == plan.getSprint()) {
+            if (plan.getStatus() == Plan.DONE) {
                 mGoals.add(new Goal(plan.getPlanName(), plan.getPlanId()));
             }
         }
@@ -93,7 +93,6 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
     public void add(String string) {
         Plan plan = new Plan();
         plan.setPlanId(UUID.randomUUID().toString());
-        plan.setSprint(mDetailProActivity.lastPosition + 1);
         plan.setStatus(Plan.DONE);
         UserInfo userInfo = mHelper.getRealm().where(UserInfo.class).contains(UserInfo.MEM_EMAIL, String.valueOf(new User(getContext()).getEmail())).findFirst();
         if (mDetailProActivity.project.getProjectId() == null) {
@@ -150,7 +149,6 @@ public class CompletedFragment extends Fragment implements BatListener, OnItemCl
 
     @Override
     public void onRefresh() {
-        int sprint = getContext().getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE).getInt(Constants.CURRENT_SPRINT, 1);
-        mDetailProActivity.getCurrentSprintData(sprint, Plan.PLAN_START);
+        mDetailProActivity.getCurrentSprintData(Plan.PLAN_START);
     }
 }

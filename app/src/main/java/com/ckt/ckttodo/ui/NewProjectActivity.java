@@ -121,7 +121,6 @@ public class NewProjectActivity extends AppCompatActivity {
         project.setCreateTime(System.currentTimeMillis());
         project.setOwnerId(new User(this).getId());
         project.setProjectId(UUID.randomUUID().toString());
-        project.setSprintCount(1);
         project.setSync(false);
         helper.insert(project);
         // post project to service

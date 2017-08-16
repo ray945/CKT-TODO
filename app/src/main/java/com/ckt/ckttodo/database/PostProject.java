@@ -22,8 +22,6 @@ public class PostProject {
     private String accomplishProgress;
     //所属team
     private int teamId;
-    //所属sprint
-    private int sprint;
     // project 可见性
     private int projectVisibility;
 
@@ -99,13 +97,6 @@ public class PostProject {
         this.teamId = teamId;
     }
 
-    public int getSprint() {
-        return sprint;
-    }
-
-    public void setSprint(int sprint) {
-        this.sprint = sprint;
-    }
 
     public int getProjectVisibility() {
         return projectVisibility;

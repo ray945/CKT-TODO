@@ -28,6 +28,5 @@ public interface ProjectService {
     @GET("project/delete")
     Observable<Result> deleteProject(@Query("email") String email, @Query("token") String token, @Query("project_id") String projectId);
 
-    @GET("project/sprint")
-    Observable<Result> postNewSprint(@Query("email") String email, @Query("token") String token, @Query("projectId") String projectId, @Query("sprint") int sprint);
+
 }

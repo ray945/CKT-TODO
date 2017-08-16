@@ -64,45 +64,9 @@ public class DetailProActivity extends AppCompatActivity {
     private DatabaseHelper mHelper;
     protected Project project;
     private Project mModifyProject;
-    private Spinner mSpinner;
-    private LinkedList<String> mItems;
     public int lastPosition = 0;
     private ArrayList<Fragment> fragments;
 
-    private BaseAdapter mAdapter = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            return mItems.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mItems.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, final ViewGroup parent) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(DetailProActivity.this).inflate(R.layout.simple_spinner_dropdown_item, parent, false);
-            }
-            if (position == mItems.size() - 1) {
-                convertView.findViewById(R.id.spinner_sprint_content).setVisibility(View.GONE);
-                convertView.findViewById(R.id.spinner_sprint_add).setVisibility(View.VISIBLE);
-            } else {
-                TextView textView = ((TextView) convertView.findViewById(R.id.spinner_sprint_content));
-                textView.setText(mItems.get(position));
-                textView.setVisibility(View.VISIBLE);
-                convertView.findViewById(R.id.spinner_sprint_add).setVisibility(View.GONE);
-            }
-
-            return convertView;
-        }
-    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,39 +83,7 @@ public class DetailProActivity extends AppCompatActivity {
         project = mHelper.getRealm().where(Project.class).contains(Project.PROJECT_ID, projectId).findFirst();
         mTabLayout = (TabLayout) findViewById(R.id.detail_tab);
         mViewPager = (ViewPager) findViewById(R.id.detail_view_pager);
-        mSpinner = (Spinner) findViewById(R.id.nice_spinner);
-        mItems = new LinkedList<>();
-        for (int i = 0; i < project.getSprintCount(); ++i) {
-            mItems.add(getString(R.string.sprint) + " " + (i + 1));
-        }
-        mItems.add("");
-        mSpinner.setAdapter(mAdapter);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == (mItems.size() - 1)) {
-                    mItems.add(mItems.size() - 1, getString(R.string.sprint) + " " + mItems.size());
-//                    mItems.add(project.getSprintCount(), getString(R.string.sprint) + " " + (project.getSprintCount() + 1));
-                    mSpinner.setSelection(lastPosition);
-                    postNewSprint(mItems.size() - 1);
-                } else {
-                    if (lastPosition != position) {
-                        getCurrentSprintData(position + 1, Plan.PLAN_START);
-                        getCurrentSprintData(position + 1, Plan.PLAN_PENDING);
-                        getCurrentSprintData(position + 1, Plan.DONE);
-
-                    }
-                    lastPosition = position;
-
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            };
-        });
         fragments = new ArrayList<>();
         fragments.add(0, ProjectSingleFragment.getInstance(project.getProjectId(), Plan.PLAN_PENDING));
         fragments.add(1, ProjectSingleFragment.getInstance(project.getProjectId(), Plan.PLAN_START));
@@ -177,63 +109,12 @@ public class DetailProActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    private void postNewSprint(int sprint) {
-        User user = new User(this);
-        HttpClient.getHttpService(ProjectService.class).postNewSprint(user.getEmail(), user.getToken(), project.getProjectId(), sprint)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Result>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
 
-                    }
 
-                    @Override
-                    public void onNext(Result value) {
-                        switch (value.getResultcode()) {
-                            case BeanConstant.SUCCESS_RESULT_CODE:
-                                mModifyProject = new Project(project);
-                                mModifyProject.setSprintCount(project.getSprintCount() + 1);
-                                mHelper.update(mModifyProject);
-                                Toast.makeText(DetailProActivity.this, getString(R.string.sprint_add_success), Toast.LENGTH_SHORT).show();
-                                mSpinner.setSelection(mItems.size() - 2);
-                                break;
-                            case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
-                                mItems.remove(mItems.size() - 2);
-                                mSpinner.setSelection(lastPosition);
-                                mAdapter.notifyDataSetChanged();
-                                Toast.makeText(DetailProActivity.this, getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
-                                break;
-                            case BeanConstant.PASS_DATA_INVALID_RESULT_CODE:
-                                mItems.remove(mItems.size() - 2);
-                                mAdapter.notifyDataSetChanged();
-                                mSpinner.setSelection(lastPosition);
-                                Toast.makeText(DetailProActivity.this, getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
-                                break;
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        mItems.remove(mItems.size() - 2);
-                        mAdapter.notifyDataSetChanged();
-                        mSpinner.setSelection(lastPosition);
-                        Toast.makeText(DetailProActivity.this, getString(R.string.request_service_fail), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    public void getCurrentSprintData(final int sprint, final int status) {
+    public void getCurrentSprintData(final int status) {
 
         final User user = new User(this);
-        HttpClient.getHttpService(PlanService.class).getPlans(user.getEmail(), user.getToken(), sprint, status)
+        HttpClient.getHttpService(PlanService.class).getPlans(user.getEmail(), user.getToken(),status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Result<PostPlan>>() {
@@ -251,9 +132,6 @@ public class DetailProActivity extends AppCompatActivity {
                                 } catch (Exception e) {
                                     onError(e);
                                 }
-                                SharedPreferences sharedPreferences = DetailProActivity.this
-                                        .getSharedPreferences(Constants.SHARE_NAME_CKT, Context.MODE_PRIVATE);
-                                sharedPreferences.edit().putInt(Constants.CURRENT_SPRINT, sprint).apply();
                                 if (status == Plan.DONE) {
                                     if (mCompletedFragment != null) {
                                         mCompletedFragment.notifySprintChanged();
@@ -364,7 +242,6 @@ public class DetailProActivity extends AppCompatActivity {
         jPlan.put("project_id", plan.getProjectId());
         jPlan.put("mem_id", user.getId());
         jPlan.put("plan_name", plan.getPlanName());
-        jPlan.put("sprint", plan.getSprint());
         jPlan.put("plan_state", plan.getStatus());
         postMap.put("plan", jPlan.toJSONString());
 

@@ -31,7 +31,6 @@ public class Project extends RealmObject {
 
     private RealmList<UserInfo> userInfos;
 
-    private int sprintCount;
 
     private boolean isSync;
 
@@ -53,7 +52,6 @@ public class Project extends RealmObject {
         this.accomplishProgress = project.getAccomplishProgress();
         this.plans = project.getPlans();
         this.userInfos = project.getUserInfos();
-        this.sprintCount = project.getSprintCount();
         this.isSync = project.isSync();
 
     }
@@ -146,11 +144,4 @@ public class Project extends RealmObject {
         isSync = sync;
     }
 
-    public int getSprintCount() {
-        return sprintCount;
-    }
-
-    public void setSprintCount(int sprintCount) {
-        this.sprintCount = sprintCount;
-    }
 }

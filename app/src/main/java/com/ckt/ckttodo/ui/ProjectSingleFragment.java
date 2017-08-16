@@ -155,7 +155,6 @@ public class ProjectSingleFragment extends Fragment {
                 adapter.notifyDataSetChanged();
                 DatabaseHelper helper = DatabaseHelper.getInstance(getContext());
                 Plan plan = new Plan();
-                plan.setSprint(mDetailProActivity.lastPosition + 1);
                 plan.setPlanId(UUID.randomUUID().toString());
                 plan.setStatus(mPlanStatus);
                 UserInfo userInfo = helper.getRealm()

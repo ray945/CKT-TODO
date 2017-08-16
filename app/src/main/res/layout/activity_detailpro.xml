@@ -16,12 +16,6 @@
         app:tabIndicatorColor="@color/colorAccent">
     </android.support.design.widget.TabLayout>
 
-    <Spinner
-        android:id="@+id/nice_spinner"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:background="@android:color/white"
-        />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/detail_view_pager"

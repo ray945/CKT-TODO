@@ -57,7 +57,6 @@ public class Plan extends RealmObject {
     //所属项目
     private String projectId;
 
-    private int sprint;
 
     public long getStartTime() {
         return startTime;
@@ -171,11 +170,4 @@ public class Plan extends RealmObject {
         this.userInfo = userInfo;
     }
 
-    public int getSprint() {
-        return sprint;
-    }
-
-    public void setSprint(int sprint) {
-        this.sprint = sprint;
-    }
 }
