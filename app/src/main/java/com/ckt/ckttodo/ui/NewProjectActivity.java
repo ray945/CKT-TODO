@@ -125,7 +125,6 @@ public class NewProjectActivity extends AppCompatActivity {
         helper.insert(project);
         // post project to service
         postProjectToService(project);
-
     }
 
     private void postProjectToService(Project project) {
@@ -158,7 +157,6 @@ public class NewProjectActivity extends AppCompatActivity {
                             case BeanConstant.SUCCESS_RESULT_CODE:
                                 Toast.makeText(NewProjectActivity.this, getString(R.string.new_task_successful), Toast.LENGTH_SHORT).show();
                                 setResult(NEW_PROJECT_SUCCESS_RESULT_CODE);
-                                finish();
                                 break;
                             case BeanConstant.USER_STATUS_INVALID_ERRO_RESULT_CODE:
                                 Toast.makeText(NewProjectActivity.this, getString(R.string.login_status_timeout), Toast.LENGTH_SHORT).show();
@@ -167,12 +165,14 @@ public class NewProjectActivity extends AppCompatActivity {
                                 Toast.makeText(NewProjectActivity.this, getString(R.string.invalid_parameters), Toast.LENGTH_SHORT).show();
                                 break;
                         }
+                        finish();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         mProgressDialog.dismiss();
                         e.printStackTrace();
+                        finish();
                     }
 
                     @Override

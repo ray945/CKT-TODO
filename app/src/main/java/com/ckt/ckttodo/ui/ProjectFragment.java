@@ -59,7 +59,6 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private List<EventTask> mTasks;
     private NotifyTask mNotifyTask;
     private CompositeSubscription mSubscription = new CompositeSubscription();
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -76,7 +75,7 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
             @Override
             public void onItemLongClick(View view, final int position) {
-                new AlertDialog.Builder(getContext()).setMessage("确认删除吗？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(getContext()).setMessage(R.string.sure_delete).setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -86,7 +85,7 @@ public class ProjectFragment extends Fragment implements SwipeRefreshLayout.OnRe
                         for (Plan plan : mProjectList.get(position).getPlans()) {
                             plans.add(plan);
                         }
-                        if (plans != null) {
+                        if (plans.size() != 0) {
                             for (int i = 0; i < plans.size(); i++) {
                                 currentPlan = plans.get(i);
                                 mTasks.clear();

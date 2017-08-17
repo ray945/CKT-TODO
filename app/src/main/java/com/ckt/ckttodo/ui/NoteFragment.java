@@ -106,7 +106,7 @@ public class NoteFragment extends Fragment {
         noteAdapter.setOnItemLongClickListener(new NoteAdapter.OnItemLongClickListener() {
             @Override
             public void onItemLongClick(final int position, View view) {
-                new AlertDialog.Builder(mContext).setMessage("确认删除吗？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(mContext).setMessage(R.string.sure_delete).setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

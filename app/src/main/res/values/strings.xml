@@ -33,6 +33,7 @@
     <string name="remind_save">是否保存修改？</string>
     <string name="kind_of_plan">所属计划：</string>
     <string name="sure">确定</string>
+    <string name="sure_delete">确认删除吗？</string>
     <string name="research">搜索</string>
     <string name="plan">计划</string>
     <string name="plan_time">计划2小时</string>
