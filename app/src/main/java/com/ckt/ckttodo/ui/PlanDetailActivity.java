@@ -54,7 +54,7 @@ public class PlanDetailActivity extends AppCompatActivity {
             }
         });
         calculateProgress(plan.getEventTasks(), planId);
-        if (plan.getPlanContent().equals("")) {
+        if ("".equals(plan.getPlanContent())) {
             mActivityPlanDetailBinding.tvPlanDescription.setVisibility(View.GONE);
         }
         mActivityPlanDetailBinding.setPlan(plan);
