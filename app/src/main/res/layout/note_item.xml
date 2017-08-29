@@ -35,7 +35,8 @@
                 android:text="@{note.noteTitle}"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="16sp"
-                android:maxLines="1"/>
+                android:maxLines="1"
+                android:singleLine="true"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
