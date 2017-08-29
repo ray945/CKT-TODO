@@ -59,7 +59,7 @@ public class ProjectFragment extends Fragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // 点击“确认”后的操作 
+                        // 点击“确认”后的操作
                         List<Plan> plans = new ArrayList<Plan>();
                         mTasks = new ArrayList<EventTask>();
                         for (Plan plan : mProjectList.get(position).getPlans()) {
@@ -87,7 +87,7 @@ public class ProjectFragment extends Fragment {
                                     });
                                 }
                                 DatebaseHelper.getInstance(getContext()).delete(plans.get(i));
-                            } 
+                            }
                             mNotifyTask = (NotifyTask) getActivity();
                             mNotifyTask.notifyTask();
                             mAdapter.flash();
@@ -99,7 +99,7 @@ public class ProjectFragment extends Fragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // 点击“返回”后的操作,这里不设置没有任何操作 
+                        // 点击“返回”后的操作,这里不设置没有任何操作
                     }
                 }).show();
             }

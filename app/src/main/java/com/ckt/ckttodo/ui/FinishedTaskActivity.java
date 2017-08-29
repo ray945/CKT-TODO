@@ -28,6 +28,7 @@ import com.ckt.ckttodo.databinding.ActivityFinishedTaskBinding;
 import com.ckt.ckttodo.databinding.TaskListItemBinding;
 import com.ckt.ckttodo.widgt.TaskDividerItemDecoration;
 
+import io.realm.Sort;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -148,7 +149,7 @@ public class FinishedTaskActivity extends AppCompatActivity {
     public void getData() {
         mFinishedTasks.clear();
         RealmResults<EventTask> tasks = mHelper.getRealm()
-                .where(EventTask.class).findAllSorted(EventTask.TASK_STATUS, false);
+                .where(EventTask.class).findAllSorted(EventTask.TASK_STATUS, Sort.DESCENDING);
         for (EventTask task : tasks) {
             if (task.getTaskStatus() == EventTask.DONE) {
                 mFinishedTasks.add(task);

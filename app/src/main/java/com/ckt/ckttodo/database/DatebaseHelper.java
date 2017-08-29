@@ -3,6 +3,8 @@ package com.ckt.ckttodo.database;
 import android.content.Context;
 import android.util.Log;
 
+import io.realm.DynamicRealm;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,34 +29,25 @@ public class DatebaseHelper {
 
     private Realm mRealm;
 
+
     private DatebaseHelper(Context context) {
-       try {
-           Log.e(TAG,"DatebaseHelper configuration ");
-           RealmConfiguration configuration = new RealmConfiguration.Builder(context)
-                   .name(RealmConfiguration.DEFAULT_REALM_NAME)
-                   .schemaVersion(3)
-                   .deleteRealmIfMigrationNeeded()
-                   .build();
-           Realm.migrateRealm(configuration, new RealmMigration() {
-               @Override
-               public long execute(Realm realm, long version) {
-                   // version 0
-                   if (0 == version) {
-                       Log.e(TAG,"migrateRealm version = "+version);
-                       // do some chang
-                       version++;
-                   }
-                   return version;
-               }
-           });
+        try {
+            Log.e(TAG, "DatebaseHelper configuration ");
+            RealmConfiguration configuration = new RealmConfiguration.Builder()
+                    .name(RealmConfiguration.DEFAULT_REALM_NAME)
+                    .schemaVersion(42)
+                    .deleteRealmIfMigrationNeeded()
+                    .build();
+
             mRealm = Realm.getInstance(configuration);
         } catch (RealmMigrationNeededException e) {
-           Log.e(TAG,"RealmMigrationNeededException e = "+e.getMessage());
-//            mRealm = null;
-//
-//            mRealm = Realm.getInstance(context);
+            Log.e(TAG, "RealmMigrationNeededException e = " + e.getMessage());
+            //            mRealm = null;
+            //
+            //            mRealm = Realm.getInstance(context);
         }
     }
+
 
     public static DatebaseHelper getInstance(Context context) {
         synchronized (lock) {
@@ -65,27 +58,32 @@ public class DatebaseHelper {
         }
     }
 
+
     public Realm getRealm() {
         return mRealm;
     }
+
 
     public void executeTransaction(final Transaction transaction) {
         checkNotNullObject(mRealm);
         mRealm.executeTransaction(transaction);
     }
 
-    public RealmAsyncTask executeTransaction(final Transaction transaction, final Transaction.Callback callback) {
-        checkNotNullObject(mRealm);
-        return mRealm.executeTransaction(transaction, callback);
-    }
+    // public RealmAsyncTask executeTransaction(final Transaction transaction, final Transaction.Callback callback) {
+    //     checkNotNullObject(mRealm);
+    //     return mRealm.executeTransaction(transaction, callback);
+    // }
+
 
     public <T extends RealmObject> RealmResults<T> findAll(Class<T> clazz) {
         return mRealm.where(clazz).findAll();
     }
 
+
     public <T extends RealmObject> RealmQuery<T> find(Class<T> clazz) {
         return mRealm.where(clazz);
     }
+
 
     public <T extends RealmObject> T insert(T t) {
         try {
@@ -100,6 +98,7 @@ public class DatebaseHelper {
             return null;
         }
     }
+
 
     public <T extends RealmObject> List<T> insert(Iterable<T> objects) {
         try {
@@ -117,6 +116,7 @@ public class DatebaseHelper {
         }
     }
 
+
     public <T extends RealmObject> T update(T t) {
         try {
             checkNotNullObject(t);
@@ -130,6 +130,7 @@ public class DatebaseHelper {
             return null;
         }
     }
+
 
     public <T extends RealmObject> List<T> update(Iterable<T> objects) {
         try {
@@ -147,11 +148,12 @@ public class DatebaseHelper {
         }
     }
 
+
     public <T extends RealmObject> boolean delete(T t) {
         try {
             checkNotNullObject(t);
             mRealm.beginTransaction();
-            t.removeFromRealm();
+            t.deleteFromRealm();
             mRealm.commitTransaction();
             return true;
         } catch (Exception e) {
@@ -160,6 +162,7 @@ public class DatebaseHelper {
             return false;
         }
     }
+
 
     public <T extends RealmObject> boolean deleteAll(RealmResults<T> results) {
         try {
@@ -174,6 +177,7 @@ public class DatebaseHelper {
             return false;
         }
     }
+
 
     public <T extends RealmObject> T deleteIndex(RealmResults<T> results, int index) {
         try {
@@ -193,11 +197,12 @@ public class DatebaseHelper {
         }
     }
 
+
     public <T extends RealmObject> boolean deleteLast(RealmResults<T> results) {
         try {
             checkNotNullObject(results);
             mRealm.beginTransaction();
-            results.removeLast();
+            results.deleteLastFromRealm();
             mRealm.commitTransaction();
             return true;
         } catch (Exception e) {
@@ -207,6 +212,7 @@ public class DatebaseHelper {
         }
     }
 
+
     private void checkNotNullObject(Object object) {
         if (object == null) {
             throw new IllegalArgumentException("Null objects cannot be copied into Realm.");
@@ -214,6 +220,7 @@ public class DatebaseHelper {
             throw new IllegalArgumentException("Realm object cannot be null.");
         }
     }
+
 
     //Get the realm PrimaryKey id by UUID
     public static String getPrimaryKeyId() {

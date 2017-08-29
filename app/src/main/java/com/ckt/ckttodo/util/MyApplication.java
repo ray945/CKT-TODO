@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
+import io.realm.Realm;
 
 /**
  * Created by zhiwei.li
@@ -18,6 +19,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Realm.init(this);
 
 /*        //init Database logic.
         if (getSharedPreferences(MyApplication.INIT_DATA, MODE_PRIVATE).getBoolean(MyApplication.IS_FIRST, true)) {

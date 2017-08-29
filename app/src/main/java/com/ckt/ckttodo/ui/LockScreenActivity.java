@@ -24,6 +24,7 @@ import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.databinding.ActivityScreenBinding;
 import com.ckt.ckttodo.databinding.ItemLockBinding;
 
+import io.realm.Sort;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -122,7 +123,8 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
 
     public void getData() {
         mUnFinishedTasks.clear();
-        RealmResults<EventTask> tasks = DatebaseHelper.getInstance(LockScreenActivity.this).getRealm().where(EventTask.class).findAllSorted(EventTask.TASK_STATUS, false);
+        RealmResults<EventTask> tasks = DatebaseHelper.getInstance(LockScreenActivity.this).getRealm().where(EventTask.class).findAllSorted(EventTask.TASK_STATUS,
+                Sort.ASCENDING);
         for (EventTask task : tasks) {
             if (task.getTaskStatus() != EventTask.DONE && task.getTaskStatus() != EventTask.BLOCK && task.getTaskStatus() != EventTask.PENDING && time(task.getTaskStartTime()).equals(time(System.currentTimeMillis()))) {
                 mUnFinishedTasks.add(task);

@@ -244,7 +244,7 @@ public class NewTaskActivity extends AppCompatActivity implements View.OnClickLi
         Realm realm = mHelper.getRealm();
         EventTask deleteTask = realm.where(EventTask.class).contains(EventTask.TASK_ID, mTaskID).findFirst();
         realm.beginTransaction();
-        deleteTask.removeFromRealm();
+        deleteTask.deleteFromRealm();
         realm.commitTransaction();
         String planID;
         String planName = mArrayPlans[mSpinnerTaskPlan.getSelectedItemPosition()];
