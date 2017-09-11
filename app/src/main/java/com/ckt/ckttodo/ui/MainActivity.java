@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = mActivityMainBinding.drawerLayout;
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.syncState();
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
 
 
         NavigationView navigationView = mActivityMainBinding.navView;
@@ -212,9 +212,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case 1:
                         fragment = new ProjectFragment();
                         break;
-                    case 2:
-                        fragment = new NoteFragment();
-                        break;
                 }
                 mFragmentList.add(fragment);
                 return fragment;
@@ -222,19 +219,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public int getCount() {
-                return 3;
+                return 2;
             }
 
             @Override
             public CharSequence getPageTitle(int position) {
-                String[] mTitles = {getString(R.string.task), getString(R.string.project), getString(R.string.note)};
+                String[] mTitles = {getString(R.string.task), getString(R.string.project)};
                 return mTitles[position];
             }
 
 
         };
 
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -248,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         mActivityMainBinding.appBarMain.fam.setVisibility(View.VISIBLE);
                         break;
                     case 1:
-                    case 2:
+//                    case 2:
                         mActivityMainBinding.appBarMain.fam.collapse();
                         mActivityMainBinding.appBarMain.fab.setVisibility(View.VISIBLE);
                         mActivityMainBinding.appBarMain.fam.setVisibility(View.INVISIBLE);
@@ -268,12 +265,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mActivityMainBinding.appBarMain.addVoid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //                SharedPreferences preferences = MainActivity.this.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
-                //                boolean isFirstTime = preferences.getBoolean(IS_FIRST_CHECK_PERMISSION, true);
-                //                if (isFirstTime) {
-                //                    getTheVoiceInput();
-                //                    preferences.edit().putBoolean(IS_FIRST_CHECK_PERMISSION, false).commit();
-                //                } else {
                 if (VoiceInputUtil.isNetAvaliable(mConnectivityManager)) {
 
                     mDialog.show();
