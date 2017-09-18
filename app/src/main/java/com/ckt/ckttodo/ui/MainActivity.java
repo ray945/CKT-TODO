@@ -80,7 +80,7 @@ import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, TaskFragment.ShowMainMenuItem, ActivityCompat.OnRequestPermissionsResultCallback,
-        VoiceInputDialog.VoiceInputFinishedListener, ProjectFragment.NotifyTask,BaseView {
+        VoiceInputDialog.VoiceInputFinishedListener, ProjectFragment.NotifyTask, BaseView {
     private static final String TAG = "main";
     public static final String PLAN_ID = "planId";
     public static final String SHARE_PREFERENCES_NAME = "com.ckt.ckttodo";
@@ -342,12 +342,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         builder.create().show();
 
                         break;
-                    case 2:
-                        Log.e(TAG, "note click");
-                        Intent intent = new Intent(MainActivity.this, NewNoteActivity.class);
-                        intent.putExtra("noteTag", "2");
-                        CircularAnimUtil.startActivity(MainActivity.this, intent, mActivityMainBinding.appBarMain.fab, R.color.colorPrimary);
-                        break;
                 }
             }
         });
@@ -471,6 +465,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_file:
                 transitionTo(new Intent(this, FinishedTaskActivity.class));
+                break;
+            case R.id.nav_note:
+                transitionTo(new Intent(this, NoteActivity.class));
                 break;
             case R.id.nav_timer:
                 transitionTo(new Intent(this, ClockAnimationActivity.class));

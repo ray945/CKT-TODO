@@ -6,10 +6,9 @@
 
     <string name="action_settings">Settings</string>
 
-
     <string name="task">task</string>
     <string name="project">project</string>
-    <string name="note">note</string>
+    <string name="note">便签</string>
     <string name="new_task">新建任务</string>
     <string name="edit_task">Edit Task</string>
     <string name="new_project">新建项目</string>
@@ -127,6 +126,9 @@
     <string name="init_note_title">我是初始化便签标题</string>
     <string name="init_note_content">我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容，我是很长的初始化便签内容。</string>
     <string name="accomplishProgress">进度</string>
+    <string name="project_owner">Owner：</string>
+    <string name="project_members">成员：</string>
+    <string name="want_delete">确认删除吗？</string>
     <string name="more_task">加载任务</string>
     <string name="predict_time">计划时间</string>
     <string name="real_spend_time">实际时间</string>

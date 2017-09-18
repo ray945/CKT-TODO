@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.ckt.ckttodo.R;
@@ -21,6 +22,8 @@ import com.ckt.ckttodo.database.Note;
 import com.ckt.ckttodo.databinding.FragmentNoteBinding;
 import com.ckt.ckttodo.databinding.NoteItemBinding;
 
+import com.ckt.ckttodo.util.CircularAnimUtil;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import io.realm.RealmResults;
 
 public class NoteFragment extends Fragment {
@@ -77,6 +80,14 @@ public class NoteFragment extends Fragment {
 
     private View init(LayoutInflater inflater) {
         mFragmentNoteBinding = FragmentNoteBinding.inflate(inflater);
+        final FloatingActionButton addNoteButton = mFragmentNoteBinding.fab;
+        addNoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), NewNoteActivity.class);
+                intent.putExtra("noteTag", "2");
+                CircularAnimUtil.startActivity(getActivity(), intent, addNoteButton, R.color.colorPrimary);
+            }
+        });
         rv_note = mFragmentNoteBinding.rvNote;
         baseList = DatebaseHelper.getInstance(getContext()).findAll(Note.class);
         noteAdapter = new NoteAdapter(baseList);

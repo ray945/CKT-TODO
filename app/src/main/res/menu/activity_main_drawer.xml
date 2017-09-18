@@ -13,6 +13,12 @@
             android:checkable="false"
             android:title="@string/file"/>
         <item
+            android:id="@+id/nav_note"
+            android:icon="@drawable/ic_description_black_48dp"
+            android:checkable="false"
+            android:title="@string/note"
+            />
+        <item
             android:id="@+id/nav_timer"
             android:icon="@drawable/ic_av_timer_black_48dp"
             android:checkable="false"
