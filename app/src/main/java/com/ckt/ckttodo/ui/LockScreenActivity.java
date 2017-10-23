@@ -123,30 +123,13 @@ public class LockScreenActivity extends SwipeUpBaseActivity {
 
     public void getData() {
         mUnFinishedTasks.clear();
-        RealmResults<EventTask> tasks = DatebaseHelper.getInstance(LockScreenActivity.this).getRealm().where(EventTask.class).findAllSorted(EventTask.TASK_STATUS,
+        RealmResults<EventTask> tasks = DatebaseHelper.getInstance(LockScreenActivity.this).getRealm().where(EventTask.class).findAllSorted("taskStartTime",
                 Sort.ASCENDING);
         for (EventTask task : tasks) {
             if (task.getTaskStatus() != EventTask.DONE && task.getTaskStatus() != EventTask.BLOCK && task.getTaskStatus() != EventTask.PENDING && time(task.getTaskStartTime()).equals(time(System.currentTimeMillis()))) {
                 mUnFinishedTasks.add(task);
             }
         }
-        sortList();
-    }
-
-    private void sortList() {
-        Collections.sort(mUnFinishedTasks, new Comparator<EventTask>() {
-
-            public int compare(EventTask o1, EventTask o2) {
-
-                if (o1.getTaskStartTime() > o2.getTaskStartTime()) {
-                    return 1;
-                }
-                if (o1.getTaskStartTime() == o2.getTaskStartTime()) {
-                    return 0;
-                }
-                return -1;
-            }
-        });
     }
 
     public String time(Long time) {

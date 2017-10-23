@@ -14,6 +14,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Toast;
+import com.ckt.ckttodo.R;
 import com.ckt.ckttodo.database.DatebaseHelper;
 import com.ckt.ckttodo.database.EventTask;
 import com.ckt.ckttodo.database.Plan;
@@ -21,10 +23,9 @@ import com.ckt.ckttodo.database.Project;
 import com.ckt.ckttodo.databinding.FragmentProjectBinding;
 import com.ckt.ckttodo.util.ProjectListAdapter;
 
-import java.util.ArrayList;
+import io.realm.Sort;
 import java.util.List;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -47,118 +48,97 @@ public class ProjectFragment extends Fragment {
 
         FragmentProjectBinding binding = FragmentProjectBinding.inflate(inflater);
         RecyclerView rvProjects = binding.rvProject;
-        mProjectList = DatebaseHelper.getInstance(getContext()).findAll(Project.class);
-        rvProjects.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), rvProjects, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-            }
+        mProjectList = DatebaseHelper.getInstance(getContext())
+                .getRealm()
+                .where(Project.class)
+                .findAllSorted("createTime", Sort.ASCENDING);
+        rvProjects.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), rvProjects,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        // TODO: add jump project detail logic.
+                        Toast.makeText(getActivity(), mProjectList.get(position).getProjectTitle(),
+                                Toast.LENGTH_SHORT).show();
+                    }
 
-            @Override
-            public void onItemLongClick(View view, final int position) {
-                new AlertDialog.Builder(getContext()).setMessage("确认删除吗？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 点击“确认”后的操作
-                        List<Plan> plans = new ArrayList<Plan>();
-                        mTasks = new ArrayList<EventTask>();
-                        for (Plan plan : mProjectList.get(position).getPlans()) {
-                            plans.add(plan);
-                        }
-                        if (plans != null) {
-                            for (int i = 0; i < plans.size(); i++) {
-                                currentPlan = plans.get(i);
-                                mTasks.clear();
-                                if (plans.get(i).getEventTasks() != null) {
-                                    for (int j = 0; j < plans.get(i).getEventTasks().size(); j++) {
-                                        mTasks.add(plans.get(i).getEventTasks().get(j));
-                                    }
-                                    DatebaseHelper.getInstance(getContext()).getRealm().executeTransaction(new Realm.Transaction() {
-                                        @Override
-                                        public void execute(Realm realm) {
-                                            for (EventTask task : mTasks) {
-                                                task.setPlanId("");
-                                                realm.copyToRealmOrUpdate(task);
-//                                              DatebaseHelper.getInstance(getContext()).delete(task);
+                    @Override public void onItemLongClick(View view, final int position) {
+                        new AlertDialog.Builder(getContext())
+                                .setMessage(R.string.want_delete)
+                                .setPositiveButton(R.string.sure,
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface,
+                                                                int i) {
+                                                DatebaseHelper.getInstance(getActivity())
+                                                        .delete(mProjectList.get(position));
+                                                mAdapter.notifyDataSetChanged();
                                             }
-                                            currentPlan.getEventTasks().clear();
-                                            realm.copyToRealmOrUpdate(currentPlan);
-                                        }
-                                    });
-                                }
-                                DatebaseHelper.getInstance(getContext()).delete(plans.get(i));
-                            }
-                            mNotifyTask = (NotifyTask) getActivity();
-                            mNotifyTask.notifyTask();
-                            mAdapter.flash();
-                        }
-                        DatebaseHelper.getInstance(getContext()).delete(mProjectList.get(position));
-                        mAdapter.notifyDataSetChanged();
+                                        })
+                                .setNegativeButton(R.string.cancel, null)
+                                .show();
                     }
-                }).setNegativeButton("返回", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 点击“返回”后的操作,这里不设置没有任何操作
-                    }
-                }).show();
-            }
-        }));
+                }));
         mAdapter = new ProjectListAdapter(getContext(), mProjectList);
         initRecyclerView(rvProjects, mAdapter, getContext());
         return binding.getRoot();
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
-        mAdapter.flash();
     }
-
-    NotifyTask mNotifyTask;
 
     public interface NotifyTask {
         void notifyTask();
     }
 
+
     public static void initRecyclerView(RecyclerView recyclerView, RecyclerView.Adapter adapter, Context context) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context,
+                LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public static class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
 
+    public static class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
         public interface OnItemClickListener {
             void onItemClick(View view, int position);
 
             void onItemLongClick(View view, int position);
         }
 
+
         private OnItemClickListener mListener;
 
         private GestureDetector mGestureDetector;
 
+
         public RecyclerItemClickListener(Context context, final RecyclerView recyclerView, OnItemClickListener listener) {
             mListener = listener;
 
-            mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
+            mGestureDetector = new GestureDetector(context,
+                    new GestureDetector.SimpleOnGestureListener() {
+                        @Override
+                        public boolean onSingleTapUp(MotionEvent e) {
+                            return true;
+                        }
 
-                @Override
-                public void onLongPress(MotionEvent e) {
-                    View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
 
-                    if (childView != null && mListener != null) {
-                        mListener.onItemLongClick(childView, recyclerView.getChildAdapterPosition(childView));
-                    }
-                }
-            });
+                        @Override
+                        public void onLongPress(MotionEvent e) {
+                            View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
+
+                            if (childView != null && mListener != null) {
+                                mListener.onItemLongClick(childView,
+                                        recyclerView.getChildAdapterPosition(childView));
+                            }
+                        }
+                    });
         }
+
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
@@ -171,9 +151,11 @@ public class ProjectFragment extends Fragment {
             return false;
         }
 
+
         @Override
         public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
         }
+
 
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {

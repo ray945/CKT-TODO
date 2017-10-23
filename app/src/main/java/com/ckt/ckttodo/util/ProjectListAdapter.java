@@ -40,15 +40,10 @@ import io.realm.RealmResults;
  */
 
 public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {
-
     private RealmResults<Project> projectList;
     private Context context;
-    private static final String TAG = "ZHIWEI";
-    private SmartRecyclerAdapter mSmartRecyclerAdapter;
-    private RealmList<Plan> mThreePlans;
+    private static final String TAG = "ProjectListAdapter";
     private String mAccomplishProgress;
-    private PlanListAdapter mAdapter;
-
 
     public ProjectListAdapter(Context context, RealmResults<Project> projectList) {
         this.projectList = projectList;
@@ -70,7 +65,6 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         final String projectId = project.getProjectId();
 
         calculateProgress(plans, projectId);
-        initNewPlanButton(holder.binding.btnAddPlan, projectId);
         holder.binding.tvProjectName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,62 +117,11 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                 builder.create().show();
             }
         });
-        final RecyclerView rvPlans = holder.binding.rvPlans;
-        if (plans.size() <= 3) {
-            mAdapter = new PlanListAdapter(context, plans);
-            mAdapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(int position, View view) {
-                    Intent intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("planId", plans.get(position).getPlanId());
-                    context.startActivity(intent);
-                }
-            });
-            rvPlans.setAdapter(mAdapter);
-        } else if (plans.size() >= 4) {
-            mThreePlans = new RealmList<>();
-            for (int i = 0; i < 3; i++) {
-                mThreePlans.add(plans.get(i));
-            }
-            final PlanListAdapter threeAdapter = new PlanListAdapter(context, mThreePlans);
-            mSmartRecyclerAdapter = new SmartRecyclerAdapter(threeAdapter);
-            ImageButton footerButton = (ImageButton) LayoutInflater.from(context).inflate(R.layout.item_project_plan_footer, rvPlans, false);
-            footerButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    threeAdapter.clear();
-                    threeAdapter.setPlans(plans);
-                    SmartRecyclerAdapter adapter1 = new SmartRecyclerAdapter(threeAdapter);
-                    rvPlans.setAdapter(adapter1);
-                }
-            });
-            mSmartRecyclerAdapter.setFooterView(footerButton);
-            threeAdapter.setOnItemClickListener(new PlanListAdapter.OnItemClickListener() {
-
-                @Override
-                public void onItemClick(int position, View view) {
-                    Intent intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("planId", plans.get(position).getPlanId());
-                    context.startActivity(intent);
-                }
-            });
-            rvPlans.setAdapter(mSmartRecyclerAdapter);
-        }
         holder.bind(project);
-
     }
 
     private void showToast(String text) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
-    }
-
-    public void flash() {
-        if (mSmartRecyclerAdapter != null) {
-            mSmartRecyclerAdapter.notifyDataSetChanged();
-        }
-        if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
-        }
     }
 
     private void calculateProgress(RealmList<Plan> plans, final String projectId) {
@@ -203,33 +146,23 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         });
     }
 
-
     @Override
     public int getItemCount() {
         return (projectList == null) ? 0 : projectList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-
         private ItemProjectBinding binding;
 
         ViewHolder(ItemProjectBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            initRecyclerView(binding.rvPlans, context);
         }
 
         void bind(Project project) {
             binding.setProject(project);
             binding.executePendingBindings();
         }
-    }
-
-    private void initRecyclerView(RecyclerView recyclerView, Context context) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new ProjectTaskListDecoration(context));
     }
 
    /* private void calculateProgress(RealmList<EventTask> tasks, final String planId) {
@@ -254,16 +187,16 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         });
     }*/
 
-    private void initNewPlanButton(ImageButton button, final String projectId) {
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, NewPlanActivity.class);
-                intent.putExtra(NewPlanActivity.PROJECT_ID, projectId);
-                intent.putExtra(NewPlanActivity.TAG, "1");
-                context.startActivity(intent);
-            }
-        });
-
-    }
+    // private void initNewPlanButton(ImageButton button, final String projectId) {
+    //     button.setOnClickListener(new View.OnClickListener() {
+    //         @Override
+    //         public void onClick(View view) {
+    //             Intent intent = new Intent(context, NewPlanActivity.class);
+    //             intent.putExtra(NewPlanActivity.PROJECT_ID, projectId);
+    //             intent.putExtra(NewPlanActivity.TAG, "1");
+    //             context.startActivity(intent);
+    //         }
+    //     });
+    //
+    // }
 }
