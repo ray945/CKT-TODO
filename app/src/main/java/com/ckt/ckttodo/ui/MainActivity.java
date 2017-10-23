@@ -35,6 +35,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -302,33 +303,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case 1:
                         Log.e(TAG, "project click");
-                        View editTextView = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
-                        final EditText editText = (EditText) editTextView.findViewById(R.id.new_task_name);
-                        editText.setFocusable(true);
-                        editText.setFocusableInTouchMode(true);
-                        editText.requestFocus();
-                        Timer timer = new Timer();
-                        timer.schedule(new TimerTask() {
+                        View dialogProject = getLayoutInflater().inflate(R.layout.dialog_new_project, null);
+                        final EditText projectName = (EditText) dialogProject.findViewById(R.id.edit_project_name);
+                        final EditText projectIntro = (EditText) dialogProject.findViewById(R.id.edit_project_intro);
+                        Button btnCreate = (Button) dialogProject.findViewById(R.id.btn_create);
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                                .setTitle(R.string.new_project)
+                                .setView(dialogProject);
+                        final AlertDialog dialog = builder.create();
+                        btnCreate.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void run() {
-                                InputMethodManager inputManager = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                inputManager.showSoftInput(editText, 0);
-                            }
-                        }, 200);
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this).setTitle(R.string.new_project).setView(editTextView).setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                final String projectName = editText.getText().toString().trim();
+                            public void onClick(View view) {
                                 for (Project project : DatebaseHelper.getInstance(MainActivity.this).findAll(Project.class)) {
-                                    if (projectName.equals(project.getProjectTitle())) {
+                                    if (projectName.getText().toString().equals(project.getProjectTitle())) {
                                         showToast(getResources().getString(R.string.project_exist));
                                         return;
                                     }
                                 }
-                                if (!projectName.equals("")) {
+                                if (!"".equals(projectName.getText().toString())) {
                                     Project project = new Project();
                                     project.setProjectId(UUID.randomUUID().toString());
-                                    project.setProjectTitle(projectName);
+                                    project.setProjectTitle(projectName.getText().toString());
+                                    project.setProjectSummary(projectIntro.getText().toString());
                                     Date date = new Date();
                                     project.setCreateTime(date.getTime());
                                     project.setEndTime(date.getTime());
@@ -337,10 +333,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 } else {
                                     showToast(getResources().getString(R.string.plan_not_null));
                                 }
+                                dialog.dismiss();
                             }
-                        }).setNegativeButton(R.string.cancel, null);
-                        builder.create().show();
-
+                        });
+                        dialog.show();
                         break;
                 }
             }

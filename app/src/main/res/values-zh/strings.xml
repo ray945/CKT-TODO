@@ -98,7 +98,7 @@
         <item>今年</item>
     </array>
     <string name="new_plan">新建计划</string>
-    <string name="new_project">新建项目</string>
+    <string name="new_project">创建新的项目</string>
     <string name="save">保存</string>
     <string name="cancel">取消</string>
     <string name="plan_not_null">计划不能为空，请重新输入。</string>
