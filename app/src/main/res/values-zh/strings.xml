@@ -162,5 +162,6 @@
     <string name="at_least_3_characters">至少三个字符</string>
     <string name="signup_failed">注册失败</string>
     <string name="registering">正在注册</string>
-
+    <string name="notice">公告</string>
+    <string name="add_new_member">添加新成员</string>
 </resources>

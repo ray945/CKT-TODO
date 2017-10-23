@@ -3,10 +3,10 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "com.ckt.ckttodo"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -45,5 +45,6 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.0'
     compile 'io.reactivex:rxjava:1.1.5'
     compile 'com.alibaba:fastjson:1.1.57.android'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.28'
     testCompile 'junit:junit:4.12'
 }
